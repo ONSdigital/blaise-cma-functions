@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "blaise-cma-functions"
 version = "0.1.0"
-description = ""
+description = "A collection of cloud function related to Blaise Case Management Application (CMA)"
 authors = ["James Anthony Williams <81305008+JAWilliamsONS@users.noreply.github.com>"]
 readme = "README.md"
 packages = [{include = "blaise_cma_functions"}]
@@ -9,6 +9,7 @@ packages = [{include = "blaise_cma_functions"}]
 [tool.poetry.dependencies]
 python = "^3.9"
 black = "^24.3.0"
+blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client.git", branch = "main"}
 
 [build-system]
 requires = ["poetry-core"]
