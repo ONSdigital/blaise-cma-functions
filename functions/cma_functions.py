@@ -1,26 +1,60 @@
+import logging
 import blaise_restapi
 
-def get_quid(server_park: str, questionnaire_name: str):
-    get_questionnaire_for_server_park(server_park, questionnaire_name)
-
-def get_users():
+restapi_client = blaise_restapi.Client()
 
 
-def create_donor_case(user: str):
-    print(f"Creating donor case for user {user}")
-    return
+# def get_guid(server_park: str, questionnaire_name: str) -> str:
+#     try:
+#         guid = blaise_restapi.get_guid(server_park, questionnaire_name) ### TODO: hit the api client endpoint here
+#         logging.info(f"Got GUID {guid} for questionnaire {questionnaire_name}")
+#         return guid
+#     except Exception as e:
+#         logging.error(f"Error getting GUID for questionnaire {questionnaire_name}: {e}")
+#         return ""
 
-def donor_case_exists(user: str):
+
+# def get_users(server_park: str) -> list:
+#     try:
+#         users = blaise_restapi.get_users(server_park) ### TODO: hit the api client endpoint here
+#         logging.info(f"Got {len(users)} users from server park {server_park}")
+#         return users
+#     except Exception as e:
+#         logging.error(f"Error getting users from server park {server_park}: {e}")
+#         return []
+
+
+def validate_role(role: str) -> bool:
+    if role not in restapi_client.get_user_roles(): ### TODO: hit the api client endpoint here
+        raise ValueError(f"Invalid role: {role}")
     return True
 
-def create_ips_donor_cases(users: list):
-    for user in users:
-        try:
-            if not donor_case_exists(user):
-                create_donor_case(user)
-            else:
-                print(f"Donor case already exists for user {user}")
-        except Exception as e:
-            print(f"Error creating donor case for user {user}")
-            print(e)
-    return
+
+def filter_users(users: list, role: str) -> list:
+    if validate_role(role):
+        return [user["name"] for user in users if user["role"] == role]
+
+
+def create_donor_case(field_interviewer: str, guid: str) -> None:
+    try:
+        create_donor_case(field_interviewer, guid) ### TODO: hit the api client endpoint here
+        logging.info(f"Donor case created for user {field_interviewer}")
+    except Exception as e:
+        logging.error(f"Error creating donor case for user {field_interviewer}: {e}")
+
+
+def donor_case_exists(field_interviewer: str, guid: str) -> bool:
+    try:
+        if field_interviewer in guid: ### TODO: hit the api client endpoint here
+            logging.info(f"Donor case already exists for user {field_interviewer}")
+            return True
+        else:
+            return False
+    except Exception as e:
+        logging.error(f"Error checking donor case for user {field_interviewer}: {e}")
+
+
+def create_donor_cases(field_interviewers: list, guid: str) -> None:
+    for field_interviewer in field_interviewers:
+        if not donor_case_exists(field_interviewer, guid):
+            create_donor_case(field_interviewer, guid)

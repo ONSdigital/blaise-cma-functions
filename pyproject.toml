@@ -10,6 +10,7 @@ packages = [{include = "blaise_cma_functions"}]
 python = "^3.9"
 black = "^24.3.0"
 blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client.git", branch = "main"}
+pytest = "^8.1.1"
 
 [build-system]
 requires = ["poetry-core"]
