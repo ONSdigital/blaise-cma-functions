@@ -1,22 +1,21 @@
 import logging
-from functions.cma_functions import create_ips_donor_cases, get_users, get_quid, get_ips_field_interviewers
+from services.cma_service import CMAService
 
 
 def create_ips_donor_cases_processer(request):
     logging.info("Running Cloud Function - create_ips_donor_cases")
+    cma_service = CMAService()
 
-    config = Config.from_env()
-    config.log()
     request_json = request.get_json()
+    questionnaire_name = request_json["questionnaire_name"]
+    role = request_json["role"]
 
-    if 'questionnaire_name' in request_json:
-        questionnaire_name = request_json['questionnaire_name']
-    else:
-        return "No questionnaire name provided", 400
-    guid = get_quid(config.server_park, questionnaire_name)
+    questionnaire = cma_service.get_questionnaire("gusty", questionnaire_name)
+    guid = cma_service.get_quid("gusty", questionnaire)
 
-    users = get_users(config.server_park)
-    ips_field_interviewers = get_ips_field_interviewers(users, "IPS Field Interviewer")
+    users = cma_service.get_users("gusty")
+    users_with_role = cma_service.get_users_by_role(role)
 
-    create_ips_donor_cases(ips_field_interviewers, guid)
+    cma_service.create_donor_cases(questionnaire_name, guid, users_with_role)
+
     return "Done!", 200
