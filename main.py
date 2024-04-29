@@ -1,21 +1,21 @@
 import logging
-from services.blaise_service import CMAService
+from services.blaise_service import BlaiseService
 
 
-def create_ips_donor_cases_processer(request):
+def create_ips_donor_cases_processor(request):
     logging.info("Running Cloud Function - create_ips_donor_cases")
-    cma_service = CMAService()
+    blaise_service = BlaiseService()
 
     request_json = request.get_json()
     questionnaire_name = request_json["questionnaire_name"]
     role = request_json["role"]
 
-    questionnaire = cma_service.get_questionnaire("gusty", questionnaire_name)
-    guid = cma_service.get_quid("gusty", questionnaire)
+    questionnaire = blaise_service.get_questionnaire("gusty", questionnaire_name)
+    guid = blaise_service.get_quid("gusty", questionnaire)
 
-    users = cma_service.get_users("gusty")
-    users_with_role = cma_service.get_users_by_role(role)
+    users = blaise_service.get_users("gusty")
+    users_with_role = blaise_service.get_users_by_role(role)
 
-    cma_service.create_donor_cases(questionnaire_name, guid, users_with_role)
+    blaise_service.create_donor_cases(questionnaire_name, guid, users_with_role)
 
     return "Done!", 200

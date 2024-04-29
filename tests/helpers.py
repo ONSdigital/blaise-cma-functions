@@ -1,5 +1,6 @@
 from appconfig.config import Config
 
+
 def mock_get_users(role):
     return [
         {
@@ -20,6 +21,7 @@ def mock_get_users(role):
             "defaultServerPark": "gusty"
         }
     ]
+
 
 def get_default_config():
     return Config(
