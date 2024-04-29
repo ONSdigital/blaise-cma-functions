@@ -1,19 +1,30 @@
-from services.cma_service import CMAService
-from tests.helpers import mock_get_users
+from appconfig.config import Config
+import pytest
+from unittest.mock import Mock
+from tests.helpers import get_default_config
+from services.blaise_service import BlaiseService
+import blaise_restapi
 
-import logging
-from unittest.mock import patch
+
+@pytest.fixture()
+def config() -> Config:
+    return get_default_config()
 
 
-def test_get_guid_returns_the_guid_as_a_string(mock_get_guestionnaires):
+@pytest.fixture()
+def blaise_service(config) -> BlaiseService:
+    return BlaiseService(config=config)
+
+
+def test_get_guid_returns_the_guid_as_a_string(blaise_service, mock_get_questionnaires):
     # Act
-    result = CMAService.get_quid(mock_get_guestionnaires)
+    result = BlaiseService.get_quid(mock_get_questionnaires)
 
     # Assert
     assert isinstance(result, str)
     assert result == "25615bf2-f331-47ba-9d05-6659a513a1f2"
-#
-#
+
+
 # def test_get_users_by_role_returns_a_list_of_users_with_a_given_role():
 #     # Arrange
 #     users = mock_get_users("IPS Field Interviewer")

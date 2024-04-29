@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class BlaiseConfig:
+class Config:
     blaise_api_url: str
 
     @classmethod

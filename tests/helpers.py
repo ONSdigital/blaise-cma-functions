@@ -1,3 +1,5 @@
+from appconfig.config import Config
+
 def mock_get_users(role):
     return [
         {
@@ -19,3 +21,7 @@ def mock_get_users(role):
         }
     ]
 
+def get_default_config():
+    return Config(
+        bus_api_url="bus_api_url",
+    )

@@ -1,15 +1,13 @@
 import logging
 import blaise_restapi
 
-from models.blaise_config_model import BlaiseConfig
+from appconfig.config import Config
 
 
-class CMAService:
-    def __init__(self, config: BlaiseConfig):
+class BlaiseService:
+    def __init__(self, config: Config):
         self._config = config
-        self.restapi_client = blaise_restapi.Client(
-            f"http://{self._config.blaise_api_url}"
-        )
+        self.restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
 
     def get_questionnaire(self, server_park: str, questionnaire_name: str) -> str:
         try:
@@ -20,17 +18,15 @@ class CMAService:
             logging.error(f"Error getting questionnaire {questionnaire_name}: {e}")
             return ""
 
-
-    def get_quid(self, questionnaire_info: str) -> str:
-        questionnaire_name = questionnaire_info["name"]
+    def get_quid(self, questionnaire: str) -> str:
+        questionnaire_name = questionnaire["name"]
         try:
-            guid = questionnaire_info["id"]
+            guid = questionnaire["id"]
             logging.info(f"Got GUID {guid} for questionnaire {questionnaire_name}")
             return guid
         except Exception as e:
             logging.error(f"Error getting GUID for questionnaire {questionnaire_name}: {e}")
             return ""
-
 
     def get_users(self, server_park: str) -> list:
         try:
@@ -41,31 +37,26 @@ class CMAService:
             logging.error(f"Error getting users from server park {server_park}: {e}")
             return []
 
-
     def get_users_by_role(self, users: list, role: str) -> list:
         return [user["name"] for user in users if user["role"] == role]
 
-
-    def get_unigue_for_whom_fields(self):
+    def get_existing_donor_cases(self):
         return self.restapi_client.get_questionnaire_data("cma", "cma_launcher" "CMA_ForWhom").unique()
 
-    def create_donor_cases(self, questionnaire_name: str, guid: str, users_with_role: list ) -> None:
-        users_with_existing_donor_cases = self.get_unigue_for_whom_fields()
+    def create_donor_cases(self, questionnaire_name: str, guid: str, users_with_role: list) -> None:
+        existing_donor_cases = self.get_existing_donor_cases()
         for user in users_with_role:
-            if not self.donor_case_exists(user, users_with_existing_donor_cases):
+            if not self.donor_case_exists(user, existing_donor_cases):
                 # create_donor_case(field_interviewer, guid)
                 return ""
 
-    def donor_case_exists(self, field_interviewer: str, users_with_existing_donor_cases) -> bool:
+    def donor_case_exists(self, user: str, users_with_existing_donor_cases) -> bool:
         try:
-            if field_interviewer not in users_with_existing_donor_cases:
-                logging.info(f"Donor case does not exist for user {field_interviewer}")
+            if user not in users_with_existing_donor_cases:
+                logging.info(f"Donor case does not exist for user {user}")
                 return False
             else:
-                logging.info(f"Donor case already exists for user {field_interviewer}")
+                logging.info(f"Donor case already exists for user {user}")
                 return True
         except Exception as e:
-            logging.error(f"Error checking donor case for user {field_interviewer}: {e}")
-
-
-
+            logging.error(f"Error checking donor case for user {user}: {e}")

@@ -1,5 +1,5 @@
 import logging
-from services.cma_service import CMAService
+from services.blaise_service import CMAService
 
 
 def create_ips_donor_cases_processer(request):

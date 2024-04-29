@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.fixture()
-def mock_get_guestionnaires():
+def mock_get_questionnaires():
     return {
         "name": "LMS2309_GO1",
         "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",
