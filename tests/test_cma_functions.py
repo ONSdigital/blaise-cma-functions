@@ -180,7 +180,7 @@ def test_get_existing_donor_cases_returns_a_list_of_unique_ids_(
         _mock_rest_api_client_get_questionnaire_data, blaise_service
 ):
     # arrange
-    _mock_rest_api_client_get_questionnaire_data.return_value ={
+    _mock_rest_api_client_get_questionnaire_data.return_value = {
         "questionnaireName": "cma_launcher",
         "questionnaireId": "b0425080-2470-49db-bb53-170633c4fbba",
         "reportingData": [
@@ -198,3 +198,7 @@ def test_get_existing_donor_cases_returns_a_list_of_unique_ids_(
 
     # act
     result = blaise_service.get_existing_donor_cases()
+
+    assert len(result) == 2
+    assert result == ["james", "rich"]
+

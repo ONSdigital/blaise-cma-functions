@@ -41,15 +41,18 @@ class BlaiseService:
     def get_users_by_role(self, users: list, role: str) -> list[str] :
         return [user["name"] for user in users if user["role"] == role]
 
-    def get_existing_donor_cases(self):
-        return self.restapi_client.get_questionnaire_data("cma", "cma_launcher", "CMA_ForWhom").unique()
-
     def create_donor_cases(self, questionnaire_name: str, guid: str, users_with_role: list) -> None:
         existing_donor_cases = self.get_existing_donor_cases()
         for user in users_with_role:
             if not self.donor_case_exists(user, existing_donor_cases):
                 # create_donor_case(field_interviewer, guid)
                 return ""
+
+
+    def get_existing_donor_cases(self):
+        data =  self.restapi_client.get_questionnaire_data("cma", "cma_launcher", "CMA_ForWhom")
+        return sorted(set(entry["cmA_ForWhom"] for entry in data["reportingData"]))
+
 
     def donor_case_exists(self, user: str, users_with_existing_donor_cases) -> bool:
         try:
