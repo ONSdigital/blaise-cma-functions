@@ -18,7 +18,7 @@ def blaise_service(config) -> BlaiseService:
 
 def test_get_guid_returns_the_guid_as_a_string(blaise_service, mock_get_questionnaires):
     # Act
-    result = BlaiseService.get_quid(mock_get_questionnaires)
+    result = blaise_service.get_quid(mock_get_questionnaires)
 
     # Assert
     assert isinstance(result, str)
