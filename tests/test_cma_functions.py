@@ -89,51 +89,51 @@ def test_get_guid_returns_the_guid_as_a_string(blaise_service, mock_get_question
     assert result == "25615bf2-f331-47ba-9d05-6659a513a1f2"
 
 
-# @mock.patch.object(blaise_restapi.Client, "get_users")
-# def test_get_users_calls_the_rest_api_endpoint_with_the_correct_parameters(_mock_rest_api_client, blaise_service):
-#     # arrange
-#     blaise_server_park = "gusty"
-#
-#     # act
-#     blaise_service.get_users(blaise_server_park)
-#
-#     # assert
-#     _mock_rest_api_client.assert_called_with(
-#         blaise_server_park)
+@mock.patch.object(blaise_restapi.Client, "get_users")
+def test_get_users_calls_the_rest_api_endpoint_with_the_correct_parameters(_mock_rest_api_client, blaise_service):
+    # arrange
+    blaise_server_park = "gusty"
 
-#
-# @mock.patch.object(blaise_restapi.Client, "get_users")
-# def test_get_users_returns_a_list_of_dictionaires_containing_user_info(
-#         _mock_rest_api_client_get_users, blaise_service
-# ):
-#     # arrange
-#     _mock_rest_api_client_get_users.return_value = [
-#         {
-#             "name": "rich",
-#             "role": "DST",
-#             "serverParks": [
-#                 "gusty",
-#                 "cma"
-#             ],
-#             "defaultServerPark": "gusty"
-#         },
-#         {
-#             "name": "sarah",
-#             "role": "DST",
-#             "serverParks": [
-#                 "gusty"
-#             ],
-#             "defaultServerPark": "gusty"
-#         }
-#     ]
-#
-#     blaise_server_park = "gusty"
-#
-#     # act
-#     result = blaise_service.get_users(blaise_server_park)
-#
-#     # assert
-#     assert len(result) == 2
+    # act
+    blaise_service.get_users(blaise_server_park)
+
+    # assert
+    _mock_rest_api_client.assert_called_with(
+        blaise_server_park)
+
+
+@mock.patch.object(blaise_restapi.Client, "get_users")
+def test_get_users_returns_a_list_of_dictionaires_containing_user_info(
+        _mock_rest_api_client_get_users, blaise_service
+):
+    # arrange
+    _mock_rest_api_client_get_users.return_value = [
+        {
+            "name": "rich",
+            "role": "DST",
+            "serverParks": [
+                "gusty",
+                "cma"
+            ],
+            "defaultServerPark": "gusty"
+        },
+        {
+            "name": "sarah",
+            "role": "DST",
+            "serverParks": [
+                "gusty"
+            ],
+            "defaultServerPark": "gusty"
+        }
+    ]
+
+    blaise_server_park = "gusty"
+
+    # act
+    result = blaise_service.get_users(blaise_server_park)
+
+    # assert
+    assert len(result) == 2
 
 
 def test_get_users_by_role_returns_a_list_of_users_with_a_given_role(blaise_service):
