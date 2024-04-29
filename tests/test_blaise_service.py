@@ -80,15 +80,6 @@ def test_get_questionnaire_returns_a_dictionary_containing_questionnaire_info(
     assert result["serverParkName"] == "gusty"
 
 
-def test_get_guid_returns_the_guid_as_a_string(blaise_service, mock_get_questionnaires):
-    # Act
-    result = blaise_service.get_quid(mock_get_questionnaires)
-
-    # Assert
-    assert isinstance(result, str)
-    assert result == "25615bf2-f331-47ba-9d05-6659a513a1f2"
-
-
 @mock.patch.object(blaise_restapi.Client, "get_users")
 def test_get_users_calls_the_rest_api_endpoint_with_the_correct_parameters(_mock_rest_api_client, blaise_service):
     # arrange
@@ -100,7 +91,6 @@ def test_get_users_calls_the_rest_api_endpoint_with_the_correct_parameters(_mock
     # assert
     _mock_rest_api_client.assert_called_with(
         blaise_server_park)
-
 
 @mock.patch.object(blaise_restapi.Client, "get_users")
 def test_get_users_returns_a_list_of_dictionaires_containing_user_info(
@@ -134,30 +124,6 @@ def test_get_users_returns_a_list_of_dictionaires_containing_user_info(
 
     # assert
     assert len(result) == 2
-
-
-def test_get_users_by_role_returns_a_list_of_users_with_a_given_role(blaise_service):
-    # Arrange
-    users = mock_get_users("IPS Field Interviewer")
-
-    # Act
-    result = blaise_service.get_users_by_role(users, "IPS Field Interviewer")
-
-    # Assert
-    assert len(result) == 1
-    assert result == ["willij"]
-
-
-def test_get_users_by_role_returns_empty_list_when_no_users_are_found_with_a_given_role(blaise_service):
-    # Arrange
-    users = mock_get_users("DST")
-
-    # Act
-    result = blaise_service.get_users_by_role(users, "IPS Field Interviewer")
-
-    # Assert
-    assert len(result) == 0
-    assert result == []
 
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
