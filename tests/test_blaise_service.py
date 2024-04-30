@@ -248,5 +248,6 @@ def test_get_existing_donor_cases_returns_a_list_of_unique_ids_(
     # act
     result = blaise_service.get_existing_donor_cases()
 
+    # Assert
     assert len(result) == 2
     assert result == ["james", "rich"]
