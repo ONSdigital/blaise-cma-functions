@@ -1,5 +1,6 @@
-from services.blaise_service import BlaiseService
 import logging
+
+from services.blaise_service import BlaiseService
 
 
 class GUIDService:
@@ -13,5 +14,7 @@ class GUIDService:
             logging.info(f"Got GUID {guid} for questionnaire {questionnaire_name}")
             return guid
         except Exception as e:
-            logging.error(f"Error getting GUID for questionnaire {questionnaire_name}: {e}")
+            logging.error(
+                f"Error getting GUID for questionnaire {questionnaire_name}: {e}"
+            )
             return ""

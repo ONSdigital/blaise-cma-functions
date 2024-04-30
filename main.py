@@ -1,5 +1,7 @@
 import logging
+
 from services.blaise_service import BlaiseService
+from services.donor_case_service import DonorCaseService
 
 
 def create_ips_donor_cases_processor(request):
@@ -10,12 +12,9 @@ def create_ips_donor_cases_processor(request):
     questionnaire_name = request_json["questionnaire_name"]
     role = request_json["role"]
 
-    questionnaire = blaise_service.get_questionnaire("gusty", questionnaire_name)
-    guid = blaise_service.get_quid("gusty", questionnaire)
-
-    users = blaise_service.get_users("gusty")
+    guid = blaise_service.get_quid("gusty", questionnaire_name)
     users_with_role = blaise_service.get_users_by_role(role)
-
-    blaise_service.create_donor_cases(questionnaire_name, guid, users_with_role)
-
+    DonorCaseService.create_donor_case_for_users(
+        questionnaire_name, guid, users_with_role
+    )
     return "Done!", 200

@@ -1,8 +1,10 @@
 import logging
+from typing import Any, Dict
+
 import blaise_restapi
 
-from typing import Dict, Any
 from appconfig.config import Config
+from models.donor_case_model import DonorCaseModel
 
 
 class BlaiseService:
@@ -10,9 +12,17 @@ class BlaiseService:
         self._config = config
         self.restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
 
-    def get_questionnaire(self, server_park: str, questionnaire_name: str) -> Dict[str, Any]:
+        self.serverpark_name = "cma"
+        self.cma_questionnaire = "cma_launcher"
+        self.field = "CMA_ForWhom"
+
+    def get_questionnaire(
+        self, server_park: str, questionnaire_name: str
+    ) -> Dict[str, Any]:
         try:
-            questionnaire = self.restapi_client.get_questionnaire_for_server_park(server_park, questionnaire_name)
+            questionnaire = self.restapi_client.get_questionnaire_for_server_park(
+                server_park, questionnaire_name
+            )
             logging.info(f"Got questionnaire '{questionnaire_name}'")
             return questionnaire
         except Exception as e:
@@ -29,5 +39,16 @@ class BlaiseService:
             return []
 
     def get_existing_donor_cases(self):
-        cases = self.restapi_client.get_questionnaire_data("cma", "cma_launcher", "CMA_ForWhom")
+        cases = self.restapi_client.get_questionnaire_data(
+            self.serverpark_name, self.cma_questionnaire, "CMA_ForWhom"
+        )
         return sorted(set(entry["cmA_ForWhom"] for entry in cases["reportingData"]))
+
+    def create_donor_case_for_user(self, donor_case: DonorCaseModel) -> None:
+        self.restapi_client.create_multikey_case(
+            self.serverpark_name,
+            self.cma_questionnaire,
+            donor_case.key_names,
+            donor_case.key_values,
+            donor_case.field_data,
+        )

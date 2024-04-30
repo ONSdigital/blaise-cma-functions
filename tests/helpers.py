@@ -9,17 +9,14 @@ def mock_get_users(role):
             "serverParks": [
                 "gusty",
             ],
-            "defaultServerPark": "gusty"
+            "defaultServerPark": "gusty",
         },
         {
             "name": "willij",
             "role": role,
-            "serverParks": [
-                "gusty",
-                "cma"
-            ],
-            "defaultServerPark": "gusty"
-        }
+            "serverParks": ["gusty", "cma"],
+            "defaultServerPark": "gusty",
+        },
     ]
 
 
