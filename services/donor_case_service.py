@@ -16,10 +16,10 @@ class DonorCaseService:
     def donor_case_exists(self, user: str, users_with_existing_donor_cases) -> bool:
         try:
             if user not in users_with_existing_donor_cases:
-                logging.info(f"Donor case does not exist for user {user}")
+                logging.info(f"Donor case does not exist for user '{user}'")
                 return False
             else:
-                logging.info(f"Donor case already exists for user {user}")
+                logging.info(f"Donor case already exists for user '{user}'")
                 return True
         except Exception as e:
             logging.error(f"Error checking donor case for user {user}: {e}")

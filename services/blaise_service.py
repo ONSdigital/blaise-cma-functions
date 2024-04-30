@@ -13,7 +13,7 @@ class BlaiseService:
     def get_questionnaire(self, server_park: str, questionnaire_name: str) -> Dict[str, Any]:
         try:
             questionnaire = self.restapi_client.get_questionnaire_for_server_park(server_park, questionnaire_name)
-            logging.info(f"Got questionnaire {questionnaire_name}")
+            logging.info(f"Got questionnaire '{questionnaire_name}'")
             return questionnaire
         except Exception as e:
             logging.error(f"Error getting questionnaire {questionnaire_name}: {e}")
@@ -29,5 +29,5 @@ class BlaiseService:
             return []
 
     def get_existing_donor_cases(self):
-        data = self.restapi_client.get_questionnaire_data("cma", "cma_launcher", "CMA_ForWhom")
-        return sorted(set(entry["cmA_ForWhom"] for entry in data["reportingData"]))
+        cases = self.restapi_client.get_questionnaire_data("cma", "cma_launcher", "CMA_ForWhom")
+        return sorted(set(entry["cmA_ForWhom"] for entry in cases["reportingData"]))
