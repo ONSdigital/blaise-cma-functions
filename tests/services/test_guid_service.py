@@ -28,11 +28,12 @@ def guid_service(blaise_service) -> GUIDService:
 def test_get_guid_returns_the_guid_as_a_string(get_questionnaire, guid_service, mock_get_questionnaire):
     # Arrange
     get_questionnaire.return_value = mock_get_questionnaire
+    blaise_server_park = "gusty"
 
     questionnaire_name = "LMS2309_GO1"
 
     # Act
-    result = guid_service.get_guid(questionnaire_name)
+    result = guid_service.get_guid(blaise_server_park, questionnaire_name)
 
     # Assert
     assert isinstance(result, str)
@@ -43,12 +44,13 @@ def test_get_guid_returns_the_guid_as_a_string(get_questionnaire, guid_service, 
 def test_get_guid_logs_the_correct_message(get_questionnaire, guid_service, caplog, mock_get_questionnaire):
     # Arrange
     get_questionnaire.return_value = mock_get_questionnaire
+    blaise_server_park = "gusty"
 
     questionnaire_name = "LMS2309_GO1"
 
     # Act
     with caplog.at_level(logging.INFO):
-        guid_service.get_guid(questionnaire_name)
+        guid_service.get_guid(blaise_server_park, questionnaire_name)
 
     # Assert
     assert (
@@ -62,11 +64,13 @@ def test_get_guid_logs_the_correct_message(get_questionnaire, guid_service, capl
 def test_get_guid_logs_the_error_message(get_questionnaire, guid_service, caplog):
     # Arrange
     get_questionnaire.return_value = {}
+    blaise_server_park = "gusty"
+
     questionnaire_name = "LMS2309_GO1"
 
     # Act
     with caplog.at_level(logging.INFO):
-        guid_service.get_guid(questionnaire_name)
+        guid_service.get_guid(blaise_server_park, questionnaire_name)
 
     # Assert
     assert (
