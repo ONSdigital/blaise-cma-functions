@@ -11,3 +11,20 @@ class TestData:
 @pytest.fixture
 def test_data():
     return TestData()
+
+@pytest.fixture
+def mock_get_users():
+    return [
+        {
+            "name": "rich",
+            "role": "DST",
+            "serverParks": ["gusty", "cma"],
+            "defaultServerPark": "gusty",
+        },
+        {
+            "name": "sarah",
+            "role": "DST",
+            "serverParks": ["gusty"],
+            "defaultServerPark": "gusty",
+        },
+    ]

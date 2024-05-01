@@ -38,7 +38,7 @@ def test_get_questionnaire_calls_the_rest_api_endpoint_with_the_correct_paramete
 def test_get_questionnaire_returns_a_dictionary_containing_questionnaire_info(
     _mock_rest_api_client_get_questionnaire_for_server_park, blaise_service
 ):
-    # arrange
+    # Arrange
     _mock_rest_api_client_get_questionnaire_for_server_park.return_value = {
         "name": "LMS2309_GO1",
         "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",
@@ -58,10 +58,10 @@ def test_get_questionnaire_returns_a_dictionary_containing_questionnaire_info(
     blaise_server_park = "gusty"
     questionnaire_name = "LMS2309_GO1"
 
-    # act
+    # Act
     result = blaise_service.get_questionnaire(blaise_server_park, questionnaire_name)
 
-    # assert
+    # Assert
     assert len(result) == 9
     assert isinstance(result, dict)
 
@@ -74,7 +74,7 @@ def test_get_questionnaire_returns_a_dictionary_containing_questionnaire_info(
 def test_get_questionnaire_logs_the_correct_information(
     _mock_rest_api_client_get_questionnaire_for_server_park, blaise_service, caplog
 ):
-    # arrange
+    # Arrange
     _mock_rest_api_client_get_questionnaire_for_server_park.return_value = {
         "name": "LMS2309_GO1",
         "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",
@@ -94,11 +94,11 @@ def test_get_questionnaire_logs_the_correct_information(
     blaise_server_park = "gusty"
     questionnaire_name = "LMS2309_GO1"
 
-    # act
+    # Act
     with caplog.at_level(logging.INFO):
         blaise_service.get_questionnaire(blaise_server_park, questionnaire_name)
 
-    # assert
+    # Assert
     assert (
         "root",
         logging.INFO,
@@ -110,43 +110,30 @@ def test_get_questionnaire_logs_the_correct_information(
 def test_get_users_calls_the_rest_api_endpoint_with_the_correct_parameters(
     _mock_rest_api_client, blaise_service
 ):
-    # arrange
+    # Arrange
     blaise_server_park = "gusty"
 
-    # act
+    # Act
     blaise_service.get_users(blaise_server_park)
 
-    # assert
+    # Assert
     _mock_rest_api_client.assert_called_with(blaise_server_park)
 
 
 @mock.patch.object(blaise_restapi.Client, "get_users")
-def test_get_users_returns_a_list_of_dictionaires_containing_user_info(
-    _mock_rest_api_client_get_users, blaise_service, caplog
+def test_get_users_returns_a_list_of_dictionaires_logs_the_correct_information(
+    _mock_rest_api_client_get_users, blaise_service, caplog, mock_get_users
 ):
-    # arrange
-    _mock_rest_api_client_get_users.return_value = [
-        {
-            "name": "rich",
-            "role": "DST",
-            "serverParks": ["gusty", "cma"],
-            "defaultServerPark": "gusty",
-        },
-        {
-            "name": "sarah",
-            "role": "DST",
-            "serverParks": ["gusty"],
-            "defaultServerPark": "gusty",
-        },
-    ]
+    # Arrange
+    _mock_rest_api_client_get_users.return_value = mock_get_users
 
     blaise_server_park = "gusty"
 
-    # act
+    # Act
     with caplog.at_level(logging.INFO):
-        result = blaise_service.get_users(blaise_server_park)
+        blaise_service.get_users(blaise_server_park)
 
-    # assert
+    # Assert
     assert (
         "root",
         logging.INFO,
@@ -155,11 +142,20 @@ def test_get_users_returns_a_list_of_dictionaires_containing_user_info(
 
 
 @mock.patch.object(blaise_restapi.Client, "get_users")
-def test_get_users_returns_a_list_of_dictionaires_logs_the_correct_information(
-    _mock_rest_api_client_get_users, blaise_service, caplog
+def test_get_users_returns_a_list_of_dictionaires_containing_user_info(
+    _mock_rest_api_client_get_users, blaise_service, caplog, mock_get_users
 ):
-    # arrange
-    _mock_rest_api_client_get_users.return_value = [
+    # Arrange
+    _mock_rest_api_client_get_users.return_value = mock_get_users
+
+    blaise_server_park = "gusty"
+
+    # Act
+    result = blaise_service.get_users(blaise_server_park)
+
+    # Assert
+    assert len(result) == 2
+    assert result == [
         {
             "name": "rich",
             "role": "DST",
@@ -174,28 +170,20 @@ def test_get_users_returns_a_list_of_dictionaires_logs_the_correct_information(
         },
     ]
 
-    blaise_server_park = "gusty"
-
-    # act
-    result = blaise_service.get_users(blaise_server_park)
-
-    # assert
-    assert len(result) == 2
-
 
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
 def test_get_existing_donor_cases_calls_the_rest_api_endpoint_with_the_correct_parameters(
     _mock_rest_api_client, blaise_service
 ):
-    # arrange
+    # Arrange
     server_park = "cma"
     questionnaire_name = "cma_launcher"
     field_data = "CMA_ForWhom"
 
-    # act
+    # Act
     blaise_service.get_existing_donor_cases()
 
-    # assert
+    # Assert
     _mock_rest_api_client.assert_called_with(
         server_park, questionnaire_name, field_data
     )
@@ -205,7 +193,7 @@ def test_get_existing_donor_cases_calls_the_rest_api_endpoint_with_the_correct_p
 def test_get_existing_donor_cases_returns_a_list_of_unique_ids_(
     _mock_rest_api_client_get_questionnaire_data, blaise_service
 ):
-    # arrange
+    # Arrange
     _mock_rest_api_client_get_questionnaire_data.return_value = {
         "questionnaireName": "cma_launcher",
         "questionnaireId": "b0425080-2470-49db-bb53-170633c4fbba",
@@ -216,7 +204,7 @@ def test_get_existing_donor_cases_returns_a_list_of_unique_ids_(
         ],
     }
 
-    # act
+    # Act
     result = blaise_service.get_existing_donor_cases()
 
     # Assert
