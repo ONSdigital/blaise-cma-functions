@@ -10,7 +10,7 @@ from models.donor_case_model import DonorCaseModel
 class BlaiseService:
     def __init__(self, config: Config):
         self._config = config
-        self.restapi_client = blaise_restapi.Client(self._config.blaise_api_url)
+        self.restapi_client = blaise_restapi.Client(f"http://{self._config.blaise_api_url}")
 
         self.serverpark_name = "cma"
         self.cma_questionnaire = "cma_launcher"
@@ -27,7 +27,7 @@ class BlaiseService:
             return questionnaire
         except Exception as e:
             logging.error(f"Error getting questionnaire {questionnaire_name}: {e}")
-            return ""
+            return None
 
     def get_users(self, server_park: str) -> list[Dict[str, Any]]:
         try:

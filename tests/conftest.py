@@ -1,7 +1,7 @@
 import pytest
 
 
-class TestData:
+class DonorCaseModelInputs:
     def __init__(self):
         self.user = "james"
         self.questionnaire_name = "IPS2306a"
@@ -9,8 +9,8 @@ class TestData:
 
 
 @pytest.fixture
-def test_data():
-    return TestData()
+def donor_case_model_inputs():
+    return DonorCaseModelInputs()
 
 @pytest.fixture
 def mock_get_users():
@@ -28,3 +28,22 @@ def mock_get_users():
             "defaultServerPark": "gusty",
         },
     ]
+
+
+@pytest.fixture
+def mock_get_questionnaire():
+    return {
+        "name": "LMS2309_GO1",
+        "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",
+        "serverParkName": "gusty",
+        "installDate": "2024-04-24T09:49:34.2685322+01:00",
+        "status": "Active",
+        "dataRecordCount": 0,
+        "hasData": False,
+        "blaiseVersion": "5.9.9.2735",
+        "nodes": [
+            {"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Active"},
+            {"nodeName": "blaise-gusty-data-entry-1", "nodeStatus": "Active"},
+            {"nodeName": "blaise-gusty-data-entry-2", "nodeStatus": "Active"},
+        ],
+    }

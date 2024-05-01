@@ -1,9 +1,9 @@
 from models.donor_case_model import DonorCaseModel
 
 
-def test_get_questionnaire_period_info(test_data):
+def test_get_questionnaire_period_info(donor_case_model_inputs):
     # Act
-    donor_case_model = DonorCaseModel(test_data.user, test_data.questionnaire_name, test_data.guid)
+    donor_case_model = DonorCaseModel(donor_case_model_inputs.user, donor_case_model_inputs.questionnaire_name, donor_case_model_inputs.guid)
 
     # Assert
     assert donor_case_model.full_date == "2306"
@@ -11,27 +11,27 @@ def test_get_questionnaire_period_info(test_data):
     assert donor_case_model.month == "June"
 
 
-def test_format_key_values(test_data):
+def test_format_key_values(donor_case_model_inputs):
     # Act
-    donor_case_model = DonorCaseModel(test_data.user, test_data.questionnaire_name, test_data.guid)
+    donor_case_model = DonorCaseModel(donor_case_model_inputs.user, donor_case_model_inputs.questionnaire_name, donor_case_model_inputs.guid)
     result = donor_case_model.format_key_values()
 
     # Assert
     assert result == ["7bded891-3aa6-41b2-824b-0be514018806", "james"]
 
 
-def test_format_key_names(test_data):
+def test_format_key_names(donor_case_model_inputs):
     # Act
-    donor_case_model = DonorCaseModel(test_data.user, test_data.questionnaire_name, test_data.guid)
+    donor_case_model = DonorCaseModel(donor_case_model_inputs.user, donor_case_model_inputs.questionnaire_name, donor_case_model_inputs.guid)
     result = donor_case_model.format_key_names()
 
     # Assert
     assert result == ["MainSurveyID", "ID"]
 
 
-def test_fields_for_outgoing_model(test_data):
+def test_fields_for_outgoing_model(donor_case_model_inputs):
     # Act
-    donor_case_model = DonorCaseModel(test_data.user, test_data.questionnaire_name, test_data.guid)
+    donor_case_model = DonorCaseModel(donor_case_model_inputs.user, donor_case_model_inputs.questionnaire_name, donor_case_model_inputs.guid)
 
     # Assert
     assert donor_case_model.key_names == ["MainSurveyID", "ID"]
