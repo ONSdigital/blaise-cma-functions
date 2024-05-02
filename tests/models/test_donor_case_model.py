@@ -3,7 +3,11 @@ from models.donor_case_model import DonorCaseModel
 
 def test_get_questionnaire_period_info(donor_case_model_inputs):
     # Act
-    donor_case_model = DonorCaseModel(donor_case_model_inputs.user, donor_case_model_inputs.questionnaire_name, donor_case_model_inputs.guid)
+    donor_case_model = DonorCaseModel(
+        donor_case_model_inputs.user,
+        donor_case_model_inputs.questionnaire_name,
+        donor_case_model_inputs.guid,
+    )
 
     # Assert
     assert donor_case_model.full_date == "2306"
@@ -13,7 +17,11 @@ def test_get_questionnaire_period_info(donor_case_model_inputs):
 
 def test_format_key_values(donor_case_model_inputs):
     # Act
-    donor_case_model = DonorCaseModel(donor_case_model_inputs.user, donor_case_model_inputs.questionnaire_name, donor_case_model_inputs.guid)
+    donor_case_model = DonorCaseModel(
+        donor_case_model_inputs.user,
+        donor_case_model_inputs.questionnaire_name,
+        donor_case_model_inputs.guid,
+    )
     result = donor_case_model.format_key_values()
 
     # Assert
@@ -22,7 +30,11 @@ def test_format_key_values(donor_case_model_inputs):
 
 def test_format_key_names(donor_case_model_inputs):
     # Act
-    donor_case_model = DonorCaseModel(donor_case_model_inputs.user, donor_case_model_inputs.questionnaire_name, donor_case_model_inputs.guid)
+    donor_case_model = DonorCaseModel(
+        donor_case_model_inputs.user,
+        donor_case_model_inputs.questionnaire_name,
+        donor_case_model_inputs.guid,
+    )
     result = donor_case_model.format_key_names()
 
     # Assert
@@ -31,7 +43,11 @@ def test_format_key_names(donor_case_model_inputs):
 
 def test_fields_for_outgoing_model(donor_case_model_inputs):
     # Act
-    donor_case_model = DonorCaseModel(donor_case_model_inputs.user, donor_case_model_inputs.questionnaire_name, donor_case_model_inputs.guid)
+    donor_case_model = DonorCaseModel(
+        donor_case_model_inputs.user,
+        donor_case_model_inputs.questionnaire_name,
+        donor_case_model_inputs.guid,
+    )
 
     # Assert
     assert donor_case_model.key_names == ["MainSurveyID", "ID"]

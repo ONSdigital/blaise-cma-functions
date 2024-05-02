@@ -12,6 +12,7 @@ class DonorCaseModelInputs:
 def donor_case_model_inputs():
     return DonorCaseModelInputs()
 
+
 @pytest.fixture
 def mock_get_users():
     return [

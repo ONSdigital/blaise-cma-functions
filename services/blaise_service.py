@@ -10,7 +10,9 @@ from models.donor_case_model import DonorCaseModel
 class BlaiseService:
     def __init__(self, config: Config):
         self._config = config
-        self.restapi_client = blaise_restapi.Client(f"http://{self._config.blaise_api_url}")
+        self.restapi_client = blaise_restapi.Client(
+            f"http://{self._config.blaise_api_url}"
+        )
 
         self.serverpark_name = "cma"
         self.cma_questionnaire = "cma_launcher"

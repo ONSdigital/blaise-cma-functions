@@ -8,7 +8,9 @@ class GUIDService:
         self._blaise_service = blaise_service
 
     def get_guid(self, server_park: str, questionnaire_name: str) -> str:
-        questionnaire = self._blaise_service.get_questionnaire(server_park, questionnaire_name)
+        questionnaire = self._blaise_service.get_questionnaire(
+            server_park, questionnaire_name
+        )
         try:
             guid = questionnaire["id"]
             logging.info(f"Got GUID {guid} for questionnaire {questionnaire_name}")

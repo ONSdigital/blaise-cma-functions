@@ -25,7 +25,9 @@ def guid_service(blaise_service) -> GUIDService:
 
 
 @mock.patch.object(BlaiseService, "get_questionnaire")
-def test_get_guid_returns_the_guid_as_a_string(get_questionnaire, guid_service, mock_get_questionnaire):
+def test_get_guid_returns_the_guid_as_a_string(
+    get_questionnaire, guid_service, mock_get_questionnaire
+):
     # Arrange
     get_questionnaire.return_value = mock_get_questionnaire
     blaise_server_park = "gusty"
@@ -41,7 +43,9 @@ def test_get_guid_returns_the_guid_as_a_string(get_questionnaire, guid_service, 
 
 
 @mock.patch.object(BlaiseService, "get_questionnaire")
-def test_get_guid_logs_the_correct_message(get_questionnaire, guid_service, caplog, mock_get_questionnaire):
+def test_get_guid_logs_the_correct_message(
+    get_questionnaire, guid_service, caplog, mock_get_questionnaire
+):
     # Arrange
     get_questionnaire.return_value = mock_get_questionnaire
     blaise_server_park = "gusty"
