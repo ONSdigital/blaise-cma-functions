@@ -16,7 +16,6 @@ class BlaiseService:
 
         self.serverpark_name = "cma"
         self.cma_questionnaire = "cma_launcher"
-        self.field = "CMA_ForWhom"
 
     def get_questionnaire(
         self, server_park: str, questionnaire_name: str

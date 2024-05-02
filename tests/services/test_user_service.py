@@ -43,9 +43,10 @@ def test_get_users_by_role_returns_a_list_of_users_with_a_given_role(
         },
     ]
     role = "IPS Field Interviewer"
+    blaise_server_park = "gusty"
 
     # Act
-    result = user_service.get_users_by_role(role)
+    result = user_service.get_users_by_role(blaise_server_park, role)
 
     # Assert
     assert len(result) == 1
@@ -72,9 +73,10 @@ def test_get_users_by_role_returns_empty_list_when_no_users_are_found_with_a_giv
         },
     ]
     role = "IPS Field Interviewer"
+    blaise_server_park = "gusty"
 
     # Act
-    result = user_service.get_users_by_role(role)
+    result = user_service.get_users_by_role(blaise_server_park, role)
 
     # Assert
     assert len(result) == 0

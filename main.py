@@ -26,7 +26,7 @@ def create_ips_donor_cases_processor(request: flask.Request):
     role = request_json["role"]
 
     guid = guid_service.get_guid(blaise_server_park, questionnaire_name)
-    users_with_role = user_service.get_users_by_role(role)
+    users_with_role = user_service.get_users_by_role(blaise_server_park, role)
     donor_case_service.create_donor_case_for_users(
         questionnaire_name, guid, users_with_role
     )
