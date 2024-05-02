@@ -11,6 +11,7 @@ black = "^24.3.0"
 blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client.git", rev = "8556ddaef3d551989e7df80ed2d777833992c581"}
 pytest = "^8.1.1"
 flask = "^3.0.3"
+pytest-cov = "^5.0.0"
 
 [build-system]
 requires = ["poetry-core"]
