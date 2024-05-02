@@ -46,11 +46,11 @@ class BlaiseService:
         )
         return sorted(set(entry["cmA_ForWhom"] for entry in cases["reportingData"]))
 
-    def create_donor_case_for_user(self, donor_case: DonorCaseModel) -> None:
+    def create_donor_case_for_user(self, donor_case_model: DonorCaseModel) -> None:
         self.restapi_client.create_multikey_case(
             self.serverpark_name,
             self.cma_questionnaire,
-            donor_case.key_names,
-            donor_case.key_values,
-            donor_case.field_data,
+            donor_case_model.key_names,
+            donor_case_model.key_values,
+            donor_case_model.field_data,
         )
