@@ -23,12 +23,12 @@ def user_service(blaise_service) -> UserService:
     return UserService(blaise_service=blaise_service)
 
 
-@mock.patch.object(BlaiseService, "get_list_of_users")
+@mock.patch.object(BlaiseService, "get_users")
 def test_get_users_by_role_returns_a_list_of_users_with_a_given_role(
-    get_list_of_users, user_service
+    get_users, user_service
 ):
     # Arrange
-    get_list_of_users.return_value = [
+    get_users.return_value = [
         {
             "name": "rich",
             "role": "IPS Field Interviewer",
@@ -53,12 +53,12 @@ def test_get_users_by_role_returns_a_list_of_users_with_a_given_role(
     assert result == ["rich"]
 
 
-@mock.patch.object(BlaiseService, "get_list_of_users")
+@mock.patch.object(BlaiseService, "get_users")
 def test_get_users_by_role_returns_empty_list_when_no_users_are_found_with_a_given_role(
-    get_list_of_users, user_service
+    get_users, user_service
 ):
     # Arrange
-    get_list_of_users.return_value = [
+    get_users.return_value = [
         {
             "name": "rich",
             "role": "DST",
