@@ -14,7 +14,7 @@ class BlaiseService:
             f"http://{self._config.blaise_api_url}"
         )
 
-        self.cma_serverpark_name = "cma"
+        self.serverpark_name = "cma"
         self.cma_questionnaire = "cma_launcher"
 
     def get_questionnaire(
@@ -30,7 +30,7 @@ class BlaiseService:
             logging.error(f"Error getting questionnaire {questionnaire_name}: {e}")
             return None
 
-    def get_user(self, blaise_server_park: str) -> list[Dict[str, Any]]:
+    def get_users(self, blaise_server_park: str) -> list[Dict[str, Any]]:
         try:
             users = self.restapi_client.get_users(blaise_server_park)
             logging.info(f"Got {len(users)} users from server park {blaise_server_park}")
@@ -41,13 +41,13 @@ class BlaiseService:
 
     def get_existing_donor_cases(self):
         cases = self.restapi_client.get_questionnaire_data(
-            self.cma_serverpark_name, self.cma_questionnaire, "CMA_ForWhom"
+            self.serverpark_name, self.cma_questionnaire, "CMA_ForWhom"
         )
         return sorted(set(entry["cmA_ForWhom"] for entry in cases["reportingData"]))
 
     def create_donor_case_for_user(self, donor_case_model: DonorCaseModel) -> None:
         self.restapi_client.create_multikey_case(
-            self.cma_serverpark_name,
+            self.serverpark_name,
             self.cma_questionnaire,
             donor_case_model.key_names,
             donor_case_model.key_values,
