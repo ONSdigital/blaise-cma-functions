@@ -51,5 +51,5 @@ class BlaiseService:
             self.cma_questionnaire,
             donor_case_model.key_names,
             donor_case_model.key_values,
-            donor_case_model.field_data,
+            donor_case_model.data_fields,
         )
