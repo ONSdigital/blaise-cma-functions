@@ -16,13 +16,13 @@ class MockRequest:
 
 
 @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
-@mock.patch("services.blaise_service.BlaiseService.get_users")
+@mock.patch("services.blaise_service.BlaiseService.get_list_of_users")
 @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
 @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
 def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_with_the_correct_information(
     mock_create_donor_case_for_user,
     mock_get_existing_donor_cases,
-    mock_get_users,
+        mock_get_list_of_users,
     mock_get_questionnaire,
 ):
     # Arrange
@@ -44,7 +44,7 @@ def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_wi
             {"nodeName": "blaise-gusty-data-entry-2", "nodeStatus": "Active"},
         ],
     }
-    mock_get_users.return_value = [
+    mock_get_list_of_users.return_value = [
         {
             "name": "rich",
             "role": "DST",
@@ -76,7 +76,7 @@ def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_wi
 def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_with_the_correct_information_when_mocking_the_blaise_service(
     mock_create_multikey_case,
     mock_get_questionnaire_data,
-    mock_get_users,
+        mock_get_list_of_users,
     mock_get_questionnaire_for_server_park,
 ):
     # Arrange
@@ -98,7 +98,7 @@ def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_wi
             {"nodeName": "blaise-gusty-data-entry-2", "nodeStatus": "Active"},
         ],
     }
-    mock_get_users.return_value = [
+    mock_get_list_of_users.return_value = [
         {
             "name": "rich",
             "role": "DST",

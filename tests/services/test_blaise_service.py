@@ -114,24 +114,24 @@ def test_get_users_calls_the_rest_api_endpoint_with_the_correct_parameters(
     blaise_server_park = "gusty"
 
     # Act
-    blaise_service.get_users(blaise_server_park)
+    blaise_service.get_list_of_users(blaise_server_park)
 
     # Assert
     _mock_rest_api_client.assert_called_with(blaise_server_park)
 
 
 @mock.patch.object(blaise_restapi.Client, "get_users")
-def test_get_users_returns_a_list_of_dictionaires_logs_the_correct_information(
-    _mock_rest_api_client_get_users, blaise_service, caplog, mock_get_users
+def test_get_users_returns_a_list_of_dictionaries_logs_the_correct_information(
+    _mock_rest_api_client_get_users, blaise_service, caplog, mock_get_list_of_users
 ):
     # Arrange
-    _mock_rest_api_client_get_users.return_value = mock_get_users
+    _mock_rest_api_client_get_users.return_value = mock_get_list_of_users
 
     blaise_server_park = "gusty"
 
     # Act
     with caplog.at_level(logging.INFO):
-        blaise_service.get_users(blaise_server_park)
+        blaise_service.get_list_of_users(blaise_server_park)
 
     # Assert
     assert (
@@ -143,15 +143,15 @@ def test_get_users_returns_a_list_of_dictionaires_logs_the_correct_information(
 
 @mock.patch.object(blaise_restapi.Client, "get_users")
 def test_get_users_returns_a_list_of_dictionaires_containing_user_info(
-    _mock_rest_api_client_get_users, blaise_service, caplog, mock_get_users
+    _mock_rest_api_client_get_users, blaise_service, caplog, mock_get_list_of_users
 ):
     # Arrange
-    _mock_rest_api_client_get_users.return_value = mock_get_users
+    _mock_rest_api_client_get_users.return_value = mock_get_list_of_users
 
     blaise_server_park = "gusty"
 
     # Act
-    result = blaise_service.get_users(blaise_server_park)
+    result = blaise_service.get_list_of_users(blaise_server_park)
 
     # Assert
     assert len(result) == 2
