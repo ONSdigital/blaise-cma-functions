@@ -17,7 +17,8 @@ class DonorCaseService:
                 donor_case_model = DonorCaseModel(
                     user, questionnaire_name, guid
                 )
-                BlaiseService.create_donor_case_for_user(donor_case_model)
+                # BlaiseService.create_donor_case_for_user(donor_case_model)
+                self._blaise_service.create_donor_case_for_user(donor_case_model)
 
     def donor_case_exists(self, user: str, users_with_existing_donor_cases) -> bool:
         try:
