@@ -30,13 +30,13 @@ class BlaiseService:
             logging.error(f"Error getting questionnaire {questionnaire_name}: {e}")
             return None
 
-    def get_users(self, blaise_server_park: str) -> list[Dict[str, Any]]:
+    def get_users(self, server_park: str) -> list[Dict[str, Any]]:
         try:
-            users = self.restapi_client.get_users(blaise_server_park)
-            logging.info(f"Got {len(users)} users from server park {blaise_server_park}")
+            users = self.restapi_client.get_users(server_park)
+            logging.info(f"Got {len(users)} users from server park {server_park}")
             return users
         except Exception as e:
-            logging.error(f"Error getting users from server park {blaise_server_park}: {e}")
+            logging.error(f"Error getting users from server park {server_park}: {e}")
             return []
 
     def get_existing_donor_cases(self):
