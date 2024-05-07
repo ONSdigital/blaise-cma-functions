@@ -117,7 +117,7 @@ def test_get_users_calls_the_rest_api_endpoint_with_the_correct_parameters(
     blaise_service.get_users(blaise_server_park)
 
     # Assert
-    _mock_rest_api_client.assert_called_with(blaise_server_park)
+    _mock_rest_api_client.assert_called_with()
 
 
 @mock.patch.object(blaise_restapi.Client, "get_users")

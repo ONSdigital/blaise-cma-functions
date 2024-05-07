@@ -32,7 +32,7 @@ class BlaiseService:
 
     def get_users(self, server_park: str) -> list[Dict[str, Any]]:
         try:
-            users = self.restapi_client.get_users(server_park)
+            users = self.restapi_client.get_users()
             logging.info(f"Got {len(users)} users from server park {server_park}")
             return users
         except Exception as e:
