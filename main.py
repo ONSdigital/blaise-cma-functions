@@ -28,10 +28,12 @@ def create_ips_donor_cases_processor(request: flask.request):
         request_json = request.get_json()
 
         questionnaire_name = request_json["questionnaire_name"]
+        print("questionnaire_name: ", questionnaire_name)
         if questionnaire_name is None:
             raise ValueError("Missing required fields: questionnaire_name")
 
         role = request_json["role"]
+        print("role: ", role)
         if role is None:
             raise ValueError("Missing required fields: role")
 
