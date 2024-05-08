@@ -2,8 +2,6 @@ import logging
 
 import flask
 
-import json
-
 from appconfig.config import Config
 from services.blaise_service import BlaiseService
 from services.donor_case_service import DonorCaseService

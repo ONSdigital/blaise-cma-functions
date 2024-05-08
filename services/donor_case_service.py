@@ -11,16 +11,15 @@ class DonorCaseService:
     def check_and_create_donor_case_for_users(
         self, questionnaire_name: str, guid: str, users_with_role: list
     ) -> None:
-        users_with_existing_donor_cases = self._blaise_service.get_existing_donor_cases()
-        for user in users_with_role:
-            if self.donor_case_does_not_exist(user, users_with_existing_donor_cases):
-                # donor_case_model = DonorCaseModel(
-                #     user, questionnaire_name, guid
-                # )
-                # print(donor_case_model.key_names, donor_case_model.key_values, donor_case_model.data_fields)
-                self._blaise_service.create_donor_case_for_user(DonorCaseModel(
-                    user, questionnaire_name, guid
-                ))
+        try:
+            users_with_existing_donor_cases = self._blaise_service.get_existing_donor_cases()
+            for user in users_with_role:
+                if self.donor_case_does_not_exist(user, users_with_existing_donor_cases):
+                    self._blaise_service.create_donor_case_for_user(DonorCaseModel(
+                        user, questionnaire_name, guid
+                    ))
+        except Exception as e:
+            logging.error(f"Error when checking and creating donor cases: {e}")
 
     def donor_case_does_not_exist(self, user: str, users_with_existing_donor_cases) -> bool:
         try:
@@ -31,4 +30,4 @@ class DonorCaseService:
                 logging.info(f"Donor case does not exist for user '{user}'")
                 return True
         except Exception as e:
-            logging.error(f"Error checking donor case for user {user}: {e}")
+            logging.error(f"Error checking donor case exists for user {user}: {e}")
