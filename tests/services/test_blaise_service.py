@@ -177,7 +177,7 @@ def test_get_existing_donor_cases_calls_the_rest_api_endpoint_with_the_correct_p
 ):
     # Arrange
     server_park = "cma"
-    questionnaire_name = "cma_launcher"
+    questionnaire_name = "CMA_Launcher"
     field_data = "CMA_ForWhom"
 
     # Act
