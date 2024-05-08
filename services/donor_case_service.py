@@ -12,16 +12,23 @@ class DonorCaseService:
         self, questionnaire_name: str, guid: str, users_with_role: list
     ) -> None:
         try:
-            users_with_existing_donor_cases = self._blaise_service.get_existing_donor_cases()
+            users_with_existing_donor_cases = (
+                self._blaise_service.get_existing_donor_cases()
+            )
             for user in users_with_role:
-                if self.donor_case_does_not_exist(user, users_with_existing_donor_cases):
-                    self._blaise_service.create_donor_case_for_user(DonorCaseModel(
-                        self.user, self.questionnaire_name, self.guid
-                    ))
+                print("this is before the case exists")
+                if self.donor_case_does_not_exist(
+                    user, users_with_existing_donor_cases
+                ):
+                    print("this is before the donor case model")
+                    donor_case_model = DonorCaseModel(user, questionnaire_name, guid)
+                    self._blaise_service.create_donor_case_for_user(donor_case_model)
         except Exception as e:
             logging.error(f"Error when checking and creating donor cases: {e}")
 
-    def donor_case_does_not_exist(self, user: str, users_with_existing_donor_cases) -> bool:
+    def donor_case_does_not_exist(
+        self, user: str, users_with_existing_donor_cases
+    ) -> bool:
         try:
             if user in users_with_existing_donor_cases:
                 logging.info(f"Donor case already exists for user '{user}'")
