@@ -62,8 +62,10 @@ def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_wi
     mock_donor_case_model = DonorCaseModel(
         "rich", "LMS2309_GO1", "25615bf2-f331-47ba-9d05-6659a513a1f2"
     )
+    mock_context = None
+
     # Act
-    create_ips_donor_cases_processor(mock_request)
+    create_ips_donor_cases_processor(mock_request, mock_context)
 
     # Assert
     assert mock_create_donor_case_for_user.called_with(mock_donor_case_model)
@@ -121,9 +123,11 @@ def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_wi
             {"cmA_ForWhom": "rich"},
         ],
     }
+    mock_context = None
+
 
     # Act
-    create_ips_donor_cases_processor(mock_request)
+    create_ips_donor_cases_processor(mock_request, mock_context)
 
     # Assert
     assert mock_create_multikey_case.called_with(
