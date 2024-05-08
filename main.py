@@ -2,6 +2,8 @@ import logging
 
 import flask
 
+import json
+
 from appconfig.config import Config
 from services.blaise_service import BlaiseService
 from services.donor_case_service import DonorCaseService
@@ -37,4 +39,5 @@ def create_ips_donor_cases_processor(request):
         return "Done!", 200
     except Exception as e:
         logging.error(f"Error creating IPS donor cases: {e}")
+        logging.info("Request object: " + json.dumps(request.__dict__, indent=4))
         return "Error creating IPS donor cases", 500
