@@ -14,7 +14,7 @@ from services.user_service import UserService
 def create_ips_donor_cases_processor(request: flask.request):
     try:
         logging.info("Running Cloud Function - create_ips_donor_cases")
-        print("Running Cloud Function - create_ips_donor_cases - FOO")
+        print("request: ", request)
 
         blaise_config = Config.from_env()
         blaise_service = BlaiseService(config=blaise_config)
