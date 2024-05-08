@@ -40,17 +40,25 @@ class BlaiseService:
             return []
 
     def get_existing_donor_cases(self):
-        cases = self.restapi_client.get_questionnaire_data(
-            self.cma_serverpark_name, self.cma_questionnaire, "CMA_ForWhom"
-        )
-        return sorted(set(entry["cmA_ForWhom"] for entry in cases["reportingData"]))
+        try:
+            cases = self.restapi_client.get_questionnaire_data(
+                self.cma_serverpark_name, self.cma_questionnaire, "CMA_ForWhom"
+            )
+            return sorted(set(entry["cmA_ForWhom"] for entry in cases["reportingData"]))
+        except Exception as e:
+            logging.error(f"Error getting existing donor cases: {e}")
+            return None
 
     def create_donor_case_for_user(self, donor_case_model: DonorCaseModel) -> None:
-        print(donor_case_model.key_names, donor_case_model.key_values, donor_case_model.data_fields)
-        self.restapi_client.create_multikey_case(
-            self.cma_serverpark_name,
-            self.cma_questionnaire,
-            donor_case_model.key_names,
-            donor_case_model.key_values,
-            donor_case_model.data_fields,
-        )
+        try:
+            print(donor_case_model.key_names, donor_case_model.key_values, donor_case_model.data_fields)
+            self.restapi_client.create_multikey_case(
+                self.cma_serverpark_name,
+                self.cma_questionnaire,
+                donor_case_model.key_names,
+                donor_case_model.key_values,
+                donor_case_model.data_fields,
+            )
+            logging.info(f"Created donor case for user {donor_case_model.user}")
+        except Exception as e:
+            logging.error(f"Error creating donor case for user {self.user}: {e}")
