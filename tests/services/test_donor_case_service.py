@@ -49,6 +49,20 @@ def test_donor_case_exists_returns_false_if_donor_case_does_not_exist(
     assert result is False
 
 
+def test_donor_case_exists_returns_false_if_empty_list_is_provided(
+    donor_case_service,
+):
+    # Act
+    user = "james"
+    users_with_existing_donor_cases = []
+
+    # Arrange
+    result = donor_case_service.donor_case_exists(user, users_with_existing_donor_cases)
+
+    # Assert
+    assert result is False
+
+
 def test_donor_case_exists_logs_correct_information_when_case_exists(
     donor_case_service, caplog
 ):
