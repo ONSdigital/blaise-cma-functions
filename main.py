@@ -34,9 +34,7 @@ def create_ips_donor_cases_processor(request: flask.request):
         guid = guid_service.get_guid(blaise_server_park, questionnaire_name)
         users_with_role = user_service.get_users_by_role(blaise_server_park, role)
 
-        donor_case_service.check_and_create_donor_case_for_users(
-            questionnaire_name, guid, users_with_role
-        )
+        donor_case_service.check_and_create_donor_case_for_users(questionnaire_name, guid, users_with_role)
         return "Done!", 200
     except Exception as e:
         logging.error(f"Error creating IPS donor cases: {e}")

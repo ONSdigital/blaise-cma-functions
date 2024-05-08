@@ -115,7 +115,7 @@ def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_wi
         },
     ]
     mock_get_questionnaire_data.return_value = {
-        "questionnaireName": "cma_launcher",
+        "questionnaireName": "CMA_Launcher",
         "questionnaireId": "25615bf2-f331-47ba-9d05-6659a513a1f2",
         "reportingData": [
             {"cmA_ForWhom": "999"},
@@ -130,7 +130,7 @@ def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_wi
     # Assert
     assert mock_create_multikey_case.called_with(
         "cma",
-        "cma_launcher",
+        "CMA_Launcher",
         ["MainSurveyID", "ID"],
         ["25615bf2-f331-47ba-9d05-6659a513a1f2", "rich"],
         {

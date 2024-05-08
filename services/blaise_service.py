@@ -51,6 +51,7 @@ class BlaiseService:
 
     def create_donor_case_for_user(self, donor_case_model: DonorCaseModel) -> None:
         try:
+            print(self.cma_serverpark_name,self.cma_questionnaire,donor_case_model.key_names,donor_case_model.key_values,donor_case_model.data_fields)
             self.restapi_client.create_multikey_case(
                 self.cma_serverpark_name,
                 self.cma_questionnaire,
