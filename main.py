@@ -11,9 +11,10 @@ from services.guid_service import GUIDService
 from services.user_service import UserService
 
 
-def create_ips_donor_cases_processor(request):
+def create_ips_donor_cases_processor(request: flask.request):
     try:
         logging.info("Running Cloud Function - create_ips_donor_cases")
+        print("Running Cloud Function - create_ips_donor_cases - FOO")
 
         blaise_config = Config.from_env()
         blaise_service = BlaiseService(config=blaise_config)
@@ -25,11 +26,14 @@ def create_ips_donor_cases_processor(request):
         donor_case_service = DonorCaseService(blaise_service)
 
         request_json = request.get_json()
-        questionnaire_name = request_json.get("questionnaire_name")
-        role = request_json.get("role")
 
-        if questionnaire_name is None or role is None:
-            raise ValueError("Missing required fields: questionnaire_name and/or role")
+        questionnaire_name = request_json["questionnaire_name"]
+        if questionnaire_name is None :
+            raise ValueError("Missing required fields: questionnaire_name")
+
+        role = request_json["role"]
+        if role is None:
+            raise ValueError("Missing required fields: role")
 
         guid = guid_service.get_guid(blaise_server_park, questionnaire_name)
         users_with_role = user_service.get_users_by_role(blaise_server_park, role)
