@@ -14,7 +14,7 @@ class BlaiseService:
             f"http://{self._config.blaise_api_url}"
         )
 
-        self.serverpark_name = "cma"
+        self.cma_serverpark_name = "cma"
         self.cma_questionnaire = "cma_launcher"
 
     def get_questionnaire(
@@ -41,13 +41,14 @@ class BlaiseService:
 
     def get_existing_donor_cases(self):
         cases = self.restapi_client.get_questionnaire_data(
-            self.serverpark_name, self.cma_questionnaire, "CMA_ForWhom"
+            self.cma_serverpark_name, self.cma_questionnaire, "CMA_ForWhom"
         )
         return sorted(set(entry["cmA_ForWhom"] for entry in cases["reportingData"]))
 
     def create_donor_case_for_user(self, donor_case_model: DonorCaseModel) -> None:
+        print(donor_case_model.key_names, donor_case_model.key_values, donor_case_model.data_fields)
         self.restapi_client.create_multikey_case(
-            self.serverpark_name,
+            self.cma_serverpark_name,
             self.cma_questionnaire,
             donor_case_model.key_names,
             donor_case_model.key_values,

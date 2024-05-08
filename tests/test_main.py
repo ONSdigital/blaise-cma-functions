@@ -1,4 +1,5 @@
 from unittest import mock
+import logging
 
 import blaise_restapi
 import flask
@@ -141,3 +142,109 @@ def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_wi
             "cmA_ContactData": "MainSurveyID    25615bf2-f331-47ba-9d05-6659a513a1f2    ID    rich    ContactInfoShort    IPS,April    CaseNote    This is the Donor Case. Select add case to spawn a new case with an empty shift.    pii.Year    2023    pii.Month    April    pii.Stage    2303    pii.ShiftNo    '",
         },
     )
+
+
+@mock.patch.object(blaise_restapi.Client, "get_users")
+def test_create_donor_case_for_users_raises_an_error_when_the_request_is_not_json(
+    mock_get_users,
+    caplog
+):
+    # Arrange
+    mock_request = None
+
+    # Act
+    with caplog.at_level(logging.INFO):
+        create_ips_donor_cases_processor(mock_request)
+
+    # Assert
+    assert (
+        "root",
+        logging.ERROR,
+        "Error creating IPS donor cases: 'NoneType' object has no attribute 'get_json'",
+    ) in caplog.record_tuples
+
+@mock.patch.object(blaise_restapi.Client, "get_users")
+def test_create_donor_case_for_users_logs_when_questionnaire_name_value_is_none(
+    mock_get_users,
+    caplog
+):
+    # Arrange
+    mock_request = flask.Request.from_values(
+        json={"questionnaire_name": None, "role": "IPS Manager"}
+    )
+
+    # Act
+    with caplog.at_level(logging.INFO):
+        create_ips_donor_cases_processor(mock_request)
+
+    # Assert
+    assert (
+        "root",
+        logging.ERROR,
+        "Error creating IPS donor cases: Missing required fields: 'questionnaire_name'",
+    ) in caplog.record_tuples
+
+
+@mock.patch.object(blaise_restapi.Client, "get_users")
+def test_create_donor_case_for_users_logs_when_questionnaire_name_value_is_missing(
+        mock_get_users,
+        caplog
+):
+    # Arrange
+    mock_request = flask.Request.from_values(
+        json={"questionnaire_name": "", "role": "IPS Manager"}
+    )
+
+    # Act
+    with caplog.at_level(logging.INFO):
+        create_ips_donor_cases_processor(mock_request)
+
+    # Assert
+    assert (
+               "root",
+               logging.ERROR,
+               "Error creating IPS donor cases: Missing required fields: 'questionnaire_name'",
+           ) in caplog.record_tuples
+
+
+@mock.patch.object(blaise_restapi.Client, "get_users")
+def test_create_donor_case_for_users_logs_when_role_value_is_none(
+    mock_get_users,
+    caplog
+):
+    # Arrange
+    mock_request = flask.Request.from_values(
+        json={"questionnaire_name": "IPS2306a", "role": None}
+    )
+
+    # Act
+    with caplog.at_level(logging.INFO):
+        create_ips_donor_cases_processor(mock_request)
+
+    # Assert
+    assert (
+        "root",
+        logging.ERROR,
+        "Error creating IPS donor cases: Missing required fields: 'role'",
+    ) in caplog.record_tuples
+
+@mock.patch.object(blaise_restapi.Client, "get_users")
+def test_create_donor_case_for_users_logs_when_role_value_is_missing(
+        mock_get_users,
+        caplog
+):
+    # Arrange
+    mock_request = flask.Request.from_values(
+        json={"questionnaire_name": "IPS2306a", "role": ""}
+    )
+
+    # Act
+    with caplog.at_level(logging.INFO):
+        create_ips_donor_cases_processor(mock_request)
+
+    # Assert
+    assert (
+               "root",
+               logging.ERROR,
+               "Error creating IPS donor cases: Missing required fields: 'role'",
+           ) in caplog.record_tuples
