@@ -16,7 +16,7 @@ class DonorCaseService:
             for user in users_with_role:
                 if self.donor_case_does_not_exist(user, users_with_existing_donor_cases):
                     self._blaise_service.create_donor_case_for_user(DonorCaseModel(
-                        user, questionnaire_name, guid
+                        self.user, self.questionnaire_name, self.guid
                     ))
         except Exception as e:
             logging.error(f"Error when checking and creating donor cases: {e}")
