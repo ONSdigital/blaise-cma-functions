@@ -14,7 +14,7 @@ from services.user_service import UserService
 def create_ips_donor_cases_processor(request: flask.request):
     try:
         logging.info("Running Cloud Function - create_ips_donor_cases")
-        print("request: ", request)
+        print("request: ", request.get_json())
 
         blaise_config = Config.from_env()
         blaise_service = BlaiseService(config=blaise_config)
@@ -28,7 +28,7 @@ def create_ips_donor_cases_processor(request: flask.request):
         request_json = request.get_json()
 
         questionnaire_name = request_json["questionnaire_name"]
-        if questionnaire_name is None :
+        if questionnaire_name is None:
             raise ValueError("Missing required fields: questionnaire_name")
 
         role = request_json["role"]
