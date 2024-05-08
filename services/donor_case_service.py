@@ -11,24 +11,22 @@ class DonorCaseService:
     def create_donor_case_for_users(
         self, questionnaire_name: str, guid: str, users_with_role: list
     ) -> None:
-        print("Running create_donor_case_for_users")
-        users_existing_donor_cases = self._blaise_service.get_existing_donor_cases()
-        print("users_existing_donor_cases: ", users_existing_donor_cases)
+        users_with_existing_donor_cases = self._blaise_service.get_existing_donor_cases()
         for user in users_with_role:
-            if not self.donor_case_exists(user, users_existing_donor_cases):
+            if self.donor_case_does_not_exist(user, users_with_existing_donor_cases):
                 donor_case_model = DonorCaseModel(
                     user, questionnaire_name, guid
                 )
-                print(donor_case_model)
+                print(donor_case_model.key_names, donor_case_model.key_values, donor_case_model.data_fields)
                 self._blaise_service.create_donor_case_for_user(donor_case_model)
 
-    def donor_case_exists(self, user: str, users_with_existing_donor_cases) -> bool:
+    def donor_case_does_not_exist(self, user: str, users_with_existing_donor_cases) -> bool:
         try:
-            if user not in users_with_existing_donor_cases:
-                logging.info(f"Donor case does not exist for user '{user}'")
-                return False
-            else:
+            if user in users_with_existing_donor_cases:
                 logging.info(f"Donor case already exists for user '{user}'")
+                return False
+            elif user not in users_with_existing_donor_cases:
+                logging.info(f"Donor case does not exist for user '{user}'")
                 return True
         except Exception as e:
             logging.error(f"Error checking donor case for user {user}: {e}")
