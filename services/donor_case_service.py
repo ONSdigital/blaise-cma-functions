@@ -11,7 +11,9 @@ class DonorCaseService:
     def create_donor_case_for_users(
         self, questionnaire_name: str, guid: str, users_with_role: list
     ) -> None:
+        print("Running create_donor_case_for_users")
         users_existing_donor_cases = self._blaise_service.get_existing_donor_cases()
+        print("users_existing_donor_cases: ", users_existing_donor_cases)
         for user in users_with_role:
             if not self.donor_case_exists(user, users_existing_donor_cases):
                 donor_case_model = DonorCaseModel(

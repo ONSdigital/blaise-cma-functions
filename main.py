@@ -44,6 +44,7 @@ def create_ips_donor_cases_processor(request: flask.request):
         donor_case_service.create_donor_case_for_users(
             questionnaire_name, guid, users_with_role
         )
+        print("Done")
         return "Done!", 200
     except Exception as e:
         logging.error(f"Error creating IPS donor cases: {e}")
