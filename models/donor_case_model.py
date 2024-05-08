@@ -23,7 +23,7 @@ class DonorCaseModel:
             "cmA_ForWhom": f"{self.user}",
             "cmA_AllowSpawning": "1",
             "cmA_IsDonorCase": "1",
-            "cmA_ContactData": f"MainSurveyID    {self.guid}    ID    {self.user}    ContactInfoShort    IPS,{self.month}    CaseNote    This is the Donor Case. Select add case to spawn a new case with an empty shift.    pii.Year    {self.year}    pii.Month    {self.month}    pii.Stage    {self.full_date}    pii.ShiftNo    '",
+            "cmA_ContactData": f"MainSurveyID    {self.guid}    ID    {self.user}    ContactInfoShort    IPS,{self.month}    CaseNote    This is the Donor Case. Select add case to spawn a new case with an empty shift.    Year    {self.year}    Month    {self.month}    Stage    {self.full_date}    ShiftNo    '",
         }
 
     def format_key_values(self) -> list[str]:
