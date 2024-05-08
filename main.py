@@ -11,7 +11,7 @@ from services.guid_service import GUIDService
 from services.user_service import UserService
 
 
-def create_ips_donor_cases_processor(request, _context):
+def create_ips_donor_cases_processor(request):
     try:
         logging.info("Running Cloud Function - create_ips_donor_cases")
 
