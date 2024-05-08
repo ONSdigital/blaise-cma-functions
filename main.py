@@ -38,7 +38,9 @@ def create_ips_donor_cases_processor(request: flask.request):
             raise ValueError("Missing required fields: role")
 
         guid = guid_service.get_guid(blaise_server_park, questionnaire_name)
+        print("guid: ", guid)
         users_with_role = user_service.get_users_by_role(blaise_server_park, role)
+        (print("users_with_role: ", users_with_role))
         donor_case_service.create_donor_case_for_users(
             questionnaire_name, guid, users_with_role
         )
