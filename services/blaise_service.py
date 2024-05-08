@@ -63,6 +63,6 @@ class BlaiseService:
                 donor_case_model.key_values,
                 donor_case_model.data_fields,
             )
-            logging.info(f"Created donor case for user {donor_case_model.user}")
+            logging.info(f"Created donor case for user '{donor_case_model.user}'")
         except Exception as e:
-            logging.error(f"Error creating donor case for user {self.user}: {e}")
+            logging.error(f"Error creating donor case for user '{donor_case_model.user}':  {e}")
