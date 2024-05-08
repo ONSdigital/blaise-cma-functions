@@ -16,13 +16,12 @@ class DonorCaseService:
                 self._blaise_service.get_existing_donor_cases()
             )
             for user in users_with_role:
-                print("this is before the case exists")
                 if self.donor_case_does_not_exist(
                     user, users_with_existing_donor_cases
                 ):
                     print("this is before the donor case model")
                     donor_case_model = DonorCaseModel(user, questionnaire_name, guid)
-                    print("this is before the create donor case")
+                    print("does this print????")
                     self._blaise_service.create_donor_case_for_user(donor_case_model)
         except Exception as e:
             logging.error(f"Error when checking and creating donor cases: {e}")
