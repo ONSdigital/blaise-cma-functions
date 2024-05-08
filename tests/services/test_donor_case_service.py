@@ -114,5 +114,5 @@ def test_donor_case_exists_logs_an_error_message(donor_case_service, caplog):
     assert (
         "root",
         40,
-        "Error checking donor case for user james: argument of type 'NoneType' is not iterable",
+        "Error checking donor case exists for james: argument of type 'NoneType' is not iterable",
     ) in caplog.record_tuples

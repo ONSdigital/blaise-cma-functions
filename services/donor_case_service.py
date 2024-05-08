@@ -30,4 +30,4 @@ class DonorCaseService:
                 logging.info(f"Donor case does not exist for user '{user}'")
                 return True
         except Exception as e:
-            logging.error(f"Error checking donor case exists for user {user}: {e}")
+            logging.error(f"Error checking donor case exists for {user}: {e}")
