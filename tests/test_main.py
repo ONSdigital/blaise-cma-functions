@@ -4,7 +4,7 @@ from unittest import mock
 import blaise_restapi
 import flask
 
-from main import create_ips_donor_cases_processor
+from main import create_donor_cases, get_questionnaire_name, get_role
 from models.donor_case_model import DonorCaseModel
 
 
@@ -65,7 +65,7 @@ def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_wi
     )
 
     # Act
-    create_ips_donor_cases_processor(mock_request)
+    create_donor_cases(mock_request)
 
     # Assert
     assert mock_create_donor_case_for_user.called_with(mock_donor_case_model)
@@ -125,7 +125,7 @@ def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_wi
     }
 
     # Act
-    create_ips_donor_cases_processor(mock_request)
+    create_donor_cases(mock_request)
 
     # Assert
     assert mock_create_multikey_case.called_with(
@@ -153,7 +153,7 @@ def test_create_donor_case_for_users_raises_an_error_when_the_request_is_not_jso
 
     # Act
     with caplog.at_level(logging.INFO):
-        create_ips_donor_cases_processor(mock_request)
+        create_donor_cases(mock_request)
 
     # Assert
     assert (
@@ -174,7 +174,7 @@ def test_create_donor_case_for_users_logs_when_questionnaire_name_value_is_none(
 
     # Act
     with caplog.at_level(logging.INFO):
-        create_ips_donor_cases_processor(mock_request)
+        create_donor_cases(mock_request)
 
     # Assert
     assert (
@@ -195,7 +195,7 @@ def test_create_donor_case_for_users_logs_when_questionnaire_name_value_is_missi
 
     # Act
     with caplog.at_level(logging.INFO):
-        create_ips_donor_cases_processor(mock_request)
+        create_donor_cases(mock_request)
 
     # Assert
     assert (
@@ -216,7 +216,7 @@ def test_create_donor_case_for_users_logs_when_role_value_is_none(
 
     # Act
     with caplog.at_level(logging.INFO):
-        create_ips_donor_cases_processor(mock_request)
+        create_donor_cases(mock_request)
 
     # Assert
     assert (
@@ -237,7 +237,7 @@ def test_create_donor_case_for_users_logs_when_role_value_is_missing(
 
     # Act
     with caplog.at_level(logging.INFO):
-        create_ips_donor_cases_processor(mock_request)
+        create_donor_cases(mock_request)
 
     # Assert
     assert (
@@ -245,3 +245,25 @@ def test_create_donor_case_for_users_logs_when_role_value_is_missing(
         logging.ERROR,
         "Error creating IPS donor cases: Missing required fields: 'role'",
     ) in caplog.record_tuples
+
+
+def test_get_questionnaire_name_returns_the_questionnaire_name():
+    # Arrange
+    mock_request = {"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+
+    # Act
+    result = get_questionnaire_name(mock_request)
+
+    # Assert
+    assert result == "IPS2402a"
+
+
+def test_get_questionnaire_name_returns_the_role():
+    # Arrange
+    mock_request = {"questionnaire_name": "IPS2402a", "role": "IPS Field Manager"}
+
+    # Act
+    result = get_role(mock_request)
+
+    # Assert
+    assert result == "IPS Field Manager"
