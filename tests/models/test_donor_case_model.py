@@ -61,5 +61,5 @@ def test_fields_for_outgoing_model(donor_case_model_inputs):
         "cmA_ForWhom": "james",
         "cmA_AllowSpawning": "1",
         "cmA_IsDonorCase": "1",
-        "cmA_ContactData": "MainSurveyID    7bded891-3aa6-41b2-824b-0be514018806    ID    james    ContactInfoShort    IPS,June    CaseNote    This is the Donor Case. Select add case to spawn a new case with an empty shift.    Year    2023    Month    June    Stage    2306    ShiftNo    ",
+        "cmA_ContactData": "MainSurveyID\t7bded891-3aa6-41b2-824b-0be514018806\tID\tjames\tContactInfoShort\tIPS,June\tCaseNote\tThis is the Donor Case. Select add case to spawn a new case with an empty shift.\tYear\t2023\tMonth\tJune\tStage\t2306\tShiftNo\t",
     }

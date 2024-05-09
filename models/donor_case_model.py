@@ -23,7 +23,7 @@ class DonorCaseModel:
             "cmA_ForWhom": f"{self.user}",
             "cmA_AllowSpawning": "1",
             "cmA_IsDonorCase": "1",
-            "cmA_ContactData": f"MainSurveyID    {self.guid}    ID    {self.user}    ContactInfoShort    IPS,{self.month}    CaseNote    This is the Donor Case. Select add case to spawn a new case with an empty shift.    Year    {self.year}    Month    {self.month}    Stage    {self.full_date}    ShiftNo    ",
+            "cmA_ContactData": f"MainSurveyID\t{self.guid}\tID\t{self.user}\tContactInfoShort\tIPS,{self.month}\tCaseNote\tThis is the Donor Case. Select add case to spawn a new case with an empty shift.\tYear\t{self.year}\tMonth\t{self.month}\tStage\t{self.full_date}\tShiftNo\t",
         }
 
     def format_key_values(self) -> list[str]:
