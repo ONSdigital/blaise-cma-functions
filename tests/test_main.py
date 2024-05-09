@@ -139,7 +139,7 @@ def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_wi
             "cmA_ForWhom": "rich",
             "cmA_AllowSpawning": "1",
             "cmA_IsDonorCase": "1",
-            "cmA_ContactData": "MainSurveyID    25615bf2-f331-47ba-9d05-6659a513a1f2    ID    rich    ContactInfoShort    IPS,April    CaseNote    This is the Donor Case. Select add case to spawn a new case with an empty shift.    pii.Year    2023    pii.Month    April    pii.Stage    2303    pii.ShiftNo    '",
+            "cmA_ContactData": "MainSurveyID    25615bf2-f331-47ba-9d05-6659a513a1f2    ID    rich    ContactInfoShort    IPS,April    CaseNote    This is the Donor Case. Select add case to spawn a new case with an empty shift.    Year    2023    Month    April    Stage    2303    ShiftNo    '",
         },
     )
 
