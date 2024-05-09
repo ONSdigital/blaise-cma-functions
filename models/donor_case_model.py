@@ -1,4 +1,5 @@
 import re
+import calendar
 from datetime import datetime
 
 
@@ -11,6 +12,8 @@ class DonorCaseModel:
         self.full_date = self.get_full_date()
         self.year = self.get_year()
         self.month = self.get_month()
+        self.last_day_of_month = self.calculate_last_day_of_month()
+        self.tla = self.get_tla()
 
         self.key_names = self.format_key_names()
         self.key_values = self.format_key_values()
@@ -23,7 +26,8 @@ class DonorCaseModel:
             "cmA_ForWhom": f"{self.user}",
             "cmA_AllowSpawning": "1",
             "cmA_IsDonorCase": "1",
-            "cmA_ContactData": f"MainSurveyID\t{self.guid}\tID\t{self.user}\tContactInfoShort\tIPS,{self.month}\tCaseNote\tThis is the Donor Case. Select add case to spawn a new case with an empty shift.\tYear\t{self.year}\tMonth\t{self.month}\tStage\t{self.full_date}\tShiftNo\t",
+            "cmA_EndDate": f"{self.last_day_of_month}",
+            "cmA_ContactData": f"MainSurveyID\t{self.guid}\tID\t{self.user}\tContactInfoShort\tIPS,{self.month}\tCaseNote\tThis is the Donor Case. Select add case to spawn a new case with an empty shift.\tcaseinfo.Year\t{self.year}\tcaseinfo.Month\t{self.month}\tcaseinfo.Stage\t{self.full_date}\tcaseinfo.ShiftNo\tcaseinfo.Survey\t{self.tla}\tcaseinfo.IOut\t",
         }
 
     def format_key_values(self) -> list[str]:
@@ -49,3 +53,13 @@ class DonorCaseModel:
         match = re.match(pattern, self.questionnaire_name)
         if match:
             return datetime.strptime(match.group(3), "%m").strftime("%B")
+
+    def get_tla(self):
+        pattern = r'^[a-zA-Z]{3}'
+        match = re.match(pattern, self.questionnaire_name)
+        return match.group(0)[:3] if match else None
+
+    def calculate_last_day_of_month(self):
+        month_number = list(calendar.month_name).index(self.month)
+        num_days = calendar.monthrange(int(self.year), month_number)[1]
+        return datetime(int(self.year), month_number, num_days).strftime("%d-%m-%Y")
