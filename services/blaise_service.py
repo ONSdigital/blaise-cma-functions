@@ -42,12 +42,11 @@ class BlaiseService:
     def get_existing_donor_cases(self):
         try:
             cases = self.restapi_client.get_questionnaire_data(
-                self.cma_serverpark_name, self.cma_questionnaire, "CMA_ForWhom"
+                self.cma_serverpark_name, self.cma_questionnaire, ["CMA_ForWhom"]
             )
             return sorted(set(entry["cmA_ForWhom"] for entry in cases["reportingData"]))
         except Exception as e:
             logging.error(f"Error getting existing donor cases: {e}")
-            return None
 
     def create_donor_case_for_user(self, donor_case_model: DonorCaseModel) -> None:
         try:
