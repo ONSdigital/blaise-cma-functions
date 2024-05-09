@@ -178,14 +178,15 @@ def test_get_existing_donor_cases_calls_the_rest_api_endpoint_with_the_correct_p
     # Arrange
     server_park = "cma"
     questionnaire_name = "CMA_Launcher"
-    field_data = "CMA_ForWhom"
+    field_data = ["MainSurveyID", "CMA_ForWhom"]
+    guid = "7bded891-3aa6-41b2-824b-0be514018806"
 
     # Act
-    blaise_service.get_existing_donor_cases()
+    blaise_service.get_existing_donor_cases(guid)
 
     # Assert
     _mock_rest_api_client.assert_called_with(
-        server_park, questionnaire_name, [field_data]
+        server_park, questionnaire_name, field_data
     )
 
 
@@ -198,15 +199,58 @@ def test_get_existing_donor_cases_returns_a_list_of_unique_ids_(
         "questionnaireName": "cma_launcher",
         "questionnaireId": "b0425080-2470-49db-bb53-170633c4fbba",
         "reportingData": [
-            {"cmA_ForWhom": "rich"},
-            {"cmA_ForWhom": "james"},
-            {"cmA_ForWhom": "rich"},
+            {
+                "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
+                "cmA_ForWhom": "rich",
+            },
+            {
+                "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
+                "cmA_ForWhom": "james",
+            },
+            {
+                "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
+                "cmA_ForWhom": "rich",
+            },
         ],
     }
+    guid = "7bded891-3aa6-41b2-824b-0be514018806"
 
     # Act
-    result = blaise_service.get_existing_donor_cases()
+    result = blaise_service.get_existing_donor_cases(guid)
 
     # Assert
     assert len(result) == 2
     assert result == ["james", "rich"]
+
+
+@mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
+def test_get_existing_donor_cases_returns_a_list_of_existing_donor_cases_for_the_correct_questionnaire_when_multiple_questionnaires_are_installed(
+    _mock_rest_api_client_get_questionnaire_data, blaise_service
+):
+    # Arrange
+    _mock_rest_api_client_get_questionnaire_data.return_value = {
+        "questionnaireName": "cma_launcher",
+        "questionnaireId": "b0425080-2470-49db-bb53-170633c4fbba",
+        "reportingData": [
+            {
+                "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
+                "cmA_ForWhom": "cal",
+            },
+            {
+                "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
+                "cmA_ForWhom": "james",
+            },
+            {
+                "mainSurveyID": "861ecb9b-4154-4f50-9b47-7fd52c098313",
+                "cmA_ForWhom": "cal",
+            },
+        ],
+    }
+    guid = "861ecb9b-4154-4f50-9b47-7fd52c098313"
+
+    # Act
+    result = blaise_service.get_existing_donor_cases(guid)
+
+    # Assert
+    assert len(result) == 1
+    assert result == ["cal"]

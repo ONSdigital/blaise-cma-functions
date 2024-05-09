@@ -39,12 +39,22 @@ class BlaiseService:
             logging.error(f"Error getting users from server park {server_park}: {e}")
             return []
 
-    def get_existing_donor_cases(self):
+    def get_existing_donor_cases(self, guid):
         try:
             cases = self.restapi_client.get_questionnaire_data(
-                self.cma_serverpark_name, self.cma_questionnaire, ["CMA_ForWhom"]
+                self.cma_serverpark_name,
+                self.cma_questionnaire,
+                ["MainSurveyID", "CMA_ForWhom"],
             )
-            return sorted(set(entry["cmA_ForWhom"] for entry in cases["reportingData"]))
+            return sorted(
+                set(
+                    [
+                        entry["cmA_ForWhom"]
+                        for entry in cases["reportingData"]
+                        if entry["mainSurveyID"] == guid
+                    ]
+                )
+            )
         except Exception as e:
             logging.error(f"Error getting existing donor cases: {e}")
 

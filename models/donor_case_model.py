@@ -1,5 +1,5 @@
-import re
 import calendar
+import re
 from datetime import datetime
 
 
@@ -55,7 +55,7 @@ class DonorCaseModel:
             return datetime.strptime(match.group(3), "%m").strftime("%B")
 
     def get_tla(self):
-        pattern = r'^[a-zA-Z]{3}'
+        pattern = r"^[a-zA-Z]{3}"
         match = re.match(pattern, self.questionnaire_name)
         return match.group(0)[:3] if match else None
 

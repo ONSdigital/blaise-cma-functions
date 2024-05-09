@@ -13,7 +13,7 @@ class DonorCaseService:
     ) -> None:
         try:
             users_with_existing_donor_cases = (
-                self._blaise_service.get_existing_donor_cases()
+                self._blaise_service.get_existing_donor_cases(guid)
             )
             for user in users_with_role:
                 if self.donor_case_does_not_exist(
