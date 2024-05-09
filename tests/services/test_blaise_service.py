@@ -185,7 +185,7 @@ def test_get_existing_donor_cases_calls_the_rest_api_endpoint_with_the_correct_p
 
     # Assert
     _mock_rest_api_client.assert_called_with(
-        server_park, questionnaire_name, field_data
+        server_park, questionnaire_name, [field_data]
     )
 
 
