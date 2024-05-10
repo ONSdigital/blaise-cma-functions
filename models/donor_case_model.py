@@ -1,0 +1,65 @@
+import calendar
+import re
+from datetime import datetime
+
+
+class DonorCaseModel:
+    def __init__(self, user, questionnaire_name, guid):
+        self.user = user
+        self.questionnaire_name = questionnaire_name
+        self.guid = guid
+
+        self.full_date = self.get_full_date()
+        self.year = self.get_year()
+        self.month = self.get_month()
+        self.last_day_of_month = self.calculate_last_day_of_month()
+        self.tla = self.get_tla()
+
+        self.key_names = self.format_key_names()
+        self.key_values = self.format_key_values()
+        self.data_fields = self.format_data_fields()
+
+    def format_data_fields(self):
+        return {
+            "mainSurveyID": f"{self.guid}",
+            "id": f"{self.user}",
+            "cmA_ForWhom": f"{self.user}",
+            "cmA_AllowSpawning": "1",
+            "cmA_IsDonorCase": "1",
+            "cmA_EndDate": f"{self.last_day_of_month}",
+            "cmA_ContactData": f"MainSurveyID\t{self.guid}\tID\t{self.user}\tContactInfoShort\t{self.tla},{self.month}\tCaseNote\tThis is the Donor Case. Select add case to spawn a new case with an empty shift.\tcaseinfo.Year\t{self.year}\tcaseinfo.Month\t{self.month}\tcaseinfo.Stage\t{self.full_date}\tcaseinfo.ShiftNo\t\tcaseinfo.Survey\t{self.tla}\tcaseinfo.IOut\t",
+        }
+
+    def format_key_values(self) -> list[str]:
+        return [self.guid, self.user]
+
+    def format_key_names(self) -> list[str]:
+        return ["MainSurveyID", "ID"]
+
+    def get_full_date(self):
+        pattern = r"([A-Za-z]+)(\d{2})(\d{2})"
+        match = re.match(pattern, self.questionnaire_name)
+        if match:
+            return match.group(2) + match.group(3)
+
+    def get_year(self):
+        pattern = r"([A-Za-z]+)(\d{2})(\d{2})"
+        match = re.match(pattern, self.questionnaire_name)
+        if match:
+            return "20" + match.group(2)
+
+    def get_month(self):
+        pattern = r"([A-Za-z]+)(\d{2})(\d{2})"
+        match = re.match(pattern, self.questionnaire_name)
+        if match:
+            return datetime.strptime(match.group(3), "%m").strftime("%B")
+
+    def get_tla(self):
+        pattern = r"^[a-zA-Z]{3}"
+        match = re.match(pattern, self.questionnaire_name)
+        return match.group(0)[:3] if match else None
+
+    def calculate_last_day_of_month(self):
+        month_number = list(calendar.month_name).index(self.month)
+        num_days = calendar.monthrange(int(self.year), month_number)[1]
+        return datetime(int(self.year), month_number, num_days).strftime("%d-%m-%Y")
