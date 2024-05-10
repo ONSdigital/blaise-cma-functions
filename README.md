@@ -11,10 +11,10 @@ example HTTP request
 ```python
 {
     "questionnaire_name": "IPS2405a",
-    "instrument_name": "IPS Field Interviewer",
+    "role": "IPS Field Interviewer",
 }
 ```
-example request to the `create_multikey_case` with the 'blaise_api_python_client'
+example request to the `create_multikey_case` within the 'blaise_api_python_client'
 ```python
 "cma",
         "CMA_Launcher",
