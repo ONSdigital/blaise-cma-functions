@@ -7,6 +7,7 @@ from services.blaise_service import BlaiseService
 from services.donor_case_service import DonorCaseService
 from services.guid_service import GUIDService
 from services.user_service import UserService
+from utilities.logging import setup_logger 
 
 
 def create_donor_cases(request: flask.request):
@@ -48,3 +49,6 @@ def get_questionnaire_name(request_json):
     if questionnaire_name is None or questionnaire_name == "":
         raise ValueError("Missing required fields: 'questionnaire_name'")
     return questionnaire_name
+
+if __name__ == "__main__":
+    setup_logger()
