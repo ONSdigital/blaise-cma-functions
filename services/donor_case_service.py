@@ -2,6 +2,9 @@ import logging
 
 from models.donor_case_model import DonorCaseModel
 from services.blaise_service import BlaiseService
+from utilities.logging import setup_logger
+
+setup_logger()
 
 
 class DonorCaseService:

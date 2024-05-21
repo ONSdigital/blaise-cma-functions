@@ -1,6 +1,9 @@
 import logging
 
 from services.blaise_service import BlaiseService
+from utilities.logging import setup_logger
+
+setup_logger()
 
 
 class GUIDService:

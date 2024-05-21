@@ -5,6 +5,9 @@ import blaise_restapi
 
 from appconfig.config import Config
 from models.donor_case_model import DonorCaseModel
+from utilities.logging import setup_logger
+
+setup_logger()
 
 
 class BlaiseService:
