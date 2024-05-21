@@ -11,7 +11,7 @@ example HTTP request
 ```python
 {
     "questionnaire_name": "IPS2405a",
-    "role": "IPS Field Interviewer",
+    "role": "IPS Field Interviewer"
 }
 ```
 example request to the `create_multikey_case` within the 'blaise_api_python_client'
