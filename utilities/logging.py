@@ -8,5 +8,5 @@ def setup_logger():
     client = google.cloud.logging.Client()
     handler = CloudLoggingHandler(client)
     setup_logging(handler)
-    logging.getLogger().setLevel(logging.DEBUG)
+    logging.getLogger().setLevel(logging.INFO)
 
