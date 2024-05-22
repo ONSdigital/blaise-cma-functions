@@ -7,9 +7,6 @@ from services.blaise_service import BlaiseService
 from services.donor_case_service import DonorCaseService
 from services.guid_service import GUIDService
 from services.user_service import UserService
-from utilities.logging import setup_logger
-
-setup_logger()
 
 
 def create_donor_cases(request: flask.request):

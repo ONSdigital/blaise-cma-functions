@@ -1,19 +1,12 @@
 import logging
 from unittest import mock
 
-import pytest
-
 import blaise_restapi
 import flask
 
 from main import create_donor_cases, get_questionnaire_name, get_role
-from appconfig.config import Config
-from tests.helpers import get_default_config
 from models.donor_case_model import DonorCaseModel
 
-@pytest.fixture()
-def config() -> Config:
-    return get_default_config()
 
 class MockRequest:
     def __init__(self, json_data):
