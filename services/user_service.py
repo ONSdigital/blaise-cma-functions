@@ -3,6 +3,7 @@ from utilities.logging import setup_logger
 
 setup_logger()
 
+
 class UserService:
     def __init__(self, blaise_service: BlaiseService):
         self._blaise_service = blaise_service

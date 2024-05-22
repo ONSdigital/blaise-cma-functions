@@ -1,7 +1,9 @@
-from google.cloud.logging_v2.handlers import (StructuredLogHandler,
-                                              setup_logging)
+from google.cloud import logging
 
 
 def setup_logger():
-    handler = StructuredLogHandler()
-    setup_logging(handler)
+    # Instantiates a client
+    client = logging.Client()
+
+    # Connects the logger to the root logging handler
+    client.setup_logging()
