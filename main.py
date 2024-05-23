@@ -1,8 +1,8 @@
 import logging
-import os
+# import os
 
 import flask
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 from appconfig.config import Config
 from services.blaise_service import BlaiseService
@@ -13,9 +13,9 @@ from utilities.logging import setup_logger
 
 setup_logger()
 
-if os.path.isfile("./.env"):
-    print("Loading environment variables from dotenv file")
-    load_dotenv()
+# if os.path.isfile("./.env"):
+#     print("Loading environment variables from dotenv file")
+#     load_dotenv()
 
 
 def create_donor_cases(request: flask.request):
