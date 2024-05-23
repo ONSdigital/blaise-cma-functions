@@ -1,8 +1,6 @@
 import logging
-# import os
 
 import flask
-# from dotenv import load_dotenv
 
 from appconfig.config import Config
 from services.blaise_service import BlaiseService
@@ -10,6 +8,12 @@ from services.donor_case_service import DonorCaseService
 from services.guid_service import GUIDService
 from services.user_service import UserService
 from utilities.logging import setup_logger
+
+# import os
+
+
+# from dotenv import load_dotenv
+
 
 setup_logger()
 
