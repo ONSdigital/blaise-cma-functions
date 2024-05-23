@@ -1,4 +1,4 @@
-from google.cloud.logging_v2.handlers import StructuredLogHandler, setup_logging
+from google.cloud.logging import StructuredLogHandler, setup_logging
 
 
 def setup_logger():
