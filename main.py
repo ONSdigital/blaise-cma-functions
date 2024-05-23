@@ -9,17 +9,7 @@ from services.guid_service import GUIDService
 from services.user_service import UserService
 from utilities.logging import setup_logger
 
-# import os
-
-
-# from dotenv import load_dotenv
-
-
 setup_logger()
-
-# if os.path.isfile("./.env"):
-#     print("Loading environment variables from dotenv file")
-#     load_dotenv()
 
 
 def create_donor_cases(request: flask.request):
