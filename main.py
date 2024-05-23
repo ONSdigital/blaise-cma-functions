@@ -1,3 +1,5 @@
+import logging
+
 import flask
 
 from appconfig.config import Config
