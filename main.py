@@ -1,3 +1,6 @@
+import os
+from dotenv import load_dotenv
+
 import logging
 
 import flask
@@ -11,6 +14,9 @@ from utilities.logging import setup_logger
 
 setup_logger()
 
+if os.path.isfile("./.env"):
+    print("Loading environment variables from dotenv file")
+    load_dotenv()
 
 def create_donor_cases(request: flask.request):
     try:
