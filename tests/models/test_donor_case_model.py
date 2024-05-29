@@ -66,3 +66,23 @@ def test_fields_for_outgoing_model(donor_case_model_inputs):
         "cmA_EndDate": "30-06-2023",
         "cmA_ContactData": "MainSurveyID\t7bded891-3aa6-41b2-824b-0be514018806\tID\tjames\tContactInfoShort\tIPS,June\tCaseNote\tThis is the Donor Case. Select add case to spawn a new case with an empty shift.\tcaseinfo.Year\t2023\tcaseinfo.Month\tJune\tcaseinfo.Stage\t2306\tcaseinfo.ShiftNo\t\tcaseinfo.Survey\tIPS\tcaseinfo.IOut\t",
     }
+
+
+def test_double_tab_after_shift_no_in_outgoing_model(donor_case_model_inputs):
+    # Arrange
+    expected_pattern = "caseinfo.ShiftNo\t\t"
+
+    # Act
+    donor_case_model = DonorCaseModel(
+        donor_case_model_inputs.user,
+        donor_case_model_inputs.questionnaire_name,
+        donor_case_model_inputs.guid,
+    )
+
+    # Assert
+    assert donor_case_model.key_names == ["MainSurveyID", "ID"]
+    assert donor_case_model.key_values == [
+        "7bded891-3aa6-41b2-824b-0be514018806",
+        "james",
+    ]
+    assert expected_pattern in donor_case_model.data_fields["cmA_ContactData"]
