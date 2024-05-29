@@ -30,3 +30,25 @@ example request to the `create_multikey_case` within the 'blaise_api_python_clie
         },
 
 ```
+
+### Local Setup
+
+Clone the project locally:
+```shell
+git clone https://github.com/ONSdigital/blaise-cma-functions.git
+```
+
+Install poetry:
+```shell
+pip install poetry
+```
+
+Install dependencies:
+```shell
+poetry install
+```
+
+Run unit tests:
+```shell
+poetry run python -m pytest
+```
