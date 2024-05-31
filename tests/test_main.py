@@ -20,7 +20,7 @@ class MockRequest:
 @mock.patch("services.blaise_service.BlaiseService.get_users")
 @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
 @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
-def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_with_the_correct_information(
+def test_create_donor_case_for_users_gets_called_the_correct_number_of_times_with_the_correct_information(
     mock_create_donor_case_for_user,
     mock_get_existing_donor_cases,
     mock_get_users,
@@ -75,7 +75,7 @@ def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_wi
 @mock.patch.object(blaise_restapi.Client, "get_users")
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
 @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
-def test_create_donor_case_for_users_gets_called_the_correct_numnber_of_times_with_the_correct_information_when_mocking_the_blaise_service(
+def test_create_donor_case_for_users_gets_called_the_correct_number_of_times_with_the_correct_information_when_mocking_the_blaise_service(
     mock_create_multikey_case,
     mock_get_questionnaire_data,
     mock_get_users,
