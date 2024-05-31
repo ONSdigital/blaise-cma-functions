@@ -156,9 +156,10 @@ def test_create_donor_case_raises_an_error_when_the_request_is_not_json(
 
     # Act
     with caplog.at_level(logging.INFO):
-        create_donor_cases(mock_request)
+        result = create_donor_cases(mock_request)
 
     # Assert
+    assert result == ("Error creating IPS donor cases: 'NoneType' object has no attribute 'get_json'", 500)
     assert (
                "root",
                logging.ERROR,
@@ -179,9 +180,10 @@ def test_create_donor_case_logs_when_questionnaire_name_value_is_none(
 
     # Act
     with caplog.at_level(logging.INFO):
-        create_donor_cases(mock_request)
+        result = create_donor_cases(mock_request)
 
     # Assert
+    assert result == ("Error creating IPS donor cases: Missing required fields: 'questionnaire_name'", 500)
     assert (
                "root",
                logging.ERROR,
@@ -202,9 +204,10 @@ def test_create_donor_case_logs_when_questionnaire_name_value_is_missing(
 
     # Act
     with caplog.at_level(logging.INFO):
-        create_donor_cases(mock_request)
+        result = create_donor_cases(mock_request)
 
     # Assert
+    assert result == ("Error creating IPS donor cases: Missing required fields: 'questionnaire_name'", 500)
     assert (
                "root",
                logging.ERROR,
@@ -225,9 +228,10 @@ def test_create_donor_case_logs_when_role_value_is_none(
 
     # Act
     with caplog.at_level(logging.INFO):
-        create_donor_cases(mock_request)
+        result = create_donor_cases(mock_request)
 
     # Assert
+    assert result == ("Error creating IPS donor cases: Missing required fields: 'role'", 500)
     assert (
                "root",
                logging.ERROR,
@@ -248,9 +252,10 @@ def test_create_donor_case_logs_when_role_value_is_missing(
 
     # Act
     with caplog.at_level(logging.INFO):
-        create_donor_cases(mock_request)
+        result = create_donor_cases(mock_request)
 
     # Assert
+    assert result == ("Error creating IPS donor cases: Missing required fields: 'role'", 500)
     assert (
                "root",
                logging.ERROR,
