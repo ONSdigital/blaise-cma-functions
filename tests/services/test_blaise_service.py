@@ -9,7 +9,6 @@ from services.blaise_service import BlaiseService
 from tests.helpers import get_default_config
 
 
-
 @pytest.fixture()
 def config() -> Config:
     return get_default_config()
@@ -22,8 +21,8 @@ def blaise_service(config) -> BlaiseService:
 
 class TestGetQuestionnaire:
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
-    def test_get_questionnaire_calls_the_rest_api_endpoint_with_the_correct_parameters(self,
-        _mock_rest_api_client, blaise_service
+    def test_get_questionnaire_calls_the_rest_api_endpoint_with_the_correct_parameters(
+            self, _mock_rest_api_client, blaise_service
     ):
         # arrange
         blaise_server_park = "gusty"
@@ -35,10 +34,9 @@ class TestGetQuestionnaire:
         # assert
         _mock_rest_api_client.assert_called_with(blaise_server_park, questionnaire_name)
 
-
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
-    def test_get_questionnaire_returns_a_dictionary_containing_questionnaire_info(self,
-        _mock_rest_api_client_get_questionnaire_for_server_park, blaise_service
+    def test_get_questionnaire_returns_a_dictionary_containing_questionnaire_info(
+            self, _mock_rest_api_client_get_questionnaire_for_server_park, blaise_service
     ):
         # Arrange
         _mock_rest_api_client_get_questionnaire_for_server_park.return_value = {
@@ -71,10 +69,9 @@ class TestGetQuestionnaire:
         assert result["id"] == "25615bf2-f331-47ba-9d05-6659a513a1f2"
         assert result["serverParkName"] == "gusty"
 
-
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
-    def test_get_questionnaire_logs_the_correct_information(self,
-        _mock_rest_api_client_get_questionnaire_for_server_park, blaise_service, caplog
+    def test_get_questionnaire_logs_the_correct_information(
+            self, _mock_rest_api_client_get_questionnaire_for_server_park, blaise_service, caplog
     ):
         # Arrange
         _mock_rest_api_client_get_questionnaire_for_server_park.return_value = {
@@ -102,17 +99,16 @@ class TestGetQuestionnaire:
 
         # Assert
         assert (
-            "root",
-            logging.INFO,
-            "Got questionnaire 'LMS2309_GO1'",
-        ) in caplog.record_tuples
+                   "root",
+                   logging.INFO,
+                   "Got questionnaire 'LMS2309_GO1'",
+               ) in caplog.record_tuples
 
 
 class TestGetUsers:
     @mock.patch.object(blaise_restapi.Client, "get_users")
-    def test_get_users_calls_the_rest_api_endpoint_with_the_correct_parameters(self,
-        _mock_rest_api_client, blaise_service
-    ):
+    def test_get_users_calls_the_rest_api_endpoint_with_the_correct_parameters(
+            self, _mock_rest_api_client, blaise_service):
         # Arrange
         blaise_server_park = "gusty"
 
@@ -122,11 +118,9 @@ class TestGetUsers:
         # Assert
         _mock_rest_api_client.assert_called_with()
 
-
     @mock.patch.object(blaise_restapi.Client, "get_users")
-    def test_get_users_returns_a_list_of_dictionaires_logs_the_correct_information(self,
-        _mock_rest_api_client_get_users, blaise_service, caplog, mock_get_users
-    ):
+    def test_get_users_returns_a_list_of_dictionaires_logs_the_correct_information(
+            self, _mock_rest_api_client_get_users, blaise_service, caplog, mock_get_users):
         # Arrange
         _mock_rest_api_client_get_users.return_value = mock_get_users
 
@@ -138,16 +132,14 @@ class TestGetUsers:
 
         # Assert
         assert (
-            "root",
-            logging.INFO,
-            "Got 2 users from server park gusty",
-        ) in caplog.record_tuples
-
+                   "root",
+                   logging.INFO,
+                   "Got 2 users from server park gusty",
+               ) in caplog.record_tuples
 
     @mock.patch.object(blaise_restapi.Client, "get_users")
-    def test_get_users_returns_a_list_of_dictionaires_containing_user_info(self,
-        _mock_rest_api_client_get_users, blaise_service, caplog, mock_get_users
-    ):
+    def test_get_users_returns_a_list_of_dictionaires_containing_user_info(
+            self, _mock_rest_api_client_get_users,  blaise_service, caplog, mock_get_users):
         # Arrange
         _mock_rest_api_client_get_users.return_value = mock_get_users
 
@@ -176,9 +168,8 @@ class TestGetUsers:
 
 class TestGetExistingDonorCases:
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-    def test_get_existing_donor_cases_calls_the_rest_api_endpoint_with_the_correct_parameters(self,
-        _mock_rest_api_client, blaise_service
-    ):
+    def test_get_existing_donor_cases_calls_the_rest_api_endpoint_with_the_correct_parameters(
+            self, _mock_rest_api_client, blaise_service):
         # Arrange
         server_park = "cma"
         questionnaire_name = "CMA_Launcher"
@@ -193,11 +184,9 @@ class TestGetExistingDonorCases:
             server_park, questionnaire_name, field_data
         )
 
-
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-    def test_get_existing_donor_cases_returns_a_list_of_unique_ids_(self,
-        _mock_rest_api_client_get_questionnaire_data, blaise_service
-    ):
+    def test_get_existing_donor_cases_returns_a_list_of_unique_ids_(
+            self, _mock_rest_api_client_get_questionnaire_data, blaise_service):
         # Arrange
         _mock_rest_api_client_get_questionnaire_data.return_value = {
             "questionnaireName": "cma_launcher",
@@ -226,11 +215,9 @@ class TestGetExistingDonorCases:
         assert len(result) == 2
         assert result == ["james", "rich"]
 
-
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-    def test_get_existing_donor_cases_returns_a_list_of_existing_donor_cases_for_the_correct_questionnaire_when_multiple_questionnaires_are_installed(self,
-        _mock_rest_api_client_get_questionnaire_data, blaise_service
-    ):
+    def test_get_existing_donor_cases_returns_a_list_of_existing_donor_cases_for_the_correct_questionnaire_when_multiple_questionnaires_are_installed(
+            self, _mock_rest_api_client_get_questionnaire_data, blaise_service):
         # Arrange
         _mock_rest_api_client_get_questionnaire_data.return_value = {
             "questionnaireName": "cma_launcher",
