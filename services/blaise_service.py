@@ -28,8 +28,7 @@ class BlaiseService:
             return questionnaire
         except Exception as e:
             logging.error(f"Error getting questionnaire {questionnaire_name}: {e}")
-            return f"Error getting questionnaire {questionnaire_name}: {e}", 400
-
+            return None
 
     def get_users(self, server_park: str) -> list[Dict[str, Any]]:
         try:
