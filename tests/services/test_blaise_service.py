@@ -7,6 +7,7 @@ import pytest
 from appconfig.config import Config
 from services.blaise_service import BlaiseService
 from tests.helpers import get_default_config
+from utilities.custom_exceptions import QuestionnaireError
 
 
 @pytest.fixture()
@@ -103,6 +104,23 @@ class TestGetQuestionnaire:
                    logging.INFO,
                    "Got questionnaire 'LMS2309_GO1'",
                ) in caplog.record_tuples
+
+    @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
+    def test_get_questionnaire_raises_questionnaire_error_exception(
+            self, _mock_rest_api_client_get_questionnaire_for_server_park, blaise_service, caplog
+    ):
+        # Arrange
+        _mock_rest_api_client_get_questionnaire_for_server_park.side_effect = Exception
+
+        blaise_server_park = "gusty"
+        questionnaire_name = "LMS2309_GO1"
+
+        # Act
+        with pytest.raises(QuestionnaireError) as err:
+            blaise_service.get_questionnaire(blaise_server_park, questionnaire_name)
+
+        # Assert
+        assert err.value.args[0] == "Questionnaire error: Could not get questionnaire - LMS2309_GO1"
 
 
 class TestGetUsers:
