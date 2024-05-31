@@ -20,7 +20,7 @@ class MockRequest:
 @mock.patch("services.blaise_service.BlaiseService.get_users")
 @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
 @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
-def test_create_donor_case_for_users_gets_called_the_correct_number_of_times_with_the_correct_information(
+def test_create_donor_case_is_called_the_correct_number_of_times_with_the_correct_information(
     mock_create_donor_case_for_user,
     mock_get_existing_donor_cases,
     mock_get_users,
@@ -75,7 +75,7 @@ def test_create_donor_case_for_users_gets_called_the_correct_number_of_times_wit
 @mock.patch.object(blaise_restapi.Client, "get_users")
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
 @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
-def test_create_donor_case_for_users_gets_called_the_correct_number_of_times_with_the_correct_information_when_mocking_the_blaise_service(
+def test_create_donor_case_is_called_the_correct_number_of_times_with_the_correct_information_when_mocking_the_blaise_service(
     mock_create_multikey_case,
     mock_get_questionnaire_data,
     mock_get_users,
@@ -145,7 +145,7 @@ def test_create_donor_case_for_users_gets_called_the_correct_number_of_times_wit
 
 
 @mock.patch.object(blaise_restapi.Client, "get_users")
-def test_create_donor_case_for_users_raises_an_error_when_the_request_is_not_json(
+def test_create_donor_case_raises_an_error_when_the_request_is_not_json(
     mock_get_users, caplog
 ):
     # Arrange
@@ -164,7 +164,7 @@ def test_create_donor_case_for_users_raises_an_error_when_the_request_is_not_jso
 
 
 @mock.patch.object(blaise_restapi.Client, "get_users")
-def test_create_donor_case_for_users_logs_when_questionnaire_name_value_is_none(
+def test_create_donor_case_logs_when_questionnaire_name_value_is_none(
     mock_get_users, caplog
 ):
     # Arrange
@@ -185,7 +185,7 @@ def test_create_donor_case_for_users_logs_when_questionnaire_name_value_is_none(
 
 
 @mock.patch.object(blaise_restapi.Client, "get_users")
-def test_create_donor_case_for_users_logs_when_questionnaire_name_value_is_missing(
+def test_create_donor_case_logs_when_questionnaire_name_value_is_missing(
     mock_get_users, caplog
 ):
     # Arrange
@@ -206,7 +206,7 @@ def test_create_donor_case_for_users_logs_when_questionnaire_name_value_is_missi
 
 
 @mock.patch.object(blaise_restapi.Client, "get_users")
-def test_create_donor_case_for_users_logs_when_role_value_is_none(
+def test_create_donor_case_logs_when_role_value_is_none(
     mock_get_users, caplog
 ):
     # Arrange
@@ -227,7 +227,7 @@ def test_create_donor_case_for_users_logs_when_role_value_is_none(
 
 
 @mock.patch.object(blaise_restapi.Client, "get_users")
-def test_create_donor_case_for_users_logs_when_role_value_is_missing(
+def test_create_donor_case_logs_when_role_value_is_missing(
     mock_get_users, caplog
 ):
     # Arrange
