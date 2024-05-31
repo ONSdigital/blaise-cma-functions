@@ -110,7 +110,7 @@ class TestGetQuestionnaire:
             self, _mock_rest_api_client_get_questionnaire_for_server_park, blaise_service, caplog
     ):
         # Arrange
-        _mock_rest_api_client_get_questionnaire_for_server_park.side_effect = Exception
+        _mock_rest_api_client_get_questionnaire_for_server_park.side_effect = Exception("spicy things happened")
 
         blaise_server_park = "gusty"
         questionnaire_name = "LMS2309_GO1"
@@ -121,6 +121,11 @@ class TestGetQuestionnaire:
 
         # Assert
         assert err.value.args[0] == "Questionnaire error: Could not get questionnaire - LMS2309_GO1"
+        assert (
+                   "root",
+                   logging.ERROR,
+                   "Error getting questionnaire LMS2309_GO1: spicy things happened",
+               ) in caplog.record_tuples
 
 
 class TestGetUsers:

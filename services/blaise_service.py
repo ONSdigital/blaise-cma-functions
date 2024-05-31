@@ -31,7 +31,6 @@ class BlaiseService:
             logging.error(f"Error getting questionnaire {questionnaire_name}: {e}")
             raise QuestionnaireError(questionnaire_name=questionnaire_name)
 
-
     def get_users(self, server_park: str) -> list[Dict[str, Any]]:
         try:
             users = self.restapi_client.get_users()
