@@ -22,10 +22,10 @@ class MockRequest:
 @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
 @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
 def test_create_donor_case_is_called_the_correct_number_of_times_with_the_correct_information(
-    mock_create_donor_case_for_user,
-    mock_get_existing_donor_cases,
-    mock_get_users,
-    mock_get_questionnaire,
+        mock_create_donor_case_for_user,
+        mock_get_existing_donor_cases,
+        mock_get_users,
+        mock_get_questionnaire,
 ):
     # Arrange
     mock_request = flask.Request.from_values(
@@ -77,10 +77,10 @@ def test_create_donor_case_is_called_the_correct_number_of_times_with_the_correc
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
 @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
 def test_create_donor_case_is_called_the_correct_number_of_times_with_the_correct_information_when_mocking_the_blaise_service(
-    mock_create_multikey_case,
-    mock_get_questionnaire_data,
-    mock_get_users,
-    mock_get_questionnaire_for_server_park,
+        mock_create_multikey_case,
+        mock_get_questionnaire_data,
+        mock_get_users,
+        mock_get_questionnaire_for_server_park,
 ):
     # Arrange
     mock_request = flask.Request.from_values(
@@ -148,7 +148,7 @@ def test_create_donor_case_is_called_the_correct_number_of_times_with_the_correc
 @mock.patch("appconfig.config.Config.from_env")
 @mock.patch.object(blaise_restapi.Client, "get_users")
 def test_create_donor_case_raises_an_error_when_the_request_is_not_json(
-    mock_get_users, mock_config, caplog
+        mock_get_users, mock_config, caplog
 ):
     # Arrange
     mock_request = None
@@ -160,16 +160,16 @@ def test_create_donor_case_raises_an_error_when_the_request_is_not_json(
 
     # Assert
     assert (
-        "root",
-        logging.ERROR,
-        "Error creating IPS donor cases: 'NoneType' object has no attribute 'get_json'",
-    ) in caplog.record_tuples
+               "root",
+               logging.ERROR,
+               "Error creating IPS donor cases: 'NoneType' object has no attribute 'get_json'",
+           ) in caplog.record_tuples
 
 
 @mock.patch("appconfig.config.Config.from_env")
 @mock.patch.object(blaise_restapi.Client, "get_users")
 def test_create_donor_case_logs_when_questionnaire_name_value_is_none(
-    mock_get_users, mock_config, caplog
+        mock_get_users, mock_config, caplog
 ):
     # Arrange
     mock_request = flask.Request.from_values(
@@ -183,16 +183,16 @@ def test_create_donor_case_logs_when_questionnaire_name_value_is_none(
 
     # Assert
     assert (
-        "root",
-        logging.ERROR,
-        "Error creating IPS donor cases: Missing required fields: 'questionnaire_name'",
-    ) in caplog.record_tuples
+               "root",
+               logging.ERROR,
+               "Error creating IPS donor cases: Missing required fields: 'questionnaire_name'",
+           ) in caplog.record_tuples
 
 
 @mock.patch("appconfig.config.Config.from_env")
 @mock.patch.object(blaise_restapi.Client, "get_users")
 def test_create_donor_case_logs_when_questionnaire_name_value_is_missing(
-    mock_get_users, mock_config, caplog
+        mock_get_users, mock_config, caplog
 ):
     # Arrange
     mock_request = flask.Request.from_values(
@@ -206,16 +206,16 @@ def test_create_donor_case_logs_when_questionnaire_name_value_is_missing(
 
     # Assert
     assert (
-        "root",
-        logging.ERROR,
-        "Error creating IPS donor cases: Missing required fields: 'questionnaire_name'",
-    ) in caplog.record_tuples
+               "root",
+               logging.ERROR,
+               "Error creating IPS donor cases: Missing required fields: 'questionnaire_name'",
+           ) in caplog.record_tuples
 
 
 @mock.patch("appconfig.config.Config.from_env")
 @mock.patch.object(blaise_restapi.Client, "get_users")
 def test_create_donor_case_logs_when_role_value_is_none(
-    mock_get_users, mock_config, caplog
+        mock_get_users, mock_config, caplog
 ):
     # Arrange
     mock_request = flask.Request.from_values(
@@ -229,16 +229,16 @@ def test_create_donor_case_logs_when_role_value_is_none(
 
     # Assert
     assert (
-        "root",
-        logging.ERROR,
-        "Error creating IPS donor cases: Missing required fields: 'role'",
-    ) in caplog.record_tuples
+               "root",
+               logging.ERROR,
+               "Error creating IPS donor cases: Missing required fields: 'role'",
+           ) in caplog.record_tuples
 
 
 @mock.patch("appconfig.config.Config.from_env")
 @mock.patch.object(blaise_restapi.Client, "get_users")
 def test_create_donor_case_logs_when_role_value_is_missing(
-    mock_get_users, mock_config, caplog
+        mock_get_users, mock_config, caplog
 ):
     # Arrange
     mock_request = flask.Request.from_values(
@@ -252,15 +252,15 @@ def test_create_donor_case_logs_when_role_value_is_missing(
 
     # Assert
     assert (
-        "root",
-        logging.ERROR,
-        "Error creating IPS donor cases: Missing required fields: 'role'",
-    ) in caplog.record_tuples
+               "root",
+               logging.ERROR,
+               "Error creating IPS donor cases: Missing required fields: 'role'",
+           ) in caplog.record_tuples
 
 
 @mock.patch("appconfig.config.Config.from_env")
 def test_create_donor_case_returns_message_and_500_status_code_when_config_is_empty(
-    mock_config,
+        mock_config,
 ):
     # Arrange
     mock_request = flask.Request.from_values(
@@ -272,8 +272,11 @@ def test_create_donor_case_returns_message_and_500_status_code_when_config_is_em
     result = create_donor_cases(mock_request)
 
     # Assert
-    assert result == ("Error creating IPS donor cases: Configuration error: Missing configurations - blaise_api_url, blaise_server_park", 500)
-
+    assert result == (
+        "Error creating IPS donor cases: Configuration error: Missing configurations - blaise_api_url, "
+        "blaise_server_park",
+        500
+    )
 
 
 def test_get_questionnaire_name_returns_the_questionnaire_name():
