@@ -145,12 +145,14 @@ def test_create_donor_case_is_called_the_correct_number_of_times_with_the_correc
     )
 
 
+@mock.patch("appconfig.config.Config.from_env")
 @mock.patch.object(blaise_restapi.Client, "get_users")
 def test_create_donor_case_raises_an_error_when_the_request_is_not_json(
-    mock_get_users, caplog
+    mock_get_users, mock_config, caplog
 ):
     # Arrange
     mock_request = None
+    mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
 
     # Act
     with caplog.at_level(logging.INFO):
@@ -164,14 +166,16 @@ def test_create_donor_case_raises_an_error_when_the_request_is_not_json(
     ) in caplog.record_tuples
 
 
+@mock.patch("appconfig.config.Config.from_env")
 @mock.patch.object(blaise_restapi.Client, "get_users")
 def test_create_donor_case_logs_when_questionnaire_name_value_is_none(
-    mock_get_users, caplog
+    mock_get_users, mock_config, caplog
 ):
     # Arrange
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": None, "role": "IPS Manager"}
     )
+    mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
 
     # Act
     with caplog.at_level(logging.INFO):
@@ -185,14 +189,16 @@ def test_create_donor_case_logs_when_questionnaire_name_value_is_none(
     ) in caplog.record_tuples
 
 
+@mock.patch("appconfig.config.Config.from_env")
 @mock.patch.object(blaise_restapi.Client, "get_users")
 def test_create_donor_case_logs_when_questionnaire_name_value_is_missing(
-    mock_get_users, caplog
+    mock_get_users, mock_config, caplog
 ):
     # Arrange
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": "", "role": "IPS Manager"}
     )
+    mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
 
     # Act
     with caplog.at_level(logging.INFO):
@@ -206,14 +212,16 @@ def test_create_donor_case_logs_when_questionnaire_name_value_is_missing(
     ) in caplog.record_tuples
 
 
+@mock.patch("appconfig.config.Config.from_env")
 @mock.patch.object(blaise_restapi.Client, "get_users")
 def test_create_donor_case_logs_when_role_value_is_none(
-    mock_get_users, caplog
+    mock_get_users, mock_config, caplog
 ):
     # Arrange
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": "IPS2306a", "role": None}
     )
+    mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
 
     # Act
     with caplog.at_level(logging.INFO):
@@ -227,14 +235,16 @@ def test_create_donor_case_logs_when_role_value_is_none(
     ) in caplog.record_tuples
 
 
+@mock.patch("appconfig.config.Config.from_env")
 @mock.patch.object(blaise_restapi.Client, "get_users")
 def test_create_donor_case_logs_when_role_value_is_missing(
-    mock_get_users, caplog
+    mock_get_users, mock_config, caplog
 ):
     # Arrange
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": "IPS2306a", "role": ""}
     )
+    mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
 
     # Act
     with caplog.at_level(logging.INFO):
