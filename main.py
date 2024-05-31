@@ -7,6 +7,7 @@ from services.blaise_service import BlaiseService
 from services.donor_case_service import DonorCaseService
 from services.guid_service import GUIDService
 from services.user_service import UserService
+from utilities.custom_exceptions import ConfigError
 from utilities.logging import setup_logger
 
 setup_logger()
@@ -16,6 +17,7 @@ def create_donor_cases(request: flask.request):
     try:
         logging.info("Running Cloud Function - 'create_donor_cases'")
         blaise_config = Config.from_env()
+        blaise_config.validate_config(blaise_config)
         blaise_server_park = blaise_config.blaise_server_park
 
         request_json = request.get_json()
@@ -36,7 +38,7 @@ def create_donor_cases(request: flask.request):
         return "Done!", 200
     except Exception as e:
         logging.error(f"Error creating IPS donor cases: {e}")
-        return "Error creating IPS donor cases", 500
+        return f"Error creating IPS donor cases: {e}", 500
 
 
 def get_role(request_json):

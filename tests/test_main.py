@@ -4,6 +4,7 @@ from unittest import mock
 import blaise_restapi
 import flask
 
+from appconfig.config import Config
 from main import create_donor_cases, get_questionnaire_name, get_role
 from models.donor_case_model import DonorCaseModel
 
@@ -245,6 +246,24 @@ def test_create_donor_case_logs_when_role_value_is_missing(
         logging.ERROR,
         "Error creating IPS donor cases: Missing required fields: 'role'",
     ) in caplog.record_tuples
+
+
+@mock.patch("appconfig.config.Config.from_env")
+def test_create_donor_case_returns_message_and_500_status_code_when_config_is_empty(
+    mock_config,
+):
+    # Arrange
+    mock_request = flask.Request.from_values(
+        json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+    )
+    mock_config.return_value = Config(blaise_api_url=None, blaise_server_park=None)
+
+    # Act
+    result = create_donor_cases(mock_request)
+
+    # Assert
+    assert result == ("Error creating IPS donor cases: Configuration error: Missing configurations - blaise_api_url, blaise_server_park", 500)
+
 
 
 def test_get_questionnaire_name_returns_the_questionnaire_name():
