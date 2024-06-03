@@ -7,7 +7,7 @@ import pytest
 from appconfig.config import Config
 from services.blaise_service import BlaiseService
 from tests.helpers import get_default_config
-from utilities.custom_exceptions import QuestionnaireError
+from utilities.custom_exceptions import BlaiseQuestionnaireError
 
 
 @pytest.fixture()
@@ -116,7 +116,7 @@ class TestGetQuestionnaire:
         questionnaire_name = "LMS2309_GO1"
 
         # Act
-        with pytest.raises(QuestionnaireError) as err:
+        with pytest.raises(BlaiseQuestionnaireError) as err:
             blaise_service.get_questionnaire(blaise_server_park, questionnaire_name)
 
         # Assert

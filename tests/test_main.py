@@ -8,7 +8,7 @@ import pytest
 from appconfig.config import Config
 from main import create_donor_cases, get_questionnaire_name, get_role
 from models.donor_case_model import DonorCaseModel
-from utilities.custom_exceptions import QuestionnaireError, GuidError
+from utilities.custom_exceptions import BlaiseQuestionnaireError, GuidError
 
 
 class MockRequest:
@@ -347,7 +347,7 @@ class TestMainCreateDonorCasesExceptionHandling:
             json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
         )
         mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
-        mock_rest_api_client_get_questionnaire.side_effect = QuestionnaireError()
+        mock_rest_api_client_get_questionnaire.side_effect = BlaiseQuestionnaireError()
 
         # Act
         with caplog.at_level(logging.ERROR):
