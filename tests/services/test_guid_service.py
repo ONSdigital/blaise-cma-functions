@@ -78,7 +78,12 @@ def test_get_guid_logs_error_and_raises_guid_error_exception(get_questionnaire, 
         guid_service.get_guid(blaise_server_park, questionnaire_name)
 
     # Assert
-    assert err.value.args[0] == "GUID error: Error getting GUID for questionnaire LMS2309_GO1"
+    error_message = (
+        "Error getting GUID for questionnaire LMS2309_GO1: 'id'. "
+        "This error occurred because the GUID service failed. "
+        "Please check the questionnaire has an ID and try again"
+    )
+    assert err.value.args[0] == error_message
     assert (
         "root",
         40,

@@ -70,12 +70,7 @@ def create_donor_cases(request: flask.request):
         logging.error(error_message)
         return error_message, 404
     except GuidError as e:
-        error_message = (
-            "Error creating IPS donor cases. "
-            f"Custom GuidError raised: {e}. "
-            "This error occurred because the GUID service failed. "
-            "Please check the questionnaire has an ID and try again."
-        )
+        error_message = f"Error creating IPS donor cases. Custom GuidError raised: {e}. "
         logging.error(error_message)
         return error_message, 500
     except BlaiseUsersError as e:

@@ -21,7 +21,6 @@ class GUIDService:
             logging.error(error_message)
             raise BlaiseError(message=error_message)
         except Exception as e:
-            logging.error(
-                f"Error getting GUID for questionnaire {questionnaire_name}: {e}"
-            )
-            raise GuidError(questionnaire_name=questionnaire_name)
+            error_message = f"Error getting GUID for questionnaire {questionnaire_name}: {e}"
+            logging.error(error_message)
+            raise GuidError(message=error_message)
