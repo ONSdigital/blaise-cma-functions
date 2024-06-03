@@ -5,7 +5,7 @@ import blaise_restapi
 
 from appconfig.config import Config
 from models.donor_case_model import DonorCaseModel
-from utilities.custom_exceptions import BlaiseQuestionnaireError
+from utilities.custom_exceptions import BlaiseQuestionnaireError, BlaiseUsersError
 
 
 class BlaiseService:
@@ -34,11 +34,11 @@ class BlaiseService:
     def get_users(self, server_park: str) -> list[Dict[str, Any]]:
         try:
             users = self.restapi_client.get_users()
-            logging.info(f"Got {len(users)} users from server park {server_park}")
+            logging.info(f"Got {len(users)} users from server park {server_park}.")
             return users
         except Exception as e:
-            logging.error(f"Error getting users from server park {server_park}: {e}")
-            return []
+            logging.error(f"Error getting users from server park {server_park}: {e}.")
+            raise BlaiseUsersError(server_park=server_park)
 
     def get_existing_donor_cases(self, guid):
         try:
