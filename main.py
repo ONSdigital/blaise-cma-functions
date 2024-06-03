@@ -37,8 +37,14 @@ def create_donor_cases(request: flask.request):
         )
         return "Done!", 200
     except ValueError as e:
-        logging.error(f"Error creating IPS donor cases. ValueError raised: {e}")
-        return f"Error creating IPS donor cases. ValueError raised: {e}", 400
+        error_message = (
+            "Error creating IPS donor cases. "
+            f"ValueError raised: {e}. "
+            "This error occurred due to an invalid value encountered in the input. "
+            "Please check the input values for correctness and try again."
+        )
+        logging.error(error_message)
+        return error_message, 400
     except AttributeError as e:
         logging.error(f"Error creating IPS donor cases: {e}")
         return f"Error creating IPS donor cases: {e}", 400
