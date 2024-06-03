@@ -400,7 +400,7 @@ class TestMainCreateDonorCasesExceptionHandling:
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     def test_create_donor_case_returns_message_and_404_status_code_when_rest_api_fails_to_return_questionnaire(
-            self, mock_rest_api_client_get_questionnaire, mock_config,
+            self, mock_rest_api_client_get_questionnaire, mock_config, caplog
     ):
         # Arrange
         mock_request = flask.Request.from_values(
@@ -410,13 +410,22 @@ class TestMainCreateDonorCasesExceptionHandling:
         mock_rest_api_client_get_questionnaire.side_effect = QuestionnaireError()
 
         # Act
-        result = create_donor_cases(mock_request)
+        with caplog.at_level(logging.ERROR):
+            result = create_donor_cases(mock_request)
 
         # Assert
-        assert result == (
-            "Error creating IPS donor cases: Questionnaire error: Could not find questionnaire - IPS2402a",
-            404
+        error_message = (
+            "Error creating IPS donor cases. "
+            "Custom QuestionnaireError raised: Questionnaire error: Could not find questionnaire - IPS2402a. "
+            "This error occurred because the rest api failed to get the questionnaire from Blaise. "
+            "Please check the VMs are online, and the questionnaire is installed."
         )
+        assert result == (error_message, 404)
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples
 
 
 def test_get_questionnaire_name_returns_the_questionnaire_name():
