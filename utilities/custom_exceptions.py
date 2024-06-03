@@ -24,7 +24,11 @@ class BlaiseError(Exception):
     def _format_message(self):
         base_message = self.message
         if self.questionnaire_name:
-            return f"Questionnaire error: {base_message}"
+            return (
+                f"Questionnaire error: {base_message}. "
+                "This error occurred because the rest api failed to get the questionnaire from Blaise. "
+                "Please check the VMs are online, the questionnaire is installed, and try again."
+            )
         return base_message
 
     def __str__(self):

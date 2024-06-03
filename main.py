@@ -65,10 +65,7 @@ def create_donor_cases(request: flask.request):
         return error_message, 400
     except BlaiseError as e:
         error_message = (
-            "Error creating IPS donor cases. "
-            f"Custom BlaiseError raised: {e}. "
-            "This error occurred because the rest api failed to get the questionnaire from Blaise. "
-            "Please check the VMs are online, the questionnaire is installed, and try again."
+            f"Error creating IPS donor cases. Custom BlaiseError raised: {e}"
         )
         logging.error(error_message)
         return error_message, 404
