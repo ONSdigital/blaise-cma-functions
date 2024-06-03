@@ -8,7 +8,7 @@ import pytest
 from appconfig.config import Config
 from main import create_donor_cases, get_questionnaire_name, get_role
 from models.donor_case_model import DonorCaseModel
-from utilities.custom_exceptions import BlaiseQuestionnaireError, GuidError
+from utilities.custom_exceptions import BlaiseQuestionnaireError, GuidError, BlaiseUsersError
 
 
 class MockRequest:
@@ -391,6 +391,38 @@ class TestMainCreateDonorCasesExceptionHandling:
             "Please check the questionnaire has an ID and try again."
         )
         assert result == (error_message, 500)
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples
+
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch("services.guid_service.GUIDService.get_guid")
+    @mock.patch("services.user_service.UserService.get_users_by_role")
+    def test_create_donor_case_returns_message_and_404_status_code_when_the_get_users_service_raises_an_exception(
+            self, mock_get_users, mock_get_guid, mock_config, caplog
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+        )
+        mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
+        mock_get_guid.return_value = "m0ck-gu!d"
+        mock_get_users.side_effect = BlaiseUsersError()
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = create_donor_cases(mock_request)
+
+        # Assert
+        error_message = (
+            "Error creating IPS donor cases. "
+            "Custom BlaiseUsersError raised: Blaise Users error. "
+            "This error occurred because the service to get users by role from Blaise failed. "
+            "Please check the VMs are online, the users exist with the correct role, and try again."
+        )
+        assert result == (error_message, 404)
         assert (
                    "root",
                    logging.ERROR,

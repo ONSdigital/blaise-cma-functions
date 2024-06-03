@@ -7,7 +7,7 @@ import pytest
 from appconfig.config import Config
 from services.blaise_service import BlaiseService
 from tests.helpers import get_default_config
-from utilities.custom_exceptions import BlaiseQuestionnaireError
+from utilities.custom_exceptions import BlaiseQuestionnaireError, BlaiseUsersError
 
 
 @pytest.fixture()
@@ -187,6 +187,26 @@ class TestGetUsers:
                 "defaultServerPark": "gusty",
             },
         ]
+
+    @mock.patch.object(blaise_restapi.Client, "get_users")
+    def test_get_users_logs_error_and_raises_blaise_users_error_exception(
+            self, mock_rest_api_client_get_users, blaise_service, caplog
+    ):
+        # Arrange
+        mock_rest_api_client_get_users.side_effect = Exception("No more violins left to score Bridgerton")
+        server_park = "foo"
+
+        # Act
+        with pytest.raises(BlaiseUsersError) as err:
+            blaise_service.get_users(server_park)
+
+        # Assert
+        assert err.value.args[0] == "Blaise Users error: Error getting users from server park foo."
+        assert (
+                   "root",
+                   logging.ERROR,
+                   "Error getting users from server park foo: No more violins left to score Bridgerton.",
+               ) in caplog.record_tuples
 
 
 class TestGetExistingDonorCases:

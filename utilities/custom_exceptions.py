@@ -45,3 +45,19 @@ class GuidError(Exception):
 
     def __str__(self):
         return self._format_message()
+
+
+class BlaiseUsersError(Exception):
+    def __init__(self, message="Blaise Users error", server_park=None):
+        self.message = message
+        self.server_park = server_park
+        super().__init__(self._format_message())
+
+    def _format_message(self):
+        base_message = self.message
+        if self.server_park:
+            return f"{base_message}: Error getting users from server park {self.server_park}."
+        return base_message
+
+    def __str__(self):
+        return self._format_message()

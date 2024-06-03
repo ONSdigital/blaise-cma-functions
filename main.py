@@ -7,7 +7,7 @@ from services.blaise_service import BlaiseService
 from services.donor_case_service import DonorCaseService
 from services.guid_service import GUIDService
 from services.user_service import UserService
-from utilities.custom_exceptions import ConfigError, BlaiseQuestionnaireError, GuidError
+from utilities.custom_exceptions import ConfigError, BlaiseQuestionnaireError, GuidError, BlaiseUsersError
 from utilities.logging import setup_logger
 
 setup_logger()
@@ -81,6 +81,15 @@ def create_donor_cases(request: flask.request):
         )
         logging.error(error_message)
         return error_message, 500
+    except BlaiseUsersError as e:
+        error_message = (
+            "Error creating IPS donor cases. "
+            f"Custom BlaiseUsersError raised: {e}. "
+            "This error occurred because the service to get users by role from Blaise failed. "
+            "Please check the VMs are online, the users exist with the correct role, and try again."
+        )
+        logging.error(error_message)
+        return error_message, 404
     except Exception as e:
         logging.error(f"Error creating IPS donor cases: {e}")
         return f"Error creating IPS donor cases: {e}", 500
