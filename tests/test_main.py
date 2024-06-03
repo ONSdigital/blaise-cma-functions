@@ -3,6 +3,7 @@ from unittest import mock
 
 import blaise_restapi
 import flask
+import pytest
 
 from appconfig.config import Config
 from main import create_donor_cases, get_questionnaire_name, get_role
@@ -264,25 +265,79 @@ def test_create_donor_case_logs_when_role_value_is_missing(
            ) in caplog.record_tuples
 
 
+@pytest.mark.parametrize(
+    "blaise_api_url, blaise_server_park", [
+        (None, None),
+        ("", None),
+        (None, ""),
+        ("", ""),
+    ],
+)
 @mock.patch("appconfig.config.Config.from_env")
-def test_create_donor_case_returns_message_and_500_status_code_when_config_is_empty(
-        mock_config,
+def test_create_donor_case_returns_message_and_400_status_code_when_both_configs_are_missing(
+        mock_config, blaise_api_url, blaise_server_park
 ):
     # Arrange
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
     )
-    mock_config.return_value = Config(blaise_api_url=None, blaise_server_park=None)
+    mock_config.return_value = Config(blaise_api_url=blaise_api_url, blaise_server_park=blaise_server_park)
 
     # Act
     result = create_donor_cases(mock_request)
 
     # Assert
     assert result == (
-        "Error creating IPS donor cases: Configuration error: Missing configurations - blaise_api_url, "
-        "blaise_server_park",
-        500
+        "Error creating IPS donor cases: Configuration error: Missing configurations - blaise_api_url, blaise_server_park",
+        400
     )
+
+
+@pytest.mark.parametrize(
+    "blaise_server_park", [None,""],
+)
+@mock.patch("appconfig.config.Config.from_env")
+def test_create_donor_case_returns_message_and_400_status_code_blaise_server_park_config_is_missing(
+        mock_config, blaise_server_park
+):
+    # Arrange
+    mock_request = flask.Request.from_values(
+        json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+    )
+    mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park=blaise_server_park)
+
+    # Act
+    result = create_donor_cases(mock_request)
+
+    # Assert
+    assert result == (
+        "Error creating IPS donor cases: Configuration error: Missing configurations - blaise_server_park",
+        400
+    )
+
+
+@pytest.mark.parametrize(
+    "blaise_api_url", [None,""],
+)
+@mock.patch("appconfig.config.Config.from_env")
+def test_create_donor_case_returns_message_and_400_status_code_blaise_api_url_config_is_missing(
+        mock_config, blaise_api_url
+):
+    # Arrange
+    mock_request = flask.Request.from_values(
+        json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+    )
+    mock_config.return_value = Config(blaise_api_url=blaise_api_url, blaise_server_park="bar")
+
+    # Act
+    result = create_donor_cases(mock_request)
+
+    # Assert
+    assert result == (
+        "Error creating IPS donor cases: Configuration error: Missing configurations - blaise_api_url",
+        400
+    )
+
 
 @mock.patch("appconfig.config.Config.from_env")
 @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
