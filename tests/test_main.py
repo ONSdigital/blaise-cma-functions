@@ -358,7 +358,7 @@ class TestMainCreateDonorCasesExceptionHandling:
             "Error creating IPS donor cases. "
             "Custom QuestionnaireError raised: Questionnaire error: Could not find questionnaire - IPS2402a. "
             "This error occurred because the rest api failed to get the questionnaire from Blaise. "
-            "Please check the VMs are online, and the questionnaire is installed."
+            "Please check the VMs are online, the questionnaire is installed, and try again."
         )
         assert result == (error_message, 404)
         assert (
