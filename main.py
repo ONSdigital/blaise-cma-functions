@@ -7,7 +7,7 @@ from services.blaise_service import BlaiseService
 from services.donor_case_service import DonorCaseService
 from services.guid_service import GUIDService
 from services.user_service import UserService
-from utilities.custom_exceptions import ConfigError
+from utilities.custom_exceptions import ConfigError, QuestionnaireError
 from utilities.logging import setup_logger
 
 setup_logger()
@@ -36,6 +36,9 @@ def create_donor_cases(request: flask.request):
             questionnaire_name, guid, users_with_role
         )
         return "Done!", 200
+    except QuestionnaireError as e:
+        logging.error(f"Error creating IPS donor cases: {e}")
+        return f"Error creating IPS donor cases: {e}", 404
     except Exception as e:
         logging.error(f"Error creating IPS donor cases: {e}")
         return f"Error creating IPS donor cases: {e}", 500

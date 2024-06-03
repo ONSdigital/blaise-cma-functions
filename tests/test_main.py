@@ -7,6 +7,7 @@ import flask
 from appconfig.config import Config
 from main import create_donor_cases, get_questionnaire_name, get_role
 from models.donor_case_model import DonorCaseModel
+from utilities.custom_exceptions import QuestionnaireError
 
 
 class MockRequest:
@@ -281,6 +282,27 @@ def test_create_donor_case_returns_message_and_500_status_code_when_config_is_em
         "Error creating IPS donor cases: Configuration error: Missing configurations - blaise_api_url, "
         "blaise_server_park",
         500
+    )
+
+@mock.patch("appconfig.config.Config.from_env")
+@mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
+def test_create_donor_case_returns_message_and_500_status_code_when_rest_api_fails_to_return_questionnaire(
+        mock_rest_api_client_get_questionnaire, mock_config,
+):
+    # Arrange
+    mock_request = flask.Request.from_values(
+        json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+    )
+    mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
+    mock_rest_api_client_get_questionnaire.side_effect = QuestionnaireError()
+
+    # Act
+    result = create_donor_cases(mock_request)
+
+    # Assert
+    assert result == (
+        "Error creating IPS donor cases: Questionnaire error: Could not find questionnaire - IPS2402a",
+        404
     )
 
 
