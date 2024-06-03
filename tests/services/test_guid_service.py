@@ -73,7 +73,7 @@ def test_get_guid_logs_the_error_message(get_questionnaire, guid_service, caplog
     questionnaire_name = "LMS2309_GO1"
 
     # Act
-    with caplog.at_level(logging.INFO):
+    with caplog.at_level(logging.ERROR):
         guid_service.get_guid(blaise_server_park, questionnaire_name)
 
     # Assert
