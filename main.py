@@ -50,7 +50,7 @@ def create_donor_cases(request: flask.request):
             "Error creating IPS donor cases. "
             f"AttributeError raised: {e}. "
             "This error occurred because an expected attribute was not found, for example in a JSON object. "
-            "Please ensure that the object being accessed has the required attributes and they are correctly spelled."
+            "Please ensure that the object being accessed is the correct type, has the required attributes, and they are correctly spelled."
         )
         logging.error(error_message)
         return error_message, 400

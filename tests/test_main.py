@@ -234,7 +234,7 @@ class TestMainCreateDonorCasesExceptionHandling:
             "Error creating IPS donor cases. "
             f"AttributeError raised: 'NoneType' object has no attribute 'get_json'. "
             "This error occurred because an expected attribute was not found, for example in a JSON object. "
-            "Please ensure that the object being accessed has the required attributes and they are correctly spelled."
+            "Please ensure that the object being accessed is the correct type, has the required attributes, and they are correctly spelled."
         )
         assert result == (error_message, 400)
         assert (
