@@ -347,7 +347,7 @@ class TestMainCreateDonorCasesExceptionHandling:
             json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
         )
         mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
-        mock_rest_api_client_get_questionnaire.side_effect = BlaiseError()
+        mock_rest_api_client_get_questionnaire.side_effect = BlaiseError("Error from restapi")
 
         # Act
         with caplog.at_level(logging.ERROR):
@@ -356,10 +356,15 @@ class TestMainCreateDonorCasesExceptionHandling:
         # Assert
         error_message = (
             "Error creating IPS donor cases. "
-            "Custom BlaiseError raised: Questionnaire error: Error getting questionnaire 'IPS2402a': Blaise service error. "
+            "Custom BlaiseError raised: Error getting GUID for questionnaire IPS2402a: "
+            "Questionnaire error: Error getting questionnaire 'IPS2402a': Error from restapi. "
             "This error occurred because the rest api failed to get the questionnaire from Blaise. "
             "Please check the VMs are online, the questionnaire is installed, and try again."
         )
+        # "Error creating IPS donor cases. "
+        # "Custom BlaiseError raised: Blaise service error. "
+        # "This error occurred because the rest api failed to get the questionnaire from Blaise. "
+        # "Please check the VMs are online, the questionnaire is installed, and try again."
         assert result == (error_message, 404)
         assert (
                    "root",
@@ -386,7 +391,7 @@ class TestMainCreateDonorCasesExceptionHandling:
         # Assert
         error_message = (
             "Error creating IPS donor cases. "
-            "Custom GuidError raised: GUID error. "
+            "Custom GuidError raised: GUID service error. "
             "This error occurred because the GUID service failed. "
             "Please check the questionnaire has an ID and try again."
         )
