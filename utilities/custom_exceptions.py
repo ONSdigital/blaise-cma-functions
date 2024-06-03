@@ -24,7 +24,7 @@ class QuestionnaireError(Exception):
     def _format_message(self):
         base_message = self.message
         if self.questionnaire_name:
-            return f"{base_message}: Could not get questionnaire - {self.questionnaire_name}"
+            return f"{base_message}: Could not find questionnaire - {self.questionnaire_name}"
         return base_message
 
     def __str__(self):

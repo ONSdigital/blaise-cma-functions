@@ -120,7 +120,7 @@ class TestGetQuestionnaire:
             blaise_service.get_questionnaire(blaise_server_park, questionnaire_name)
 
         # Assert
-        assert err.value.args[0] == "Questionnaire error: Could not get questionnaire - LMS2309_GO1"
+        assert err.value.args[0] == "Questionnaire error: Could not find questionnaire - LMS2309_GO1"
         assert (
                    "root",
                    logging.ERROR,
