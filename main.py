@@ -36,6 +36,12 @@ def create_donor_cases(request: flask.request):
             questionnaire_name, guid, users_with_role
         )
         return "Done!", 200
+    except ValueError as e:
+        logging.error(f"Error creating IPS donor cases: {e}")
+        return f"Error creating IPS donor cases: {e}", 400
+    except AttributeError as e:
+        logging.error(f"Error creating IPS donor cases: {e}")
+        return f"Error creating IPS donor cases: {e}", 400
     except ConfigError as e:
         logging.error(f"Error creating IPS donor cases: {e}")
         return f"Error creating IPS donor cases: {e}", 400
