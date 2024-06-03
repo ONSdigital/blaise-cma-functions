@@ -16,13 +16,13 @@ setup_logger()
 def create_donor_cases(request: flask.request):
     try:
         logging.info("Running Cloud Function - 'create_donor_cases'")
-        blaise_config = Config.from_env()
-        blaise_config.validate_config(blaise_config)
-        blaise_server_park = blaise_config.blaise_server_park
-
         request_json = request.get_json()
         questionnaire_name = get_questionnaire_name(request_json)
         role = get_role(request_json)
+
+        blaise_config = Config.from_env()
+        blaise_config.validate_config(blaise_config)
+        blaise_server_park = blaise_config.blaise_server_park
 
         blaise_service = BlaiseService(config=blaise_config)
         guid_service = GUIDService(blaise_service)

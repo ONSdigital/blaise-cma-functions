@@ -154,16 +154,14 @@ class TestMainCreateDonorCasesExceptionHandling:
     @pytest.mark.parametrize(
         "questionnaire_name", [None, ""],
     )
-    @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "get_users")
     def test_create_donor_case_returns_message_and_400_status_code_when_questionnaire_name_value_is_missing(
-            self, mock_get_users, mock_config, questionnaire_name, caplog
+            self, mock_get_users, questionnaire_name, caplog
     ):
         # Arrange
         mock_request = flask.Request.from_values(
             json={"questionnaire_name": questionnaire_name, "role": "IPS Manager"}
         )
-        mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
 
         # Act
         with caplog.at_level(logging.ERROR):
@@ -187,16 +185,14 @@ class TestMainCreateDonorCasesExceptionHandling:
     @pytest.mark.parametrize(
         "role", [None, ""],
     )
-    @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "get_users")
     def test_create_donor_case_returns_message_and_400_status_code_when_role_value_is_missing(
-            self, mock_get_users, mock_config, role, caplog
+            self, mock_get_users, role, caplog
     ):
         # Arrange
         mock_request = flask.Request.from_values(
             json={"questionnaire_name": "IPS2306a", "role": role}
         )
-        mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
 
         # Act
         with caplog.at_level(logging.ERROR):
@@ -216,14 +212,12 @@ class TestMainCreateDonorCasesExceptionHandling:
                    error_message,
                ) in caplog.record_tuples
 
-    @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "get_users")
     def test_create_donor_case_returns_message_and_400_status_code_when_the_request_is_not_json(
-            self, mock_get_users, mock_config, caplog
+            self, mock_get_users, caplog
     ):
         # Arrange
         mock_request = None
-        mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
 
         # Act
         with caplog.at_level(logging.ERROR):
