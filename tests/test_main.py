@@ -272,7 +272,7 @@ class TestMainCreateDonorCasesExceptionHandling:
 
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "get_users")
-    def test_create_donor_case__returns_message_and_400_status_code_when_the_request_is_not_json(
+    def test_create_donor_case_returns_message_and_400_status_code_when_the_request_is_not_json(
             self, mock_get_users, mock_config, caplog
     ):
         # Arrange
@@ -307,7 +307,7 @@ class TestMainCreateDonorCasesExceptionHandling:
     )
     @mock.patch("appconfig.config.Config.from_env")
     def test_create_donor_case_returns_message_and_400_status_code_when_both_configs_are_missing(
-            self, mock_config, blaise_api_url, blaise_server_park
+            self, mock_config, blaise_api_url, blaise_server_park, caplog
     ):
         # Arrange
         mock_request = flask.Request.from_values(
@@ -316,13 +316,22 @@ class TestMainCreateDonorCasesExceptionHandling:
         mock_config.return_value = Config(blaise_api_url=blaise_api_url, blaise_server_park=blaise_server_park)
 
         # Act
-        result = create_donor_cases(mock_request)
+        with caplog.at_level(logging.ERROR):
+            result = create_donor_cases(mock_request)
 
         # Assert
-        assert result == (
-            "Error creating IPS donor cases: Configuration error: Missing configurations - blaise_api_url, blaise_server_park",
-            400
+        error_message = (
+            "Error creating IPS donor cases. "
+            f"Custom ConfigError raised: Configuration error: Missing configurations - blaise_api_url, blaise_server_park. "
+            "This error occurred because the required configuration values were missing. "
+            "Please check the values are being passed correctly and try again."
         )
+        assert result == (error_message, 400)
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples
 
 
     @pytest.mark.parametrize(
@@ -330,7 +339,7 @@ class TestMainCreateDonorCasesExceptionHandling:
     )
     @mock.patch("appconfig.config.Config.from_env")
     def test_create_donor_case_returns_message_and_400_status_code_blaise_server_park_config_is_missing(
-            self, mock_config, blaise_server_park
+            self, mock_config, blaise_server_park, caplog
     ):
         # Arrange
         mock_request = flask.Request.from_values(
@@ -339,21 +348,29 @@ class TestMainCreateDonorCasesExceptionHandling:
         mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park=blaise_server_park)
 
         # Act
-        result = create_donor_cases(mock_request)
+        with caplog.at_level(logging.ERROR):
+            result = create_donor_cases(mock_request)
 
         # Assert
-        assert result == (
-            "Error creating IPS donor cases: Configuration error: Missing configurations - blaise_server_park",
-            400
+        error_message = (
+            "Error creating IPS donor cases. "
+            f"Custom ConfigError raised: Configuration error: Missing configurations - blaise_server_park. "
+            "This error occurred because the required configuration values were missing. "
+            "Please check the values are being passed correctly and try again."
         )
-
+        assert result == (error_message, 400)
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples
 
     @pytest.mark.parametrize(
-        "blaise_api_url", [None,""],
+        "blaise_api_url", [None, ""],
     )
     @mock.patch("appconfig.config.Config.from_env")
     def test_create_donor_case_returns_message_and_400_status_code_blaise_api_url_config_is_missing(
-            self, mock_config, blaise_api_url
+            self, mock_config, blaise_api_url, caplog
     ):
         # Arrange
         mock_request = flask.Request.from_values(
@@ -362,13 +379,22 @@ class TestMainCreateDonorCasesExceptionHandling:
         mock_config.return_value = Config(blaise_api_url=blaise_api_url, blaise_server_park="bar")
 
         # Act
-        result = create_donor_cases(mock_request)
+        with caplog.at_level(logging.ERROR):
+            result = create_donor_cases(mock_request)
 
         # Assert
-        assert result == (
-            "Error creating IPS donor cases: Configuration error: Missing configurations - blaise_api_url",
-            400
+        error_message = (
+            "Error creating IPS donor cases. "
+            f"Custom ConfigError raised: Configuration error: Missing configurations - blaise_api_url. "
+            "This error occurred because the required configuration values were missing. "
+            "Please check the values are being passed correctly and try again."
         )
+        assert result == (error_message, 400)
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples
 
 
     @mock.patch("appconfig.config.Config.from_env")

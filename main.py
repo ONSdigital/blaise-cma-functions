@@ -55,8 +55,14 @@ def create_donor_cases(request: flask.request):
         logging.error(error_message)
         return error_message, 400
     except ConfigError as e:
-        logging.error(f"Error creating IPS donor cases: {e}")
-        return f"Error creating IPS donor cases: {e}", 400
+        error_message = (
+            "Error creating IPS donor cases. "
+            f"Custom ConfigError raised: {e}. "
+            "This error occurred because the required configuration values were missing. "
+            "Please check the values are being passed correctly and try again."
+        )
+        logging.error(error_message)
+        return error_message, 400
     except QuestionnaireError as e:
         logging.error(f"Error creating IPS donor cases: {e}")
         return f"Error creating IPS donor cases: {e}", 404
