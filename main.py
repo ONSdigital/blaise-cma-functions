@@ -7,7 +7,7 @@ from services.blaise_service import BlaiseService
 from services.donor_case_service import DonorCaseService
 from services.guid_service import GUIDService
 from services.user_service import UserService
-from utilities.custom_exceptions import ConfigError, QuestionnaireError
+from utilities.custom_exceptions import ConfigError, QuestionnaireError, GuidError
 from utilities.logging import setup_logger
 
 setup_logger()
@@ -36,21 +36,21 @@ def create_donor_cases(request: flask.request):
             questionnaire_name, guid, users_with_role
         )
         return "Done!", 200
-    except ValueError as e:
-        error_message = (
-            "Error creating IPS donor cases. "
-            f"ValueError raised: {e}. "
-            "This error occurred due to an invalid value encountered in the input. "
-            "Please check the input values for correctness and try again."
-        )
-        logging.error(error_message)
-        return error_message, 400
     except AttributeError as e:
         error_message = (
             "Error creating IPS donor cases. "
             f"AttributeError raised: {e}. "
             "This error occurred because an expected attribute was not found, for example in a JSON object. "
             "Please ensure that the object being accessed is the correct type, has the required attributes, and they are correctly spelled."
+        )
+        logging.error(error_message)
+        return error_message, 400
+    except ValueError as e:
+        error_message = (
+            "Error creating IPS donor cases. "
+            f"ValueError raised: {e}. "
+            "This error occurred due to an invalid value encountered in the input. "
+            "Please check the input values for correctness and try again."
         )
         logging.error(error_message)
         return error_message, 400
@@ -72,6 +72,15 @@ def create_donor_cases(request: flask.request):
         )
         logging.error(error_message)
         return error_message, 404
+    except GuidError as e:
+        error_message = (
+            "Error creating IPS donor cases. "
+            f"Custom GuidError raised: {e}. "
+            "This error occurred because the GUID service failed. "
+            "Please check the questionnaire has an ID and try again."
+        )
+        logging.error(error_message)
+        return error_message, 500
     except Exception as e:
         logging.error(f"Error creating IPS donor cases: {e}")
         return f"Error creating IPS donor cases: {e}", 500

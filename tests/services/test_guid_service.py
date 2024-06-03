@@ -7,6 +7,7 @@ from appconfig.config import Config
 from services.blaise_service import BlaiseService
 from services.guid_service import GUIDService
 from tests.helpers import get_default_config
+from utilities.custom_exceptions import GuidError
 
 
 @pytest.fixture()
@@ -65,7 +66,7 @@ def test_get_guid_logs_the_correct_message(
 
 
 @mock.patch.object(BlaiseService, "get_questionnaire")
-def test_get_guid_logs_the_error_message(get_questionnaire, guid_service, caplog):
+def test_get_guid_logs_error_and_raises_guid_error_exception(get_questionnaire, guid_service, caplog):
     # Arrange
     get_questionnaire.return_value = {}
     blaise_server_park = "gusty"
@@ -73,10 +74,11 @@ def test_get_guid_logs_the_error_message(get_questionnaire, guid_service, caplog
     questionnaire_name = "LMS2309_GO1"
 
     # Act
-    with caplog.at_level(logging.ERROR):
+    with pytest.raises(GuidError) as err:
         guid_service.get_guid(blaise_server_park, questionnaire_name)
 
     # Assert
+    assert err.value.args[0] == "GUID error: Error getting GUID for questionnaire LMS2309_GO1"
     assert (
         "root",
         40,

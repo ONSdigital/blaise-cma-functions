@@ -1,6 +1,7 @@
 import logging
 
 from services.blaise_service import BlaiseService
+from utilities.custom_exceptions import GuidError
 
 
 class GUIDService:
@@ -19,4 +20,4 @@ class GUIDService:
             logging.error(
                 f"Error getting GUID for questionnaire {questionnaire_name}: {e}"
             )
-            return ""
+            raise GuidError(questionnaire_name=questionnaire_name)

@@ -29,3 +29,19 @@ class QuestionnaireError(Exception):
 
     def __str__(self):
         return self._format_message()
+
+
+class GuidError(Exception):
+    def __init__(self, message="GUID error", questionnaire_name=None):
+        self.message = message
+        self.questionnaire_name = questionnaire_name
+        super().__init__(self._format_message())
+
+    def _format_message(self):
+        base_message = self.message
+        if self.questionnaire_name:
+            return f"{base_message}: Error getting GUID for questionnaire {self.questionnaire_name}"
+        return base_message
+
+    def __str__(self):
+        return self._format_message()

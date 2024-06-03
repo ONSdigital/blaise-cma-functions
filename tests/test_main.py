@@ -8,7 +8,7 @@ import pytest
 from appconfig.config import Config
 from main import create_donor_cases, get_questionnaire_name, get_role
 from models.donor_case_model import DonorCaseModel
-from utilities.custom_exceptions import QuestionnaireError
+from utilities.custom_exceptions import QuestionnaireError, GuidError
 
 
 class MockRequest:
@@ -361,6 +361,36 @@ class TestMainCreateDonorCasesExceptionHandling:
             "Please check the VMs are online, and the questionnaire is installed."
         )
         assert result == (error_message, 404)
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples
+
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch("services.guid_service.GUIDService.get_guid")
+    def test_create_donor_case_returns_message_and_500_status_code_when_the_guid_service_raises_an_exception(
+            self, mock_get_guid, mock_config, caplog
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+        )
+        mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
+        mock_get_guid.side_effect = GuidError()
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = create_donor_cases(mock_request)
+
+        # Assert
+        error_message = (
+            "Error creating IPS donor cases. "
+            "Custom GuidError raised: GUID error. "
+            "This error occurred because the GUID service failed. "
+            "Please check the questionnaire has an ID and try again."
+        )
+        assert result == (error_message, 500)
         assert (
                    "root",
                    logging.ERROR,
