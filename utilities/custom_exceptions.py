@@ -15,8 +15,8 @@ class ConfigError(Exception):
         return self._format_message()
 
 
-class BlaiseQuestionnaireError(Exception):
-    def __init__(self, message="Questionnaire error", questionnaire_name=None):
+class BlaiseError(Exception):
+    def __init__(self, message="Blaise service error", questionnaire_name=None):
         self.message = message
         self.questionnaire_name = questionnaire_name
         super().__init__(self._format_message())
@@ -24,7 +24,7 @@ class BlaiseQuestionnaireError(Exception):
     def _format_message(self):
         base_message = self.message
         if self.questionnaire_name:
-            return f"{base_message}: Could not find questionnaire - {self.questionnaire_name}"
+            return f"Questionnaire error: {base_message}"
         return base_message
 
     def __str__(self):

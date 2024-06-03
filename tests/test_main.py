@@ -8,7 +8,7 @@ import pytest
 from appconfig.config import Config
 from main import create_donor_cases, get_questionnaire_name, get_role
 from models.donor_case_model import DonorCaseModel
-from utilities.custom_exceptions import BlaiseQuestionnaireError, GuidError, BlaiseUsersError
+from utilities.custom_exceptions import BlaiseError, GuidError, BlaiseUsersError
 
 
 class MockRequest:
@@ -347,7 +347,7 @@ class TestMainCreateDonorCasesExceptionHandling:
             json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
         )
         mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
-        mock_rest_api_client_get_questionnaire.side_effect = BlaiseQuestionnaireError()
+        mock_rest_api_client_get_questionnaire.side_effect = BlaiseError()
 
         # Act
         with caplog.at_level(logging.ERROR):
@@ -356,7 +356,7 @@ class TestMainCreateDonorCasesExceptionHandling:
         # Assert
         error_message = (
             "Error creating IPS donor cases. "
-            "Custom QuestionnaireError raised: Questionnaire error: Could not find questionnaire - IPS2402a. "
+            "Custom BlaiseError raised: Questionnaire error: Error getting questionnaire 'IPS2402a': Blaise service error. "
             "This error occurred because the rest api failed to get the questionnaire from Blaise. "
             "Please check the VMs are online, the questionnaire is installed, and try again."
         )

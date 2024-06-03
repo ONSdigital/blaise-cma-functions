@@ -7,7 +7,7 @@ from services.blaise_service import BlaiseService
 from services.donor_case_service import DonorCaseService
 from services.guid_service import GUIDService
 from services.user_service import UserService
-from utilities.custom_exceptions import ConfigError, BlaiseQuestionnaireError, GuidError, BlaiseUsersError
+from utilities.custom_exceptions import ConfigError, BlaiseError, GuidError, BlaiseUsersError
 from utilities.logging import setup_logger
 
 setup_logger()
@@ -63,10 +63,10 @@ def create_donor_cases(request: flask.request):
         )
         logging.error(error_message)
         return error_message, 400
-    except BlaiseQuestionnaireError as e:
+    except BlaiseError as e:
         error_message = (
             "Error creating IPS donor cases. "
-            f"Custom QuestionnaireError raised: {e}. "
+            f"Custom BlaiseError raised: {e}. "
             "This error occurred because the rest api failed to get the questionnaire from Blaise. "
             "Please check the VMs are online, the questionnaire is installed, and try again."
         )

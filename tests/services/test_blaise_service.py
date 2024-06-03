@@ -7,7 +7,7 @@ import pytest
 from appconfig.config import Config
 from services.blaise_service import BlaiseService
 from tests.helpers import get_default_config
-from utilities.custom_exceptions import BlaiseQuestionnaireError, BlaiseUsersError
+from utilities.custom_exceptions import BlaiseError, BlaiseUsersError
 
 
 @pytest.fixture()
@@ -116,15 +116,15 @@ class TestGetQuestionnaire:
         questionnaire_name = "LMS2309_GO1"
 
         # Act
-        with pytest.raises(BlaiseQuestionnaireError) as err:
+        with pytest.raises(BlaiseError) as err:
             blaise_service.get_questionnaire(blaise_server_park, questionnaire_name)
 
         # Assert
-        assert err.value.args[0] == "Questionnaire error: Could not find questionnaire - LMS2309_GO1"
+        assert err.value.args[0] == "Questionnaire error: Error getting questionnaire 'LMS2309_GO1': DFS had to end their sale"
         assert (
                    "root",
                    logging.ERROR,
-                   "Error getting questionnaire LMS2309_GO1: DFS had to end their sale",
+                   "Error getting questionnaire 'LMS2309_GO1': DFS had to end their sale",
                ) in caplog.record_tuples
 
 
