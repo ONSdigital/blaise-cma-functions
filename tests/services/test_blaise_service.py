@@ -107,10 +107,10 @@ class TestGetQuestionnaire:
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     def test_get_questionnaire_raises_questionnaire_error_exception(
-            self, _mock_rest_api_client_get_questionnaire_for_server_park, blaise_service, caplog
+            self, mock_rest_api_client_get_questionnaire, blaise_service, caplog
     ):
         # Arrange
-        _mock_rest_api_client_get_questionnaire_for_server_park.side_effect = Exception("spicy things happened")
+        mock_rest_api_client_get_questionnaire.side_effect = Exception("DFS had to end their sale")
 
         blaise_server_park = "gusty"
         questionnaire_name = "LMS2309_GO1"
@@ -124,7 +124,7 @@ class TestGetQuestionnaire:
         assert (
                    "root",
                    logging.ERROR,
-                   "Error getting questionnaire LMS2309_GO1: spicy things happened",
+                   "Error getting questionnaire LMS2309_GO1: DFS had to end their sale",
                ) in caplog.record_tuples
 
 
