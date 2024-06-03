@@ -167,11 +167,11 @@ class TestMainCreateDonorCasesExceptionHandling:
             result = create_donor_cases(mock_request)
 
         # Assert
-        assert result == ("Error creating IPS donor cases: Missing required fields: 'questionnaire_name'", 400)
+        assert result == ("Error creating IPS donor cases. ValueError raised: Missing required fields: 'questionnaire_name'", 400)
         assert (
                    "root",
                    logging.ERROR,
-                   "Error creating IPS donor cases: Missing required fields: 'questionnaire_name'",
+                   "Error creating IPS donor cases. ValueError raised: Missing required fields: 'questionnaire_name'",
                ) in caplog.record_tuples
 
 
@@ -191,11 +191,11 @@ class TestMainCreateDonorCasesExceptionHandling:
             result = create_donor_cases(mock_request)
 
         # Assert
-        assert result == ("Error creating IPS donor cases: Missing required fields: 'questionnaire_name'", 400)
+        assert result == ("Error creating IPS donor cases. ValueError raised: Missing required fields: 'questionnaire_name'", 400)
         assert (
                    "root",
                    logging.ERROR,
-                   "Error creating IPS donor cases: Missing required fields: 'questionnaire_name'",
+                   "Error creating IPS donor cases. ValueError raised: Missing required fields: 'questionnaire_name'",
                ) in caplog.record_tuples
 
 
@@ -215,11 +215,11 @@ class TestMainCreateDonorCasesExceptionHandling:
             result = create_donor_cases(mock_request)
 
         # Assert
-        assert result == ("Error creating IPS donor cases: Missing required fields: 'role'", 400)
+        assert result == ("Error creating IPS donor cases. ValueError raised: Missing required fields: 'role'", 400)
         assert (
                    "root",
                    logging.ERROR,
-                   "Error creating IPS donor cases: Missing required fields: 'role'",
+                   "Error creating IPS donor cases. ValueError raised: Missing required fields: 'role'",
                ) in caplog.record_tuples
 
 
@@ -239,11 +239,11 @@ class TestMainCreateDonorCasesExceptionHandling:
             result = create_donor_cases(mock_request)
 
         # Assert
-        assert result == ("Error creating IPS donor cases: Missing required fields: 'role'", 400)
+        assert result == ("Error creating IPS donor cases. ValueError raised: Missing required fields: 'role'", 400)
         assert (
                    "root",
                    logging.ERROR,
-                   "Error creating IPS donor cases: Missing required fields: 'role'",
+                   "Error creating IPS donor cases. ValueError raised: Missing required fields: 'role'",
                ) in caplog.record_tuples
 
     @mock.patch("appconfig.config.Config.from_env")
