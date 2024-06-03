@@ -151,49 +151,22 @@ class TestMainCreateDonorCases:
 
 
 class TestMainCreateDonorCasesExceptionHandling:
-    @mock.patch("appconfig.config.Config.from_env")
-    @mock.patch.object(blaise_restapi.Client, "get_users")
-    def test_create_donor_case_returns_message_and_400_status_code_when_questionnaire_name_value_is_none(
-            self, mock_get_users, mock_config, caplog
-    ):
-        # Arrange
-        mock_request = flask.Request.from_values(
-            json={"questionnaire_name": None, "role": "IPS Manager"}
-        )
-        mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
-
-        # Act
-        with caplog.at_level(logging.INFO):
-            result = create_donor_cases(mock_request)
-
-        # Assert
-        error_message = (
-            "Error creating IPS donor cases. "
-            "ValueError raised: Missing required fields: 'questionnaire_name'. "
-            "This error occurred due to an invalid value encountered in the input. "
-            "Please check the input values for correctness and try again."
-        )
-        assert result == (error_message, 400)
-        assert (
-                   "root",
-                   logging.ERROR,
-                   error_message,
-               ) in caplog.record_tuples
-
-
+    @pytest.mark.parametrize(
+        "questionnaire_name", [None, ""],
+    )
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "get_users")
     def test_create_donor_case_returns_message_and_400_status_code_when_questionnaire_name_value_is_missing(
-            self, mock_get_users, mock_config, caplog
+            self, mock_get_users, mock_config, questionnaire_name, caplog
     ):
         # Arrange
         mock_request = flask.Request.from_values(
-            json={"questionnaire_name": "", "role": "IPS Manager"}
+            json={"questionnaire_name": questionnaire_name, "role": "IPS Manager"}
         )
         mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
 
         # Act
-        with caplog.at_level(logging.INFO):
+        with caplog.at_level(logging.ERROR):
             result = create_donor_cases(mock_request)
 
         # Assert
@@ -211,49 +184,22 @@ class TestMainCreateDonorCasesExceptionHandling:
                ) in caplog.record_tuples
 
 
-    @mock.patch("appconfig.config.Config.from_env")
-    @mock.patch.object(blaise_restapi.Client, "get_users")
-    def test_create_donor_case_returns_message_and_400_status_code_when_role_value_is_none(
-            self, mock_get_users, mock_config, caplog
-    ):
-        # Arrange
-        mock_request = flask.Request.from_values(
-            json={"questionnaire_name": "IPS2306a", "role": None}
-        )
-        mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
-
-        # Act
-        with caplog.at_level(logging.INFO):
-            result = create_donor_cases(mock_request)
-
-        # Assert
-        error_message = (
-            "Error creating IPS donor cases. "
-            "ValueError raised: Missing required fields: 'role'. "
-            "This error occurred due to an invalid value encountered in the input. "
-            "Please check the input values for correctness and try again."
-        )
-        assert result == (error_message, 400)
-        assert (
-                   "root",
-                   logging.ERROR,
-                   error_message,
-               ) in caplog.record_tuples
-
-
+    @pytest.mark.parametrize(
+        "role", [None, ""],
+    )
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "get_users")
     def test_create_donor_case_returns_message_and_400_status_code_when_role_value_is_missing(
-            self, mock_get_users, mock_config, caplog
+            self, mock_get_users, mock_config, role, caplog
     ):
         # Arrange
         mock_request = flask.Request.from_values(
-            json={"questionnaire_name": "IPS2306a", "role": ""}
+            json={"questionnaire_name": "IPS2306a", "role": role}
         )
         mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
 
         # Act
-        with caplog.at_level(logging.INFO):
+        with caplog.at_level(logging.ERROR):
             result = create_donor_cases(mock_request)
 
         # Assert
@@ -280,7 +226,7 @@ class TestMainCreateDonorCasesExceptionHandling:
         mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
 
         # Act
-        with caplog.at_level(logging.INFO):
+        with caplog.at_level(logging.ERROR):
             result = create_donor_cases(mock_request)
 
         # Assert
@@ -335,10 +281,10 @@ class TestMainCreateDonorCasesExceptionHandling:
 
 
     @pytest.mark.parametrize(
-        "blaise_server_park", [None,""],
+        "blaise_server_park", [None, ""],
     )
     @mock.patch("appconfig.config.Config.from_env")
-    def test_create_donor_case_returns_message_and_400_status_code_blaise_server_park_config_is_missing(
+    def test_create_donor_case_returns_message_and_400_status_code_when_blaise_server_park_config_is_missing(
             self, mock_config, blaise_server_park, caplog
     ):
         # Arrange
@@ -369,7 +315,7 @@ class TestMainCreateDonorCasesExceptionHandling:
         "blaise_api_url", [None, ""],
     )
     @mock.patch("appconfig.config.Config.from_env")
-    def test_create_donor_case_returns_message_and_400_status_code_blaise_api_url_config_is_missing(
+    def test_create_donor_case_returns_message_and_400_status_code_when_blaise_api_url_config_is_missing(
             self, mock_config, blaise_api_url, caplog
     ):
         # Arrange
