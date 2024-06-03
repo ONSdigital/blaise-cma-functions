@@ -284,11 +284,17 @@ class TestMainCreateDonorCasesExceptionHandling:
             result = create_donor_cases(mock_request)
 
         # Assert
-        assert result == ("Error creating IPS donor cases: 'NoneType' object has no attribute 'get_json'", 400)
+        error_message = (
+            "Error creating IPS donor cases. "
+            f"AttributeError raised: 'NoneType' object has no attribute 'get_json'. "
+            "This error occurred because an expected attribute was not found, for example in a JSON object. "
+            "Please ensure that the object being accessed has the required attributes and they are correctly spelled."
+        )
+        assert result == (error_message, 400)
         assert (
                    "root",
                    logging.ERROR,
-                   "Error creating IPS donor cases: 'NoneType' object has no attribute 'get_json'",
+                   error_message,
                ) in caplog.record_tuples
 
     @pytest.mark.parametrize(

@@ -46,8 +46,14 @@ def create_donor_cases(request: flask.request):
         logging.error(error_message)
         return error_message, 400
     except AttributeError as e:
-        logging.error(f"Error creating IPS donor cases: {e}")
-        return f"Error creating IPS donor cases: {e}", 400
+        error_message = (
+            "Error creating IPS donor cases. "
+            f"AttributeError raised: {e}. "
+            "This error occurred because an expected attribute was not found, for example in a JSON object. "
+            "Please ensure that the object being accessed has the required attributes and they are correctly spelled."
+        )
+        logging.error(error_message)
+        return error_message, 400
     except ConfigError as e:
         logging.error(f"Error creating IPS donor cases: {e}")
         return f"Error creating IPS donor cases: {e}", 400
