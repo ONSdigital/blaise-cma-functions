@@ -120,7 +120,11 @@ class TestGetQuestionnaire:
             blaise_service.get_questionnaire(blaise_server_park, questionnaire_name)
 
         # Assert
-        assert err.value.args[0] == "Questionnaire error: Error getting questionnaire 'LMS2309_GO1': DFS had to end their sale"
+        assert err.value.args[0] == (
+            "Questionnaire error: Error getting questionnaire 'LMS2309_GO1': DFS had to end their sale. "
+            "This error occurred because the rest api failed to get the questionnaire from Blaise. "
+            "Please check the VMs are online, the questionnaire is installed, and try again."
+        )
         assert (
                    "root",
                    logging.ERROR,
