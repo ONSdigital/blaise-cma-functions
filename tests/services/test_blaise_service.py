@@ -106,7 +106,7 @@ class TestGetQuestionnaire:
                ) in caplog.record_tuples
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
-    def test_get_questionnaire_logs_error_and_raises_questionnaire_error_exception(
+    def test_get_questionnaire_logs_error_and_raises_blaise_questionnaire_error_exception(
             self, mock_rest_api_client_get_questionnaire, blaise_service, caplog
     ):
         # Arrange
