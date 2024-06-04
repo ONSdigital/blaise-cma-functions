@@ -111,7 +111,7 @@ class TestDonorCaseDoesNotExist:
             "Donor case does not exist for user 'james'",
         ) in caplog.record_tuples
 
-    def test_donor_case_exists_logs_an_error_message(
+    def test_donor_case_exists_logs_an_error_message_and_raises_a_donor_case_error_exception(
         self, donor_case_service, caplog
     ):
         # Act
@@ -119,16 +119,18 @@ class TestDonorCaseDoesNotExist:
         users_with_existing_donor_cases = None
 
         # Arrange
-        with caplog.at_level(logging.INFO):
+        with pytest.raises(DonorCaseError) as err:
             donor_case_service.donor_case_does_not_exist(
                 user, users_with_existing_donor_cases
             )
 
         # Assert
+        error_message = "Error checking donor case exists for james: argument of type 'NoneType' is not iterable"
+        assert err.value.args[0] == error_message
         assert (
             "root",
             40,
-            "Error checking donor case exists for james: argument of type 'NoneType' is not iterable",
+            error_message,
         ) in caplog.record_tuples
 
 
