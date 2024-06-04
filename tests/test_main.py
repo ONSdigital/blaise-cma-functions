@@ -1,9 +1,10 @@
+import flask
 import logging
+import pytest
+
 from unittest import mock
 
 import blaise_restapi
-import flask
-import pytest
 
 from appconfig.config import Config
 from main import create_donor_cases, get_questionnaire_name, get_role
@@ -19,7 +20,7 @@ class MockRequest:
         return self.json_data
 
 
-class TestMainCreateDonorCases:
+class TestMainCreateDonorCasesHandleRequestStep:
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
     @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
@@ -74,7 +75,6 @@ class TestMainCreateDonorCases:
 
         # Assert
         assert mock_create_donor_case_for_user.called_with(mock_donor_case_model)
-
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     @mock.patch.object(blaise_restapi.Client, "get_users")
@@ -149,8 +149,6 @@ class TestMainCreateDonorCases:
             },
         )
 
-
-class TestMainCreateDonorCasesExceptionHandling:
     @pytest.mark.parametrize(
         "questionnaire_name", [None, ""],
     )
@@ -180,7 +178,6 @@ class TestMainCreateDonorCasesExceptionHandling:
                    logging.ERROR,
                    error_message,
                ) in caplog.record_tuples
-
 
     @pytest.mark.parametrize(
         "role", [None, ""],
@@ -237,6 +234,8 @@ class TestMainCreateDonorCasesExceptionHandling:
                    error_message,
                ) in caplog.record_tuples
 
+
+class TestMainCreateDonorCasesHandleConfigStep:
     @pytest.mark.parametrize(
         "blaise_api_url, blaise_server_park", [
             (None, None),
@@ -272,7 +271,6 @@ class TestMainCreateDonorCasesExceptionHandling:
                    logging.ERROR,
                    error_message,
                ) in caplog.record_tuples
-
 
     @pytest.mark.parametrize(
         "blaise_server_park", [None, ""],
@@ -337,6 +335,8 @@ class TestMainCreateDonorCasesExceptionHandling:
                ) in caplog.record_tuples
 
 
+class TestMainCreateDonorCasesHandleGuidStep:
+
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     def test_create_donor_case_returns_message_and_404_status_code_when_rest_api_fails_to_return_questionnaire(
@@ -394,6 +394,8 @@ class TestMainCreateDonorCasesExceptionHandling:
                    error_message,
                ) in caplog.record_tuples
 
+
+class TestMainCreateDonorCasesHandleUsersStep:
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch("services.guid_service.GUIDService.get_guid")
     @mock.patch("services.user_service.UserService.get_users_by_role")
@@ -426,6 +428,8 @@ class TestMainCreateDonorCasesExceptionHandling:
                    error_message,
                ) in caplog.record_tuples
 
+
+class TestMainCreateDonorCasesHandleDonorCasesStep:
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch("services.guid_service.GUIDService.get_guid")
     @mock.patch("services.user_service.UserService.get_users_by_role")
@@ -472,7 +476,6 @@ class TestMainCreateDonorCasesExceptionHandling:
                    logging.ERROR,
                    error_message,
                ) in caplog.record_tuples
-
 
 
 def test_get_questionnaire_name_returns_the_questionnaire_name():
