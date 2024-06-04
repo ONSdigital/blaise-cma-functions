@@ -64,14 +64,14 @@ class BlaiseUsersError(Exception):
 
 
 class DonorCaseError(Exception):
-    def __init__(self, message):
+    def __init__(self, message=None):
         self.message = message
         super().__init__(self._format_message())
 
     def _format_message(self):
-        return (
-            f"{self.message}"
-        )
+        if self.message:
+            return self.message
+        return "Custom Donor Case error"
 
     def __str__(self):
         return self._format_message()
