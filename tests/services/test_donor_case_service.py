@@ -137,7 +137,37 @@ class TestCheckAndCreateDonorCaseForUsers:
     def test_check_and_create_donor_case_for_users_raises_donor_case_error_exception_when_get_existing_donor_cases_fails(
             self, mock_get_existing_donor_cases, donor_case_service, caplog):
         # arrange
-        mock_get_existing_donor_cases.side_effect = Exception("You sat in Sheldon's spot")
+        mock_get_existing_donor_cases.return_value = ""
+
+        questionnaire_name = "foo"
+        guid = "bar"
+        users_with_role = ["foobar"]
+
+        # act
+        with pytest.raises(DonorCaseError) as err:
+            donor_case_service.check_and_create_donor_case_for_users(
+                questionnaire_name, guid, users_with_role
+            )
+
+        # assert
+        error_message = (
+            "Error when checking and creating donor cases: None is not in list"
+        )
+        assert err.value.args[0] == error_message
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples
+
+    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
+    @mock.patch("services.donor_case_service.DonorCaseService.donor_case_does_not_exist")
+    def test_check_and_create_donor_case_for_users_raises_donor_case_error_exception_when_donor_case_does_not_exist_fails(
+            self, mock_donor_case_does_not_exist, mock_get_existing_donor_cases, donor_case_service, caplog):
+        # arrange
+        mock_get_existing_donor_cases.return_value = ["james", "rich"]
+        mock_donor_case_does_not_exist.side_effect = DonorCaseError("You sat in Sheldon's spot")
+
         questionnaire_name = "foo"
         guid = "bar"
         users_with_role = ["foobar"]
@@ -151,6 +181,37 @@ class TestCheckAndCreateDonorCaseForUsers:
         # assert
         error_message = (
             "Error when checking and creating donor cases: You sat in Sheldon's spot"
+        )
+        assert err.value.args[0] == error_message
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples
+
+    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
+    @mock.patch("services.donor_case_service.DonorCaseService.donor_case_does_not_exist")
+    @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
+    def test_check_and_create_donor_case_for_users_raises_donor_case_error_exception_when_donor_case_does_not_exist_fails(
+            self, mock_create_donor_case_for_user, mock_donor_case_does_not_exist, mock_get_existing_donor_cases, donor_case_service, caplog):
+        # arrange
+        mock_get_existing_donor_cases.return_value = ["james", "rich"]
+        mock_donor_case_does_not_exist.return_value = True
+        mock_create_donor_case_for_user.side_effect = AttributeError("the rest api failed")
+
+        questionnaire_name = "IPS2406a"
+        guid = "7bded891-3aa6-41b2-824b-0be514018806"
+        users_with_role = ["IPS Manager"]
+
+        # act
+        with pytest.raises(DonorCaseError) as err:
+            donor_case_service.check_and_create_donor_case_for_users(
+                questionnaire_name, guid, users_with_role
+            )
+
+        # assert
+        error_message = (
+            "Error when checking and creating donor cases: the rest api failed"
         )
         assert err.value.args[0] == error_message
         assert (
