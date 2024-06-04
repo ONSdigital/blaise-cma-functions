@@ -204,11 +204,12 @@ class TestGetUsers:
             blaise_service.get_users(server_park)
 
         # Assert
-        assert err.value.args[0] == "Blaise Users error: Error getting users from server park foo."
+        error_message = "Error getting users from server park foo: No more violins left to score Bridgerton"
+        assert err.value.args[0] == error_message
         assert (
                    "root",
                    logging.ERROR,
-                   "Error getting users from server park foo: No more violins left to score Bridgerton.",
+                   error_message,
                ) in caplog.record_tuples
 
 

@@ -38,8 +38,9 @@ class BlaiseService:
             logging.info(f"Got {len(users)} users from server park {server_park}")
             return users
         except Exception as e:
-            logging.error(f"Error getting users from server park {server_park}: {e}.")
-            raise BlaiseUsersError(server_park=server_park)
+            error_message = f"Error getting users from server park {server_park}: {e}"
+            logging.error(error_message)
+            raise BlaiseUsersError(error_message)
 
     def get_existing_donor_cases(self, guid):
         try:
