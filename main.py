@@ -38,33 +38,19 @@ def create_donor_cases(request: flask.request):
         )
         return "Done!", 200
     except AttributeError as e:
-        error_message = (
-            "Error creating IPS donor cases. "
-            f"AttributeError raised: {e}. "
-            "This error occurred because an expected attribute was not found, for example in a JSON object. "
-            "Please ensure that the object being accessed is the correct type, has the required attributes, and they are correctly spelled."
-        )
+        error_message = f"Error creating IPS donor cases. AttributeError raised: {e}. "
         logging.error(error_message)
         return error_message, 400
     except ValueError as e:
-        error_message = (
-            "Error creating IPS donor cases. "
-            f"ValueError raised: {e}. "
-            "This error occurred due to an invalid value encountered in the input. "
-            "Please check the input values for correctness and try again."
-        )
+        error_message = f"Error creating IPS donor cases. ValueError raised: {e}. "
         logging.error(error_message)
         return error_message, 400
     except ConfigError as e:
-        error_message = (
-            f"Error creating IPS donor cases. Custom ConfigError raised: {e}"
-        )
+        error_message = f"Error creating IPS donor cases. Custom ConfigError raised: {e}"
         logging.error(error_message)
         return error_message, 400
     except BlaiseQuestionnaireError as e:
-        error_message = (
-            f"Error creating IPS donor cases. Custom BlaiseError raised: {e}"
-        )
+        error_message = f"Error creating IPS donor cases. Custom BlaiseError raised: {e}"
         logging.error(error_message)
         return error_message, 404
     except GuidError as e:
@@ -72,26 +58,17 @@ def create_donor_cases(request: flask.request):
         logging.error(error_message)
         return error_message, 500
     except BlaiseUsersError as e:
-        error_message = (
-            "Error creating IPS donor cases. "
-            f"Custom BlaiseUsersError raised: {e}. "
-            "This error occurred because the service to get users by role from Blaise failed. "
-            "Please check the VMs are online, the users exist with the correct role, and try again."
-        )
+        error_message = f"Error creating IPS donor cases. Custom BlaiseUsersError raised: {e}. "
         logging.error(error_message)
         return error_message, 404
     except DonorCaseError as e:
-        error_message = (
-            "Error creating IPS donor cases. "
-            f"Custom DonorCaseError raised: {e}. "
-            "This error occurred because something went terribly wrong. "
-            "You'll need to investigate it, fix it, and try again."
-        )
+        error_message = f"Error creating IPS donor cases. Custom DonorCaseError raised: {e}. "
         logging.error(error_message)
         return error_message, 500
     except Exception as e:
-        logging.error(f"Error creating IPS donor cases: {e}")
-        return f"Error creating IPS donor cases: {e}", 500
+        error_message = f"Error creating IPS donor cases: {e}"
+        logging.error(error_message)
+        return error_message, 500
 
 
 def get_role(request_json):

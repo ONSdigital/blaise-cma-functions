@@ -167,10 +167,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
 
         # Assert
         error_message = (
-            "Error creating IPS donor cases. "
-            "ValueError raised: Missing required fields: 'questionnaire_name'. "
-            "This error occurred due to an invalid value encountered in the input. "
-            "Please check the input values for correctness and try again."
+            "Error creating IPS donor cases. ValueError raised: Missing required fields: 'questionnaire_name'. "
         )
         assert result == (error_message, 400)
         assert (
@@ -196,12 +193,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = (
-            "Error creating IPS donor cases. "
-            "ValueError raised: Missing required fields: 'role'. "
-            "This error occurred due to an invalid value encountered in the input. "
-            "Please check the input values for correctness and try again."
-        )
+        error_message = "Error creating IPS donor cases. ValueError raised: Missing required fields: 'role'. "
         assert result == (error_message, 400)
         assert (
                    "root",
@@ -222,10 +214,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
 
         # Assert
         error_message = (
-            "Error creating IPS donor cases. "
-            f"AttributeError raised: 'NoneType' object has no attribute 'get_json'. "
-            "This error occurred because an expected attribute was not found, for example in a JSON object. "
-            "Please ensure that the object being accessed is the correct type, has the required attributes, and they are correctly spelled."
+            "Error creating IPS donor cases. AttributeError raised: 'NoneType' object has no attribute 'get_json'. "
         )
         assert result == (error_message, 400)
         assert (
@@ -415,12 +404,7 @@ class TestMainCreateDonorCasesHandleUsersStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = (
-            "Error creating IPS donor cases. "
-            "Custom BlaiseUsersError raised: Blaise Users error. "
-            "This error occurred because the service to get users by role from Blaise failed. "
-            "Please check the VMs are online, the users exist with the correct role, and try again."
-        )
+        error_message = "Error creating IPS donor cases. Custom BlaiseUsersError raised: Blaise Users error. "
         assert result == (error_message, 404)
         assert (
                    "root",
@@ -464,12 +448,7 @@ class TestMainCreateDonorCasesHandleDonorCasesStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = (
-            "Error creating IPS donor cases. "
-            "Custom DonorCaseError raised: foobar. "
-            "This error occurred because something went terribly wrong. "
-            "You'll need to investigate it, fix it, and try again."
-        )
+        error_message = "Error creating IPS donor cases. Custom DonorCaseError raised: foobar. "
         assert result == (error_message, 500)
         assert (
                    "root",
