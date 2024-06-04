@@ -376,7 +376,7 @@ class TestMainCreateDonorCasesExceptionHandling:
             json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
         )
         mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
-        mock_get_guid.side_effect = GuidError("GUID service error")
+        mock_get_guid.side_effect = GuidError("Something bad happened, but I'm not telling you what")
 
         # Act
         with caplog.at_level(logging.ERROR):
@@ -385,9 +385,7 @@ class TestMainCreateDonorCasesExceptionHandling:
         # Assert
         error_message = (
             "Error creating IPS donor cases. "
-            "Custom GuidError raised: GUID service error. "
-            "This error occurred because the GUID service failed. "
-            "Please check the questionnaire has an ID and try again. "
+            "Custom GuidError raised: Something bad happened, but I'm not telling you what"
         )
         assert result == (error_message, 500)
         assert (

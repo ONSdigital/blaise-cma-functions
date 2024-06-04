@@ -68,7 +68,7 @@ def create_donor_cases(request: flask.request):
         logging.error(error_message)
         return error_message, 404
     except GuidError as e:
-        error_message = f"Error creating IPS donor cases. Custom GuidError raised: {e}. "
+        error_message = f"Error creating IPS donor cases. Custom GuidError raised: {e}"
         logging.error(error_message)
         return error_message, 500
     except BlaiseUsersError as e:

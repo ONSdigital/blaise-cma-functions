@@ -36,17 +36,13 @@ class BlaiseQuestionnaireError(Exception):
 
 
 class GuidError(Exception):
-    def __init__(self, message):
+    def __init__(self, message=None):
         self.message = message
         super().__init__(self._format_message())
 
     def _format_message(self):
         if self.message:
-            return (
-                f"{self.message}. "
-                "This error occurred because the GUID service failed. "
-                "Please check the questionnaire has an ID and try again"
-            )
+            return self.message
         return "GUID service error"
 
     def __str__(self):
