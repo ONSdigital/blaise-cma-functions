@@ -262,8 +262,8 @@ class TestMainCreateDonorCasesExceptionHandling:
         # Assert
         error_message = (
             "Error creating IPS donor cases. "
-            f"Custom ConfigError raised: Configuration error: Missing configurations - blaise_api_url, blaise_server_park. "
-            "This error occurred because the required configuration values were missing. "
+            "Custom ConfigError raised: Configuration error: "
+            "The following required configuration values are missing: blaise_api_url, blaise_server_park. "
             "Please check the values are being passed correctly and try again."
         )
         assert result == (error_message, 400)
@@ -294,8 +294,8 @@ class TestMainCreateDonorCasesExceptionHandling:
         # Assert
         error_message = (
             "Error creating IPS donor cases. "
-            f"Custom ConfigError raised: Configuration error: Missing configurations - blaise_server_park. "
-            "This error occurred because the required configuration values were missing. "
+            "Custom ConfigError raised: Configuration error: "
+            "The following required configuration values are missing: blaise_server_park. "
             "Please check the values are being passed correctly and try again."
         )
         assert result == (error_message, 400)
@@ -325,8 +325,8 @@ class TestMainCreateDonorCasesExceptionHandling:
         # Assert
         error_message = (
             "Error creating IPS donor cases. "
-            f"Custom ConfigError raised: Configuration error: Missing configurations - blaise_api_url. "
-            "This error occurred because the required configuration values were missing. "
+            "Custom ConfigError raised: Configuration error: "
+            "The following required configuration values are missing: blaise_api_url. "
             "Please check the values are being passed correctly and try again."
         )
         assert result == (error_message, 400)
