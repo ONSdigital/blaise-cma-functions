@@ -5,6 +5,7 @@ import blaise_restapi
 import pytest
 
 from appconfig.config import Config
+from models.donor_case_model import DonorCaseModel
 from services.blaise_service import BlaiseService
 from tests.helpers import get_default_config
 from utilities.custom_exceptions import BlaiseQuestionnaireError, BlaiseUsersError
@@ -307,6 +308,33 @@ class TestGetExistingDonorCases:
 
         # Assert
         error_message = "Error getting existing donor cases: Daryl Dixon did not claim this"
+        assert err.value.args[0] == error_message
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples
+
+
+class TestCreateDonorCaseForUser:
+    @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
+    def test_create_donor_case_for_user_logs_error_and_raises_exception(
+            self, mock_rest_api_client_create_multikey_case, blaise_service, caplog
+    ):
+        # Arrange
+        mock_rest_api_client_create_multikey_case.side_effect = Exception("John Snow be knowin'")
+        donor_case_model = DonorCaseModel(
+            user="Arya Stark",
+            questionnaire_name="IPS2406a",
+            guid="7h15-i5-a-gu!d"
+        )
+
+        # Act
+        with pytest.raises(Exception) as err:
+            blaise_service.create_donor_case_for_user(donor_case_model)
+
+        # Assert
+        error_message = "Error creating donor case for user 'Arya Stark': John Snow be knowin'"
         assert err.value.args[0] == error_message
         assert (
                    "root",

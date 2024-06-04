@@ -76,6 +76,6 @@ class BlaiseService:
             )
             logging.info(f"Created donor case for user '{donor_case_model.user}'")
         except Exception as e:
-            logging.error(
-                f"Error creating donor case for user '{donor_case_model.user}':  {e}"
-            )
+            error_message = f"Error creating donor case for user '{donor_case_model.user}': {e}"
+            logging.error(error_message)
+            raise Exception(error_message)
