@@ -17,7 +17,7 @@ class ConfigError(Exception):
         return self._format_message()
 
 
-class BlaiseError(Exception):
+class BlaiseQuestionnaireError(Exception):
     def __init__(self, message="Blaise service error", questionnaire_name=None):
         self.message = message
         self.questionnaire_name = questionnaire_name
