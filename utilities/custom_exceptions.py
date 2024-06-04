@@ -8,7 +8,7 @@ class ConfigError(Exception):
         if self.missing_configs:
             missing = ", ".join(self.missing_configs)
             return (
-                f"Configuration error: The following required configuration values are missing: {missing}. "
+                f"The following required configuration values are missing: {missing}. "
                 "Please check the values are being passed correctly and try again."
             )
 
@@ -22,20 +22,14 @@ class ConfigError(Exception):
 
 
 class BlaiseQuestionnaireError(Exception):
-    def __init__(self, message="Blaise service error", questionnaire_name=None):
+    def __init__(self, message=None):
         self.message = message
-        self.questionnaire_name = questionnaire_name
         super().__init__(self._format_message())
 
     def _format_message(self):
-        base_message = self.message
-        if self.questionnaire_name:
-            return (
-                f"Questionnaire error: {base_message}. "
-                "This error occurred because the rest api failed to get the questionnaire from Blaise. "
-                "Please check the VMs are online, the questionnaire is installed, and try again."
-            )
-        return base_message
+        if self.message:
+            return self.message
+        return "Blaise Questionnaire error"
 
     def __str__(self):
         return self._format_message()

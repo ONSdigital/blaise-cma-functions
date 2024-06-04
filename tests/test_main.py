@@ -262,7 +262,7 @@ class TestMainCreateDonorCasesExceptionHandling:
         # Assert
         error_message = (
             "Error creating IPS donor cases. "
-            "Custom ConfigError raised: Configuration error: "
+            "Custom ConfigError raised: "
             "The following required configuration values are missing: blaise_api_url, blaise_server_park. "
             "Please check the values are being passed correctly and try again."
         )
@@ -294,7 +294,7 @@ class TestMainCreateDonorCasesExceptionHandling:
         # Assert
         error_message = (
             "Error creating IPS donor cases. "
-            "Custom ConfigError raised: Configuration error: "
+            "Custom ConfigError raised: "
             "The following required configuration values are missing: blaise_server_park. "
             "Please check the values are being passed correctly and try again."
         )
@@ -325,7 +325,7 @@ class TestMainCreateDonorCasesExceptionHandling:
         # Assert
         error_message = (
             "Error creating IPS donor cases. "
-            "Custom ConfigError raised: Configuration error: "
+            "Custom ConfigError raised: "
             "The following required configuration values are missing: blaise_api_url. "
             "Please check the values are being passed correctly and try again."
         )
@@ -357,9 +357,7 @@ class TestMainCreateDonorCasesExceptionHandling:
         error_message = (
             "Error creating IPS donor cases. "
             "Custom BlaiseError raised: Error getting GUID for questionnaire IPS2402a: "
-            "Questionnaire error: Error getting questionnaire 'IPS2402a': Error from restapi. "
-            "This error occurred because the rest api failed to get the questionnaire from Blaise. "
-            "Please check the VMs are online, the questionnaire is installed, and try again."
+            "Error getting questionnaire 'IPS2402a': Error from restapi"
         )
         assert result == (error_message, 404)
         assert (

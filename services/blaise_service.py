@@ -30,10 +30,7 @@ class BlaiseService:
         except Exception as e:
             error_message = f"Error getting questionnaire '{questionnaire_name}': {e}"
             logging.error(error_message)
-            raise BlaiseQuestionnaireError(
-                message=error_message,
-                questionnaire_name=questionnaire_name
-            )
+            raise BlaiseQuestionnaireError(message=error_message)
 
     def get_users(self, server_park: str) -> list[Dict[str, Any]]:
         try:
