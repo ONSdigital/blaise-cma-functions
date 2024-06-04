@@ -292,3 +292,24 @@ class TestGetExistingDonorCases:
         # Assert
         assert len(result) == 1
         assert result == ["cal"]
+
+    @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
+    def test_get_existing_donor_cases_logs_error_and_raises_exception(
+            self, mock_rest_api_client_get_users, blaise_service, caplog
+    ):
+        # Arrange
+        mock_rest_api_client_get_users.side_effect = Exception("Daryl Dixon did not claim this")
+        guid = "7h15-i5-a-gu!D"
+
+        # Act
+        with pytest.raises(Exception) as err:
+            blaise_service.get_existing_donor_cases(guid)
+
+        # Assert
+        error_message = "Error getting existing donor cases: Daryl Dixon did not claim this"
+        assert err.value.args[0] == error_message
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples
