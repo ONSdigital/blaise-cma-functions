@@ -24,6 +24,7 @@ class DonorCaseService:
         except Exception as e:
             logging.error(f"Error when checking and creating donor cases: {e}")
 
+    @staticmethod
     def donor_case_does_not_exist(
         self, user: str, users_with_existing_donor_cases
     ) -> bool:
