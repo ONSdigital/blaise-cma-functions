@@ -1,14 +1,21 @@
 class ConfigError(Exception):
-    def __init__(self, missing_configs):
+    def __init__(self, message=None, missing_configs=None):
+        self.message = message
         self.missing_configs = missing_configs
         super().__init__(self._format_message())
 
     def _format_message(self):
-        missing = ", ".join(self.missing_configs)
-        return (
-            f"Configuration error: The following required configuration values are missing: {missing}. "
-            "Please check the values are being passed correctly and try again."
-        )
+        if self.missing_configs:
+            missing = ", ".join(self.missing_configs)
+            return (
+                f"Configuration error: The following required configuration values are missing: {missing}. "
+                "Please check the values are being passed correctly and try again."
+            )
+
+        if self.message:
+            return self.message
+
+        return "Configuration error"
 
     def __str__(self):
         return self._format_message()
