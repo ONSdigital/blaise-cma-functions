@@ -2,6 +2,7 @@ import logging
 
 from models.donor_case_model import DonorCaseModel
 from services.blaise_service import BlaiseService
+from utilities.custom_exceptions import DonorCaseError
 
 
 class DonorCaseService:
@@ -21,8 +22,10 @@ class DonorCaseService:
                 ):
                     donor_case_model = DonorCaseModel(user, questionnaire_name, guid)
                     self._blaise_service.create_donor_case_for_user(donor_case_model)
-        except DonorCaseService as e:
-            logging.error(f"Error when checking and creating donor cases: {e}")
+        except Exception as e:
+            error_message = f"Error when checking and creating donor cases: {e}"
+            logging.error(error_message)
+            raise DonorCaseError(error_message)
 
     @staticmethod
     def donor_case_does_not_exist(

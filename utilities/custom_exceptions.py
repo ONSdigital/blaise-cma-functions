@@ -69,4 +69,14 @@ class BlaiseUsersError(Exception):
 
 
 class DonorCaseError(Exception):
-    pass
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self._format_message())
+
+    def _format_message(self):
+        return (
+            f"{self.message}"
+        )
+
+    def __str__(self):
+        return self._format_message()

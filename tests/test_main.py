@@ -457,7 +457,7 @@ class TestMainCreateDonorCasesExceptionHandling:
                 "defaultServerPark": "gusty",
             },
         ]
-        mock_create_donor_case_for_users.side_effect = DonorCaseError()
+        mock_create_donor_case_for_users.side_effect = DonorCaseError("foobar")
 
         # Act
         with caplog.at_level(logging.ERROR):
@@ -466,7 +466,7 @@ class TestMainCreateDonorCasesExceptionHandling:
         # Assert
         error_message = (
             "Error creating IPS donor cases. "
-            "Custom DonorCaseError raised: . "
+            "Custom DonorCaseError raised: foobar. "
             "This error occurred because something went terribly wrong. "
             "You'll need to investigate it, fix it, and try again."
         )
