@@ -66,3 +66,7 @@ class BlaiseUsersError(Exception):
 
     def __str__(self):
         return self._format_message()
+
+
+class DonorCaseError(Exception):
+    pass

@@ -8,7 +8,7 @@ import pytest
 from appconfig.config import Config
 from main import create_donor_cases, get_questionnaire_name, get_role
 from models.donor_case_model import DonorCaseModel
-from utilities.custom_exceptions import BlaiseQuestionnaireError, GuidError, BlaiseUsersError
+from utilities.custom_exceptions import BlaiseQuestionnaireError, GuidError, BlaiseUsersError, DonorCaseError
 
 
 class MockRequest:
@@ -429,6 +429,54 @@ class TestMainCreateDonorCasesExceptionHandling:
                    logging.ERROR,
                    error_message,
                ) in caplog.record_tuples
+
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch("services.guid_service.GUIDService.get_guid")
+    @mock.patch("services.user_service.UserService.get_users_by_role")
+    @mock.patch("services.donor_case_service.DonorCaseService.check_and_create_donor_case_for_users")
+    def test_create_donor_case_returns_message_and_500_status_code_when_the_check_and_create_donor_case_for_users_service_raises_an_exception(
+            self, mock_create_donor_case_for_users, mock_get_users, mock_get_guid, mock_config, caplog
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+        )
+        mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
+        mock_get_guid.return_value = "m0ck-gu!d"
+        mock_get_users.return_value = [
+            {
+                "name": "rich",
+                "role": "IPS Field Interviewer",
+                "serverParks": ["gusty", "cma"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "sarah",
+                "role": "IPS Manager",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+        ]
+        mock_create_donor_case_for_users.side_effect = DonorCaseError()
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = create_donor_cases(mock_request)
+
+        # Assert
+        error_message = (
+            "Error creating IPS donor cases. "
+            "Custom DonorCaseError raised: . "
+            "This error occurred because something went terribly wrong. "
+            "You'll need to investigate it, fix it, and try again."
+        )
+        assert result == (error_message, 500)
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples
+
 
 
 def test_get_questionnaire_name_returns_the_questionnaire_name():
