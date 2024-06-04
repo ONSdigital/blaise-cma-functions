@@ -26,7 +26,7 @@ class DonorCaseService:
 
     @staticmethod
     def donor_case_does_not_exist(
-        self, user: str, users_with_existing_donor_cases
+        user: str, users_with_existing_donor_cases
     ) -> bool:
         try:
             if user in users_with_existing_donor_cases:
