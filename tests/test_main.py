@@ -9,7 +9,7 @@ import blaise_restapi
 from appconfig.config import Config
 from main import create_donor_cases, get_questionnaire_name, get_role
 from models.donor_case_model import DonorCaseModel
-from utilities.custom_exceptions import BlaiseQuestionnaireError, GuidError, BlaiseUsersError, DonorCaseError
+from utilities.custom_exceptions import BlaiseError, GuidError, DonorCaseError
 
 
 class MockRequest:
@@ -336,7 +336,7 @@ class TestMainCreateDonorCasesHandleGuidStep:
             json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
         )
         mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
-        mock_rest_api_client_get_questionnaire.side_effect = BlaiseQuestionnaireError("Error from restapi")
+        mock_rest_api_client_get_questionnaire.side_effect = BlaiseError("Error from restapi")
 
         # Act
         with caplog.at_level(logging.ERROR):
@@ -397,14 +397,14 @@ class TestMainCreateDonorCasesHandleUsersStep:
         )
         mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
         mock_get_guid.return_value = "m0ck-gu!d"
-        mock_get_users.side_effect = BlaiseUsersError()
+        mock_get_users.side_effect = BlaiseError()
 
         # Act
         with caplog.at_level(logging.ERROR):
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = "Error creating IPS donor cases. Custom BlaiseUsersError raised: Blaise Users error. "
+        error_message = "Error creating IPS donor cases. Custom BlaiseError raised: Blaise error"
         assert result == (error_message, 404)
         assert (
                    "root",

@@ -5,7 +5,7 @@ import blaise_restapi
 
 from appconfig.config import Config
 from models.donor_case_model import DonorCaseModel
-from utilities.custom_exceptions import BlaiseQuestionnaireError, BlaiseUsersError
+from utilities.custom_exceptions import BlaiseError
 
 
 class BlaiseService:
@@ -30,7 +30,7 @@ class BlaiseService:
         except Exception as e:
             error_message = f"Error getting questionnaire '{questionnaire_name}': {e}"
             logging.error(error_message)
-            raise BlaiseQuestionnaireError(message=error_message)
+            raise BlaiseError(message=error_message)
 
     def get_users(self, server_park: str) -> list[Dict[str, Any]]:
         try:
@@ -40,7 +40,7 @@ class BlaiseService:
         except Exception as e:
             error_message = f"Error getting users from server park {server_park}: {e}"
             logging.error(error_message)
-            raise BlaiseUsersError(error_message)
+            raise BlaiseError(error_message)
 
     def get_existing_donor_cases(self, guid):
         try:

@@ -8,7 +8,7 @@ from appconfig.config import Config
 from models.donor_case_model import DonorCaseModel
 from services.blaise_service import BlaiseService
 from tests.helpers import get_default_config
-from utilities.custom_exceptions import BlaiseQuestionnaireError, BlaiseUsersError
+from utilities.custom_exceptions import BlaiseError
 
 
 @pytest.fixture()
@@ -117,7 +117,7 @@ class TestGetQuestionnaire:
         questionnaire_name = "LMS2309_GO1"
 
         # Act
-        with pytest.raises(BlaiseQuestionnaireError) as err:
+        with pytest.raises(BlaiseError) as err:
             blaise_service.get_questionnaire(blaise_server_park, questionnaire_name)
 
         # Assert
@@ -192,7 +192,7 @@ class TestGetUsers:
         ]
 
     @mock.patch.object(blaise_restapi.Client, "get_users")
-    def test_get_users_logs_error_and_raises_blaise_users_error_exception(
+    def test_get_users_logs_error_and_raises_blaise_error_exception(
             self, mock_rest_api_client_get_users, blaise_service, caplog
     ):
         # Arrange
@@ -200,7 +200,7 @@ class TestGetUsers:
         server_park = "foo"
 
         # Act
-        with pytest.raises(BlaiseUsersError) as err:
+        with pytest.raises(BlaiseError) as err:
             blaise_service.get_users(server_park)
 
         # Assert

@@ -7,8 +7,7 @@ from services.blaise_service import BlaiseService
 from services.donor_case_service import DonorCaseService
 from services.guid_service import GUIDService
 from services.user_service import UserService
-from utilities.custom_exceptions import ConfigError, BlaiseQuestionnaireError, GuidError, BlaiseUsersError, \
-    DonorCaseError
+from utilities.custom_exceptions import ConfigError, BlaiseError, GuidError, DonorCaseError
 from utilities.logging import setup_logger
 
 setup_logger()
@@ -49,7 +48,7 @@ def create_donor_cases(request: flask.request):
         error_message = f"Error creating IPS donor cases. Custom ConfigError raised: {e}"
         logging.error(error_message)
         return error_message, 400
-    except BlaiseQuestionnaireError as e:
+    except BlaiseError as e:
         error_message = f"Error creating IPS donor cases. Custom BlaiseError raised: {e}"
         logging.error(error_message)
         return error_message, 404
@@ -57,10 +56,6 @@ def create_donor_cases(request: flask.request):
         error_message = f"Error creating IPS donor cases. Custom GuidError raised: {e}"
         logging.error(error_message)
         return error_message, 500
-    except BlaiseUsersError as e:
-        error_message = f"Error creating IPS donor cases. Custom BlaiseUsersError raised: {e}. "
-        logging.error(error_message)
-        return error_message, 404
     except DonorCaseError as e:
         error_message = f"Error creating IPS donor cases. Custom DonorCaseError raised: {e}. "
         logging.error(error_message)

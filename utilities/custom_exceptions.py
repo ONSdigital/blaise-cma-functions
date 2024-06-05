@@ -21,7 +21,7 @@ class ConfigError(Exception):
         return self._format_message()
 
 
-class BlaiseQuestionnaireError(Exception):
+class BlaiseError(Exception):
     def __init__(self, message=None):
         self.message = message
         super().__init__(self._format_message())
@@ -29,7 +29,7 @@ class BlaiseQuestionnaireError(Exception):
     def _format_message(self):
         if self.message:
             return self.message
-        return "Blaise Questionnaire error"
+        return "Blaise error"
 
     def __str__(self):
         return self._format_message()
@@ -44,20 +44,6 @@ class GuidError(Exception):
         if self.message:
             return self.message
         return "GUID service error"
-
-    def __str__(self):
-        return self._format_message()
-
-
-class BlaiseUsersError(Exception):
-    def __init__(self, message=None):
-        self.message = message
-        super().__init__(self._format_message())
-
-    def _format_message(self):
-        if self.message:
-            return self.message
-        return "Blaise Users error"
 
     def __str__(self):
         return self._format_message()
