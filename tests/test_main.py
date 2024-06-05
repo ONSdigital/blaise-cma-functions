@@ -21,6 +21,7 @@ class MockRequest:
 
 
 class TestMainCreateDonorCasesHandleRequestStep:
+
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
     @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
@@ -167,7 +168,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
 
         # Assert
         error_message = (
-            "Error creating IPS donor cases. ValueError raised: Missing required fields: ['questionnaire_name']. "
+            "Error creating IPS donor cases. ValueError raised: Missing required fields: ['questionnaire_name']"
         )
         assert result == (error_message, 400)
         assert (
@@ -193,7 +194,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = "Error creating IPS donor cases. ValueError raised: Missing required fields: ['role']. "
+        error_message = "Error creating IPS donor cases. ValueError raised: Missing required fields: ['role']"
         assert result == (error_message, 400)
         assert (
                    "root",
@@ -214,7 +215,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
 
         # Assert
         error_message = (
-            "Error creating IPS donor cases. AttributeError raised: 'NoneType' object has no attribute 'get_json'. "
+            "Error creating IPS donor cases. AttributeError raised: 'NoneType' object has no attribute 'get_json'"
         )
         assert result == (error_message, 400)
         assert (
@@ -441,14 +442,14 @@ class TestMainCreateDonorCasesHandleDonorCasesStep:
                 "defaultServerPark": "gusty",
             },
         ]
-        mock_create_donor_case_for_users.side_effect = DonorCaseError("foobar")
+        mock_create_donor_case_for_users.side_effect = DonorCaseError("This thing unexpectedly successfully failed")
 
         # Act
         with caplog.at_level(logging.ERROR):
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = "Error creating IPS donor cases. Custom DonorCaseError raised: foobar. "
+        error_message = "Error creating IPS donor cases. Custom DonorCaseError raised: This thing unexpectedly successfully failed"
         assert result == (error_message, 500)
         assert (
                    "root",

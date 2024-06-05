@@ -23,7 +23,7 @@ def create_donor_cases(request: flask.request):
         blaise_config.validate_config(blaise_config)
         blaise_server_park = blaise_config.blaise_server_park
 
-        blaise_service = BlaiseService(config=blaise_config)
+        blaise_service = BlaiseService(blaise_config)
         guid_service = GUIDService(blaise_service)
         guid = guid_service.get_guid(blaise_server_park, questionnaire_name)
 
@@ -36,11 +36,11 @@ def create_donor_cases(request: flask.request):
         )
         return "Done!", 200
     except AttributeError as e:
-        error_message = f"Error creating IPS donor cases. AttributeError raised: {e}. "
+        error_message = f"Error creating IPS donor cases. AttributeError raised: {e}"
         logging.error(error_message)
         return error_message, 400
     except ValueError as e:
-        error_message = f"Error creating IPS donor cases. ValueError raised: {e}. "
+        error_message = f"Error creating IPS donor cases. ValueError raised: {e}"
         logging.error(error_message)
         return error_message, 400
     except ConfigError as e:
@@ -56,7 +56,7 @@ def create_donor_cases(request: flask.request):
         logging.error(error_message)
         return error_message, 500
     except DonorCaseError as e:
-        error_message = f"Error creating IPS donor cases. Custom DonorCaseError raised: {e}. "
+        error_message = f"Error creating IPS donor cases. Custom DonorCaseError raised: {e}"
         logging.error(error_message)
         return error_message, 500
     except Exception as e:
