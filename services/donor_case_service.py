@@ -56,6 +56,9 @@ class DonorCaseService:
                 logging.info(f"Donor case does not exist for user '{user}'")
                 return True
         except Exception as e:
-            error_message = f"Error checking donor case exists for {user}: {e}"
+            error_message = (
+                "Generic Exception raised in DonorCaseService.donor_case_does_not_exist(). "
+                f"Error checking donor case exists for {user}: {e}"
+            )
             logging.error(error_message)
             raise DonorCaseError(error_message)

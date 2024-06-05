@@ -125,7 +125,10 @@ class TestDonorCaseDoesNotExist:
             )
 
         # Assert
-        error_message = "Error checking donor case exists for james: argument of type 'NoneType' is not iterable"
+        error_message = (
+            "Generic Exception raised in DonorCaseService.donor_case_does_not_exist(). "
+            "Error checking donor case exists for james: argument of type 'NoneType' is not iterable"
+        )
         assert err.value.args[0] == error_message
         assert (
             "root",
