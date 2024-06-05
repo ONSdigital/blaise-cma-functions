@@ -329,7 +329,7 @@ class TestCreateDonorCaseForUser:
         )
 
         # Act
-        with pytest.raises(Exception) as err:
+        with pytest.raises(BlaiseError) as err:
             blaise_service.create_donor_case_for_user(donor_case_model)
 
         # Assert

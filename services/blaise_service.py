@@ -19,7 +19,7 @@ class BlaiseService:
         self.cma_questionnaire = "CMA_Launcher"
 
     def get_questionnaire(
-        self, server_park: str, questionnaire_name: str
+            self, server_park: str, questionnaire_name: str
     ) -> Dict[str, Any]:
         try:
             questionnaire = self.restapi_client.get_questionnaire_for_server_park(
@@ -63,7 +63,6 @@ class BlaiseService:
             logging.error(error_message)
             raise BlaiseError(error_message)
 
-
     def create_donor_case_for_user(self, donor_case_model: DonorCaseModel) -> None:
         try:
             self.restapi_client.create_multikey_case(
@@ -77,4 +76,4 @@ class BlaiseService:
         except Exception as e:
             error_message = f"Error creating donor case for user '{donor_case_model.user}': {e}"
             logging.error(error_message)
-            raise Exception(error_message)
+            raise BlaiseError(error_message)
