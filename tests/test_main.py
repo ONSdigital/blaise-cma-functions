@@ -8,12 +8,8 @@ import pytest
 from appconfig.config import Config
 from main import create_donor_cases, get_request_values
 from models.donor_case_model import DonorCaseModel
-from utilities.custom_exceptions import (
-    BlaiseError,
-    DonorCaseError,
-    GuidError,
-    UsersError,
-)
+from utilities.custom_exceptions import (BlaiseError, DonorCaseError,
+                                         GuidError, UsersError)
 
 
 class MockRequest:
