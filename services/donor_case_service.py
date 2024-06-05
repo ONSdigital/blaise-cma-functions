@@ -22,10 +22,6 @@ class DonorCaseService:
                 ):
                     donor_case_model = DonorCaseModel(user, questionnaire_name, guid)
                     self._blaise_service.create_donor_case_for_user(donor_case_model)
-        except DonorCaseError as e:
-            error_message = f"Error when checking and creating donor cases: {e}"
-            logging.error(error_message)
-            raise DonorCaseError(error_message)
         except Exception as e:
             error_message = f"Error when checking and creating donor cases: {e}"
             logging.error(error_message)
