@@ -25,7 +25,7 @@ class GUIDService:
             raise BlaiseError(message=error_message)
         except Exception as e:
             error_message = (
-                f"Generic Exception caught in get_guid(). "
+                f"Generic Exception caught in GUIDService.get_guid(). "
                 f"Error getting GUID for questionnaire {questionnaire_name}: {e}"
             )
             logging.error(error_message)

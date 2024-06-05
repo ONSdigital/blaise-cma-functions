@@ -79,7 +79,7 @@ def test_get_guid_logs_error_and_raises_guid_error_exception(get_questionnaire, 
 
     # Assert
     error_message = (
-        "Generic Exception caught in get_guid(). "
+        "Generic Exception caught in GUIDService.get_guid(). "
         "Error getting GUID for questionnaire LMS2309_GO1: 'id'"
     )
     assert err.value.args[0] == error_message
