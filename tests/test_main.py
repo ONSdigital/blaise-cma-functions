@@ -7,7 +7,7 @@ from unittest import mock
 import blaise_restapi
 
 from appconfig.config import Config
-from main import create_donor_cases, get_questionnaire_name, get_role
+from main import create_donor_cases, get_request_values
 from models.donor_case_model import DonorCaseModel
 from utilities.custom_exceptions import BlaiseError, GuidError, DonorCaseError
 
@@ -167,7 +167,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
 
         # Assert
         error_message = (
-            "Error creating IPS donor cases. ValueError raised: Missing required fields: 'questionnaire_name'. "
+            "Error creating IPS donor cases. ValueError raised: Missing required fields: ['questionnaire_name']. "
         )
         assert result == (error_message, 400)
         assert (
@@ -193,7 +193,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = "Error creating IPS donor cases. ValueError raised: Missing required fields: 'role'. "
+        error_message = "Error creating IPS donor cases. ValueError raised: Missing required fields: ['role']. "
         assert result == (error_message, 400)
         assert (
                    "root",
@@ -457,23 +457,87 @@ class TestMainCreateDonorCasesHandleDonorCasesStep:
                ) in caplog.record_tuples
 
 
-def test_get_questionnaire_name_returns_the_questionnaire_name():
-    # Arrange
-    mock_request = {"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+class TestGetRequestValues:
+    def test_get_request_values_returns_the_questionnaire_name_and_role(self):
+        # Arrange
+        mock_request = {"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
 
-    # Act
-    result = get_questionnaire_name(mock_request)
+        # Act
+        result = get_request_values(mock_request)
 
-    # Assert
-    assert result == "IPS2402a"
+        # Assert
+        assert result[0] == "IPS2402a"
+        assert result[1] == "IPS Manager"
+        assert result == ("IPS2402a", "IPS Manager")
+        assert result != ("IPS Manager", "IPS2402a")
 
+    @pytest.mark.parametrize(
+        "questionnaire_name, role", [
+            (None, None),
+            ("", None),
+            (None, ""),
+            ("", ""),
+        ],
+    )
+    def test_get_request_values_logs_and_raises_value_error_exception_when_values_are_missing(
+            self, questionnaire_name, role, caplog
+    ):
+        # Arrange
+        mock_request = {"questionnaire_name": questionnaire_name, "role": role}
 
-def test_get_questionnaire_name_returns_the_role():
-    # Arrange
-    mock_request = {"questionnaire_name": "IPS2402a", "role": "IPS Field Manager"}
+        # Act
+        with pytest.raises(ValueError) as err:
+            get_request_values(mock_request)
 
-    # Act
-    result = get_role(mock_request)
+        # Assert
+        error_message = f"Missing required fields: ['questionnaire_name', 'role']"
+        assert err.value.args[0] == error_message
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples
 
-    # Assert
-    assert result == "IPS Field Manager"
+    @pytest.mark.parametrize(
+        "questionnaire_name", [None, ""],
+    )
+    def test_get_request_values_logs_and_raises_value_error_exception_when_questionnaire_name_is_missing(
+            self, questionnaire_name, caplog
+    ):
+        # Arrange
+        mock_request = {"questionnaire_name": questionnaire_name, "role": "IPS Manager"}
+
+        # Act
+        with pytest.raises(ValueError) as err:
+            get_request_values(mock_request)
+
+        # Assert
+        error_message = f"Missing required fields: ['questionnaire_name']"
+        assert err.value.args[0] == error_message
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples
+
+    @pytest.mark.parametrize(
+        "role", [None, ""],
+    )
+    def test_get_request_values_logs_and_raises_value_error_exception_when_role_is_missing(
+            self, role, caplog
+    ):
+        # Arrange
+        mock_request = {"questionnaire_name": "IPS2402a", "role": role}
+
+        # Act
+        with pytest.raises(ValueError) as err:
+            get_request_values(mock_request)
+
+        # Assert
+        error_message = f"Missing required fields: ['role']"
+        assert err.value.args[0] == error_message
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples

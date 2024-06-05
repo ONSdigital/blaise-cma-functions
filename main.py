@@ -17,8 +17,7 @@ def create_donor_cases(request: flask.request):
     try:
         logging.info("Running Cloud Function - 'create_donor_cases'")
         request_json = request.get_json()
-        questionnaire_name = get_questionnaire_name(request_json)
-        role = get_role(request_json)
+        questionnaire_name, role = get_request_values(request_json)
 
         blaise_config = Config.from_env()
         blaise_config.validate_config(blaise_config)
@@ -66,15 +65,20 @@ def create_donor_cases(request: flask.request):
         return error_message, 500
 
 
-def get_role(request_json):
-    role = request_json["role"]
-    if role is None or role == "":
-        raise ValueError("Missing required fields: 'role'")
-    return role
+def get_request_values(request_json):
+    missing_values = []
 
-
-def get_questionnaire_name(request_json):
     questionnaire_name = request_json["questionnaire_name"]
     if questionnaire_name is None or questionnaire_name == "":
-        raise ValueError("Missing required fields: 'questionnaire_name'")
-    return questionnaire_name
+        missing_values.append('questionnaire_name')
+
+    role = request_json["role"]
+    if role is None or role == "":
+        missing_values.append('role')
+
+    if missing_values:
+        error_message = f"Missing required fields: {missing_values}"
+        logging.error(error_message)
+        raise ValueError(error_message)
+
+    return questionnaire_name, role
