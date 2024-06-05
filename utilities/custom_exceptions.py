@@ -9,7 +9,6 @@ class ConfigError(Exception):
             missing = ", ".join(self.missing_configs)
             return (
                 f"The following required configuration values are missing: {missing}. "
-                "Please check the values are being passed correctly and try again."
             )
 
         if self.message:

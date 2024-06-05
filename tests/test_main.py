@@ -253,7 +253,6 @@ class TestMainCreateDonorCasesHandleConfigStep:
             "Error creating IPS donor cases. "
             "Custom ConfigError raised: "
             "The following required configuration values are missing: blaise_api_url, blaise_server_park. "
-            "Please check the values are being passed correctly and try again."
         )
         assert result == (error_message, 400)
         assert (
@@ -284,7 +283,6 @@ class TestMainCreateDonorCasesHandleConfigStep:
             "Error creating IPS donor cases. "
             "Custom ConfigError raised: "
             "The following required configuration values are missing: blaise_server_park. "
-            "Please check the values are being passed correctly and try again."
         )
         assert result == (error_message, 400)
         assert (
@@ -315,7 +313,6 @@ class TestMainCreateDonorCasesHandleConfigStep:
             "Error creating IPS donor cases. "
             "Custom ConfigError raised: "
             "The following required configuration values are missing: blaise_api_url. "
-            "Please check the values are being passed correctly and try again."
         )
         assert result == (error_message, 400)
         assert (
@@ -337,7 +334,7 @@ class TestMainCreateDonorCasesHandleGuidStep:
             json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
         )
         mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
-        mock_rest_api_client_get_questionnaire.side_effect = BlaiseError("Error from restapi")
+        mock_rest_api_client_get_questionnaire.side_effect = BlaiseError("How do you click a button without clicking a button?")
 
         # Act
         with caplog.at_level(logging.ERROR):
@@ -347,7 +344,7 @@ class TestMainCreateDonorCasesHandleGuidStep:
         error_message = (
             "Error creating IPS donor cases. "
             "Custom BlaiseError raised: Error getting GUID for questionnaire IPS2402a: "
-            "Error getting questionnaire 'IPS2402a': Error from restapi"
+            "Error getting questionnaire 'IPS2402a': How do you click a button without clicking a button?"
         )
         assert result == (error_message, 404)
         assert (
