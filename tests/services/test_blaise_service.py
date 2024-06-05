@@ -130,7 +130,7 @@ class TestGetQuestionnaire:
         # Assert
         error_message = (
             "Generic Exception caught in BlaiseService.get_questionnaire(). "
-            f"Error getting questionnaire 'LMS2309_GO1': DFS had to end their sale"
+            "Error getting questionnaire 'LMS2309_GO1': DFS had to end their sale"
         )
         assert err.value.args[0] == error_message
         assert (

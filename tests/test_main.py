@@ -553,7 +553,7 @@ class TestGetRequestValues:
 
         # Assert
         error_message = (
-            f"Missing required values from request: ['questionnaire_name', 'role']"
+            "Missing required values from request: ['questionnaire_name', 'role']"
         )
         assert err.value.args[0] == error_message
         assert (
@@ -577,7 +577,7 @@ class TestGetRequestValues:
             get_request_values(mock_request)
 
         # Assert
-        error_message = f"Missing required values from request: ['questionnaire_name']"
+        error_message = "Missing required values from request: ['questionnaire_name']"
         assert err.value.args[0] == error_message
         assert (
             "root",
@@ -600,7 +600,7 @@ class TestGetRequestValues:
             get_request_values(mock_request)
 
         # Assert
-        error_message = f"Missing required values from request: ['role']"
+        error_message = "Missing required values from request: ['role']"
         assert err.value.args[0] == error_message
         assert (
             "root",

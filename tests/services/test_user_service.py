@@ -7,7 +7,7 @@ from appconfig.config import Config
 from services.blaise_service import BlaiseService
 from services.user_service import UserService
 from tests.helpers import get_default_config
-from utilities.custom_exceptions import BlaiseError, UsersError
+from utilities.custom_exceptions import BlaiseError
 
 
 @pytest.fixture()
@@ -103,8 +103,8 @@ def test_get_users_by_role_logs_and_raises_a_blaise_error_exception_when_get_use
     # Assert
     error_message = (
         "BlaiseError caught in UserService.get_users_by_role(). "
-        f"Error getting users by role for server park gusty: "
-        f"All the rum has gone and Jack Sparrow doesn't understand why?"
+        "Error getting users by role for server park gusty: "
+        "All the rum has gone and Jack Sparrow doesn't understand why?"
     )
     assert err.value.args[0] == error_message
     assert (
