@@ -255,7 +255,7 @@ class TestMainCreateDonorCasesHandleConfigStep:
         error_message = (
             "Error creating IPS donor cases. "
             "Custom ConfigError raised: "
-            "The following required configuration values are missing: blaise_api_url, blaise_server_park"
+            "The following environment variables are not set: blaise_api_url, blaise_server_park"
         )
         assert result == (error_message, 400)
         assert (
@@ -285,7 +285,7 @@ class TestMainCreateDonorCasesHandleConfigStep:
         error_message = (
             "Error creating IPS donor cases. "
             "Custom ConfigError raised: "
-            "The following required configuration values are missing: blaise_server_park"
+            "The following environment variables are not set: blaise_server_park"
         )
         assert result == (error_message, 400)
         assert (
@@ -315,7 +315,7 @@ class TestMainCreateDonorCasesHandleConfigStep:
         error_message = (
             "Error creating IPS donor cases. "
             "Custom ConfigError raised: "
-            "The following required configuration values are missing: blaise_api_url"
+            "The following environment variables are not set: blaise_api_url"
         )
         assert result == (error_message, 400)
         assert (
