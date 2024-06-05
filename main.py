@@ -77,7 +77,7 @@ def get_request_values(request_json):
         missing_values.append('role')
 
     if missing_values:
-        error_message = f"Missing required fields: {missing_values}"
+        error_message = f"Missing required values: {missing_values}"
         logging.error(error_message)
         raise ValueError(error_message)
 

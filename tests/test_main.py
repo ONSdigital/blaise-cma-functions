@@ -168,7 +168,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
 
         # Assert
         error_message = (
-            "Error creating IPS donor cases. ValueError raised: Missing required fields: ['questionnaire_name']"
+            "Error creating IPS donor cases. ValueError raised: Missing required values: ['questionnaire_name']"
         )
         assert result == (error_message, 400)
         assert (
@@ -194,7 +194,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = "Error creating IPS donor cases. ValueError raised: Missing required fields: ['role']"
+        error_message = "Error creating IPS donor cases. ValueError raised: Missing required values: ['role']"
         assert result == (error_message, 400)
         assert (
                    "root",
@@ -491,7 +491,7 @@ class TestGetRequestValues:
             get_request_values(mock_request)
 
         # Assert
-        error_message = f"Missing required fields: ['questionnaire_name', 'role']"
+        error_message = f"Missing required values: ['questionnaire_name', 'role']"
         assert err.value.args[0] == error_message
         assert (
                    "root",
@@ -513,7 +513,7 @@ class TestGetRequestValues:
             get_request_values(mock_request)
 
         # Assert
-        error_message = f"Missing required fields: ['questionnaire_name']"
+        error_message = f"Missing required values: ['questionnaire_name']"
         assert err.value.args[0] == error_message
         assert (
                    "root",
@@ -535,7 +535,7 @@ class TestGetRequestValues:
             get_request_values(mock_request)
 
         # Assert
-        error_message = f"Missing required fields: ['role']"
+        error_message = f"Missing required values: ['role']"
         assert err.value.args[0] == error_message
         assert (
                    "root",
