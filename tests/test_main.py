@@ -9,7 +9,7 @@ import blaise_restapi
 from appconfig.config import Config
 from main import create_donor_cases, get_request_values
 from models.donor_case_model import DonorCaseModel
-from utilities.custom_exceptions import BlaiseError, GuidError, DonorCaseError
+from utilities.custom_exceptions import BlaiseError, GuidError, DonorCaseError, UsersError
 
 
 class MockRequest:
@@ -343,7 +343,9 @@ class TestMainCreateDonorCasesHandleGuidStep:
         # Assert
         error_message = (
             "Error creating IPS donor cases. "
-            "Custom BlaiseError raised: Error getting GUID for questionnaire IPS2402a: "
+            "Custom BlaiseError raised: "
+            "BlaiseError caught in GUIDService.get_guid(). "
+            "Error getting GUID for questionnaire IPS2402a: "
             "Error getting questionnaire 'IPS2402a': How do you click a button without clicking a button?"
         )
         assert result == (error_message, 404)
@@ -386,7 +388,7 @@ class TestMainCreateDonorCasesHandleUsersStep:
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch("services.guid_service.GUIDService.get_guid")
     @mock.patch("services.user_service.UserService.get_users_by_role")
-    def test_create_donor_case_returns_message_and_404_status_code_when_the_get_users_service_raises_an_exception(
+    def test_create_donor_case_returns_message_and_404_status_code_when_the_get_users_service_raises_a_blaise_error_exception(
             self, mock_get_users, mock_get_guid, mock_config, caplog
     ):
         # Arrange
@@ -404,6 +406,33 @@ class TestMainCreateDonorCasesHandleUsersStep:
         # Assert
         error_message = "Error creating IPS donor cases. Custom BlaiseError raised: There is butter in the ports"
         assert result == (error_message, 404)
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples
+
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch("services.guid_service.GUIDService.get_guid")
+    @mock.patch("services.user_service.UserService.get_users_by_role")
+    def test_create_donor_case_returns_message_and_500_status_code_when_the_get_users_service_raises_a_users_error_exception(
+            self, mock_get_users, mock_get_guid, mock_config, caplog
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+        )
+        mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
+        mock_get_guid.return_value = "m0ck-gu!d"
+        mock_get_users.side_effect = UsersError("Fuzion Tattoo is at it again")
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = create_donor_cases(mock_request)
+
+        # Assert
+        error_message = "Error creating IPS donor cases. Custom UsersError raised: Fuzion Tattoo is at it again"
+        assert result == (error_message, 500)
         assert (
                    "root",
                    logging.ERROR,

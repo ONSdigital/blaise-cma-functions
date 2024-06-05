@@ -7,7 +7,7 @@ from services.blaise_service import BlaiseService
 from services.donor_case_service import DonorCaseService
 from services.guid_service import GUIDService
 from services.user_service import UserService
-from utilities.custom_exceptions import ConfigError, BlaiseError, GuidError, DonorCaseError
+from utilities.custom_exceptions import ConfigError, BlaiseError, GuidError, DonorCaseError, UsersError
 from utilities.logging import setup_logger
 
 setup_logger()
@@ -34,6 +34,7 @@ def create_donor_cases(request: flask.request):
         donor_case_service.check_and_create_donor_case_for_users(
             questionnaire_name, guid, users_with_role
         )
+
         return "Done!", 200
     except AttributeError as e:
         error_message = f"Error creating IPS donor cases. AttributeError raised: {e}"
@@ -53,6 +54,10 @@ def create_donor_cases(request: flask.request):
         return error_message, 404
     except GuidError as e:
         error_message = f"Error creating IPS donor cases. Custom GuidError raised: {e}"
+        logging.error(error_message)
+        return error_message, 500
+    except UsersError as e:
+        error_message = f"Error creating IPS donor cases. Custom UsersError raised: {e}"
         logging.error(error_message)
         return error_message, 500
     except DonorCaseError as e:

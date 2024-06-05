@@ -2,7 +2,7 @@ import logging
 
 from models.donor_case_model import DonorCaseModel
 from services.blaise_service import BlaiseService
-from utilities.custom_exceptions import DonorCaseError
+from utilities.custom_exceptions import DonorCaseError, BlaiseError
 
 
 class DonorCaseService:
@@ -22,8 +22,25 @@ class DonorCaseService:
                 ):
                     donor_case_model = DonorCaseModel(user, questionnaire_name, guid)
                     self._blaise_service.create_donor_case_for_user(donor_case_model)
+        except BlaiseError as e:
+            error_message = (
+                f"BlaiseError caught in DonorCaseService.check_and_create_donor_case_for_users(). "
+                f"Error when checking and creating donor cases: {e}"
+            )
+            logging.error(error_message)
+            raise BlaiseError(error_message)
+        except DonorCaseError as e:
+            error_message = (
+                f"DonorCaseError caught in DonorCaseService.check_and_create_donor_case_for_users(). "
+                f"Error when checking and creating donor cases: {e}"
+            )
+            logging.error(error_message)
+            raise DonorCaseError(error_message)
         except Exception as e:
-            error_message = f"Error when checking and creating donor cases: {e}"
+            error_message = (
+                f"Generic Exception caught in DonorCaseService.check_and_create_donor_case_for_users(). "
+                f"Error when checking and creating donor cases: {e}"
+            )
             logging.error(error_message)
             raise DonorCaseError(error_message)
 

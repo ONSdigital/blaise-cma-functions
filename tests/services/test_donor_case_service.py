@@ -7,7 +7,7 @@ from appconfig.config import Config
 from services.blaise_service import BlaiseService
 from services.donor_case_service import DonorCaseService
 from tests.helpers import get_default_config
-from utilities.custom_exceptions import DonorCaseError
+from utilities.custom_exceptions import DonorCaseError, BlaiseError
 
 
 @pytest.fixture()
@@ -136,24 +136,25 @@ class TestDonorCaseDoesNotExist:
 
 class TestCheckAndCreateDonorCaseForUsers:
     @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
-    def test_check_and_create_donor_case_for_users_raises_donor_case_error_exception_when_get_existing_donor_cases_fails(
+    def test_check_and_create_donor_case_for_users_raises_blaise_error_exception_when_get_existing_donor_cases_fails_with_blaise_error(
             self, mock_get_existing_donor_cases, donor_case_service, caplog):
         # arrange
-        mock_get_existing_donor_cases.return_value = ""
+        mock_get_existing_donor_cases.side_effect = BlaiseError("I'm running out of error messages")
 
         questionnaire_name = "foo"
         guid = "bar"
         users_with_role = ["foobar"]
 
         # act
-        with pytest.raises(DonorCaseError) as err:
+        with pytest.raises(BlaiseError) as err:
             donor_case_service.check_and_create_donor_case_for_users(
                 questionnaire_name, guid, users_with_role
             )
 
         # assert
         error_message = (
-            "Error when checking and creating donor cases: None is not in list"
+            "BlaiseError caught in DonorCaseService.check_and_create_donor_case_for_users(). "
+            "Error when checking and creating donor cases: I'm running out of error messages"
         )
         assert err.value.args[0] == error_message
         assert (
@@ -164,7 +165,7 @@ class TestCheckAndCreateDonorCaseForUsers:
 
     @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
     @mock.patch("services.donor_case_service.DonorCaseService.donor_case_does_not_exist")
-    def test_check_and_create_donor_case_for_users_raises_donor_case_error_exception_when_donor_case_does_not_exist_fails(
+    def test_check_and_create_donor_case_for_users_raises_donor_case_error_exception_when_donor_case_does_not_exist_fails_with_donor_case_exception(
             self, mock_donor_case_does_not_exist, mock_get_existing_donor_cases, donor_case_service, caplog):
         # arrange
         mock_get_existing_donor_cases.return_value = ["james", "rich"]
@@ -182,6 +183,7 @@ class TestCheckAndCreateDonorCaseForUsers:
 
         # assert
         error_message = (
+            "DonorCaseError caught in DonorCaseService.check_and_create_donor_case_for_users(). "
             "Error when checking and creating donor cases: You sat in Sheldon's spot"
         )
         assert err.value.args[0] == error_message
@@ -194,26 +196,27 @@ class TestCheckAndCreateDonorCaseForUsers:
     @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
     @mock.patch("services.donor_case_service.DonorCaseService.donor_case_does_not_exist")
     @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
-    def test_check_and_create_donor_case_for_users_raises_donor_case_error_exception_when_donor_case_does_not_exist_fails(
+    def test_check_and_create_donor_case_for_users_raises_blaise_error_exception_when_create_donor_case_for_users_fails_with_blaise_error(
             self, mock_create_donor_case_for_user, mock_donor_case_does_not_exist, mock_get_existing_donor_cases, donor_case_service, caplog):
         # arrange
         mock_get_existing_donor_cases.return_value = ["james", "rich"]
         mock_donor_case_does_not_exist.return_value = True
-        mock_create_donor_case_for_user.side_effect = AttributeError("the rest api failed")
+        mock_create_donor_case_for_user.side_effect = BlaiseError("Rich has been renaming variables")
 
         questionnaire_name = "IPS2406a"
         guid = "7bded891-3aa6-41b2-824b-0be514018806"
         users_with_role = ["IPS Manager"]
 
         # act
-        with pytest.raises(DonorCaseError) as err:
+        with pytest.raises(BlaiseError) as err:
             donor_case_service.check_and_create_donor_case_for_users(
                 questionnaire_name, guid, users_with_role
             )
 
         # assert
         error_message = (
-            "Error when checking and creating donor cases: the rest api failed"
+            "BlaiseError caught in DonorCaseService.check_and_create_donor_case_for_users(). "
+            "Error when checking and creating donor cases: Rich has been renaming variables"
         )
         assert err.value.args[0] == error_message
         assert (
