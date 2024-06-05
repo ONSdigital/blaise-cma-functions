@@ -252,7 +252,7 @@ class TestMainCreateDonorCasesHandleConfigStep:
         error_message = (
             "Error creating IPS donor cases. "
             "Custom ConfigError raised: "
-            "The following required configuration values are missing: blaise_api_url, blaise_server_park. "
+            "The following required configuration values are missing: blaise_api_url, blaise_server_park"
         )
         assert result == (error_message, 400)
         assert (
@@ -282,7 +282,7 @@ class TestMainCreateDonorCasesHandleConfigStep:
         error_message = (
             "Error creating IPS donor cases. "
             "Custom ConfigError raised: "
-            "The following required configuration values are missing: blaise_server_park. "
+            "The following required configuration values are missing: blaise_server_park"
         )
         assert result == (error_message, 400)
         assert (
@@ -312,7 +312,7 @@ class TestMainCreateDonorCasesHandleConfigStep:
         error_message = (
             "Error creating IPS donor cases. "
             "Custom ConfigError raised: "
-            "The following required configuration values are missing: blaise_api_url. "
+            "The following required configuration values are missing: blaise_api_url"
         )
         assert result == (error_message, 400)
         assert (
@@ -395,14 +395,14 @@ class TestMainCreateDonorCasesHandleUsersStep:
         )
         mock_config.return_value = Config(blaise_api_url="foo", blaise_server_park="bar")
         mock_get_guid.return_value = "m0ck-gu!d"
-        mock_get_users.side_effect = BlaiseError()
+        mock_get_users.side_effect = BlaiseError("There is butter in the ports")
 
         # Act
         with caplog.at_level(logging.ERROR):
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = "Error creating IPS donor cases. Custom BlaiseError raised: Blaise error"
+        error_message = "Error creating IPS donor cases. Custom BlaiseError raised: There is butter in the ports"
         assert result == (error_message, 404)
         assert (
                    "root",
