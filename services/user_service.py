@@ -14,14 +14,14 @@ class UserService:
             return [user["name"] for user in users if user["role"] == role]
         except BlaiseError as e:
             error_message = (
-                "BlaiseError caught in UserService.get_users_by_role. "
+                "BlaiseError caught in UserService.get_users_by_role(). "
                 f"Error getting users by role for server park {blaise_server_park}: {e}"
             )
             logging.error(error_message)
             raise BlaiseError(error_message)
         except Exception as e:
             error_message = (
-                "Generic Exception caught in UserService.get_users_by_role. "
+                "Generic Exception caught in UserService.get_users_by_role(). "
                 f"Error getting users by role for server park {blaise_server_park}: {e}"
             )
             logging.error(error_message)
