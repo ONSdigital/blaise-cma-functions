@@ -61,7 +61,8 @@ class BlaiseService:
         except Exception as e:
             error_message = f"Error getting existing donor cases: {e}"
             logging.error(error_message)
-            raise Exception(error_message)
+            raise BlaiseError(error_message)
+
 
     def create_donor_case_for_user(self, donor_case_model: DonorCaseModel) -> None:
         try:

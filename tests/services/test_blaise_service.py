@@ -302,7 +302,7 @@ class TestGetExistingDonorCases:
         guid = "7h15-i5-a-gu!D"
 
         # Act
-        with pytest.raises(Exception) as err:
+        with pytest.raises(BlaiseError) as err:
             blaise_service.get_existing_donor_cases(guid)
 
         # Assert
