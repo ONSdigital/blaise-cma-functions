@@ -28,7 +28,10 @@ class BlaiseService:
             logging.info(f"Got questionnaire '{questionnaire_name}'")
             return questionnaire
         except Exception as e:
-            error_message = f"Error getting questionnaire '{questionnaire_name}': {e}"
+            error_message = (
+                "Generic Exception caught in BlaiseService.get_questionnaire(). "
+                f"Error getting questionnaire '{questionnaire_name}': {e}"
+            )
             logging.error(error_message)
             raise BlaiseError(message=error_message)
 
@@ -38,7 +41,10 @@ class BlaiseService:
             logging.info(f"Got {len(users)} users from server park {server_park}")
             return users
         except Exception as e:
-            error_message = f"Error getting users from server park {server_park}: {e}"
+            error_message = (
+                "Generic Exception caught in BlaiseService.get_users(). "
+                f"Error getting users from server park {server_park}: {e}"
+            )
             logging.error(error_message)
             raise BlaiseError(error_message)
 
@@ -59,7 +65,10 @@ class BlaiseService:
                 )
             )
         except Exception as e:
-            error_message = f"Error getting existing donor cases: {e}"
+            error_message = (
+                "Generic Exception caught in BlaiseService.get_existing_donor_cases(). "
+                f"Error getting existing donor cases: {e}"
+            )
             logging.error(error_message)
             raise BlaiseError(error_message)
 
@@ -74,6 +83,9 @@ class BlaiseService:
             )
             logging.info(f"Created donor case for user '{donor_case_model.user}'")
         except Exception as e:
-            error_message = f"Error creating donor case for user '{donor_case_model.user}': {e}"
+            error_message = (
+                "Generic Exception caught in BlaiseService.create_donor_case_for_user(). "
+                f"Error creating donor case for user '{donor_case_model.user}': {e}"
+            )
             logging.error(error_message)
             raise BlaiseError(error_message)

@@ -349,6 +349,7 @@ class TestMainCreateDonorCasesHandleGuidStep:
             "Custom BlaiseError raised: "
             "BlaiseError caught in GUIDService.get_guid(). "
             "Error getting GUID for questionnaire IPS2402a: "
+            "Generic Exception caught in BlaiseService.get_questionnaire(). "
             "Error getting questionnaire 'IPS2402a': How do you click a button without clicking a button?"
         )
         assert result == (error_message, 404)

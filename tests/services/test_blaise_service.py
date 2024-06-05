@@ -121,13 +121,15 @@ class TestGetQuestionnaire:
             blaise_service.get_questionnaire(blaise_server_park, questionnaire_name)
 
         # Assert
-        assert err.value.args[0] == (
-            "Error getting questionnaire 'LMS2309_GO1': DFS had to end their sale"
+        error_message = (
+            "Generic Exception caught in BlaiseService.get_questionnaire(). "
+            f"Error getting questionnaire 'LMS2309_GO1': DFS had to end their sale"
         )
+        assert err.value.args[0] == error_message
         assert (
                    "root",
                    logging.ERROR,
-                   "Error getting questionnaire 'LMS2309_GO1': DFS had to end their sale",
+                   error_message,
                ) in caplog.record_tuples
 
 
@@ -204,7 +206,10 @@ class TestGetUsers:
             blaise_service.get_users(server_park)
 
         # Assert
-        error_message = "Error getting users from server park foo: No more violins left to score Bridgerton"
+        error_message = (
+            "Generic Exception caught in BlaiseService.get_users(). "
+            "Error getting users from server park foo: No more violins left to score Bridgerton"
+        )
         assert err.value.args[0] == error_message
         assert (
                    "root",
@@ -306,7 +311,10 @@ class TestGetExistingDonorCases:
             blaise_service.get_existing_donor_cases(guid)
 
         # Assert
-        error_message = "Error getting existing donor cases: Daryl Dixon did not claim this"
+        error_message = (
+            "Generic Exception caught in BlaiseService.get_existing_donor_cases(). "
+            "Error getting existing donor cases: Daryl Dixon did not claim this"
+        )
         assert err.value.args[0] == error_message
         assert (
                    "root",
@@ -333,7 +341,10 @@ class TestCreateDonorCaseForUser:
             blaise_service.create_donor_case_for_user(donor_case_model)
 
         # Assert
-        error_message = "Error creating donor case for user 'Arya Stark': John Snow be knowin'"
+        error_message = (
+            "Generic Exception caught in BlaiseService.create_donor_case_for_user(). "
+            "Error creating donor case for user 'Arya Stark': John Snow be knowin'"
+        )
         assert err.value.args[0] == error_message
         assert (
                    "root",
