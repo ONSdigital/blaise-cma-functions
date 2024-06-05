@@ -67,13 +67,9 @@ def create_donor_cases(request: flask.request):
 
 def get_request_values(request_json):
     missing_values = []
-
-    questionnaire_name = request_json["questionnaire_name"]
-    if questionnaire_name is None or questionnaire_name == "":
+    if request_json["questionnaire_name"] is None or request_json["questionnaire_name"] == "":
         missing_values.append('questionnaire_name')
-
-    role = request_json["role"]
-    if role is None or role == "":
+    if request_json["role"] is None or request_json["role"] == "":
         missing_values.append('role')
 
     if missing_values:
@@ -81,4 +77,4 @@ def get_request_values(request_json):
         logging.error(error_message)
         raise ValueError(error_message)
 
-    return questionnaire_name, role
+    return request_json["questionnaire_name"], request_json["role"]
