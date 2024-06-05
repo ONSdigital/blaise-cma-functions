@@ -7,9 +7,7 @@ class ConfigError(Exception):
     def _format_message(self):
         if self.missing_configs:
             missing = ", ".join(self.missing_configs)
-            return (
-                f"The following environment variables are not set: {missing}"
-            )
+            return f"The following environment variables are not set: {missing}"
 
         if self.message:
             return self.message

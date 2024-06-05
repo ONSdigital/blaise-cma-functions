@@ -24,7 +24,7 @@ def blaise_service(config) -> BlaiseService:
 class TestGetQuestionnaire:
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     def test_get_questionnaire_calls_the_rest_api_endpoint_with_the_correct_parameters(
-            self, _mock_rest_api_client, blaise_service
+        self, _mock_rest_api_client, blaise_service
     ):
         # arrange
         blaise_server_park = "gusty"
@@ -38,7 +38,7 @@ class TestGetQuestionnaire:
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     def test_get_questionnaire_returns_a_dictionary_containing_questionnaire_info(
-            self, _mock_rest_api_client_get_questionnaire_for_server_park, blaise_service
+        self, _mock_rest_api_client_get_questionnaire_for_server_park, blaise_service
     ):
         # Arrange
         _mock_rest_api_client_get_questionnaire_for_server_park.return_value = {
@@ -61,7 +61,9 @@ class TestGetQuestionnaire:
         questionnaire_name = "LMS2309_GO1"
 
         # Act
-        result = blaise_service.get_questionnaire(blaise_server_park, questionnaire_name)
+        result = blaise_service.get_questionnaire(
+            blaise_server_park, questionnaire_name
+        )
 
         # Assert
         assert len(result) == 9
@@ -73,7 +75,10 @@ class TestGetQuestionnaire:
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     def test_get_questionnaire_logs_the_correct_information(
-            self, _mock_rest_api_client_get_questionnaire_for_server_park, blaise_service, caplog
+        self,
+        _mock_rest_api_client_get_questionnaire_for_server_park,
+        blaise_service,
+        caplog,
     ):
         # Arrange
         _mock_rest_api_client_get_questionnaire_for_server_park.return_value = {
@@ -101,17 +106,19 @@ class TestGetQuestionnaire:
 
         # Assert
         assert (
-                   "root",
-                   logging.INFO,
-                   "Got questionnaire 'LMS2309_GO1'",
-               ) in caplog.record_tuples
+            "root",
+            logging.INFO,
+            "Got questionnaire 'LMS2309_GO1'",
+        ) in caplog.record_tuples
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     def test_get_questionnaire_logs_error_and_raises_blaise_questionnaire_error_exception(
-            self, mock_rest_api_client_get_questionnaire, blaise_service, caplog
+        self, mock_rest_api_client_get_questionnaire, blaise_service, caplog
     ):
         # Arrange
-        mock_rest_api_client_get_questionnaire.side_effect = Exception("DFS had to end their sale")
+        mock_rest_api_client_get_questionnaire.side_effect = Exception(
+            "DFS had to end their sale"
+        )
 
         blaise_server_park = "gusty"
         questionnaire_name = "LMS2309_GO1"
@@ -127,16 +134,17 @@ class TestGetQuestionnaire:
         )
         assert err.value.args[0] == error_message
         assert (
-                   "root",
-                   logging.ERROR,
-                   error_message,
-               ) in caplog.record_tuples
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
 
 
 class TestGetUsers:
     @mock.patch.object(blaise_restapi.Client, "get_users")
     def test_get_users_calls_the_rest_api_endpoint_with_the_correct_parameters(
-            self, _mock_rest_api_client, blaise_service):
+        self, _mock_rest_api_client, blaise_service
+    ):
         # Arrange
         blaise_server_park = "gusty"
 
@@ -148,7 +156,8 @@ class TestGetUsers:
 
     @mock.patch.object(blaise_restapi.Client, "get_users")
     def test_get_users_returns_a_list_of_dictionaires_logs_the_correct_information(
-            self, _mock_rest_api_client_get_users, blaise_service, caplog, mock_get_users):
+        self, _mock_rest_api_client_get_users, blaise_service, caplog, mock_get_users
+    ):
         # Arrange
         _mock_rest_api_client_get_users.return_value = mock_get_users
 
@@ -160,14 +169,15 @@ class TestGetUsers:
 
         # Assert
         assert (
-                   "root",
-                   logging.INFO,
-                   "Got 2 users from server park gusty",
-               ) in caplog.record_tuples
+            "root",
+            logging.INFO,
+            "Got 2 users from server park gusty",
+        ) in caplog.record_tuples
 
     @mock.patch.object(blaise_restapi.Client, "get_users")
     def test_get_users_returns_a_list_of_dictionaires_containing_user_info(
-            self, _mock_rest_api_client_get_users,  blaise_service, caplog, mock_get_users):
+        self, _mock_rest_api_client_get_users, blaise_service, caplog, mock_get_users
+    ):
         # Arrange
         _mock_rest_api_client_get_users.return_value = mock_get_users
 
@@ -195,10 +205,12 @@ class TestGetUsers:
 
     @mock.patch.object(blaise_restapi.Client, "get_users")
     def test_get_users_logs_error_and_raises_blaise_error_exception(
-            self, mock_rest_api_client_get_users, blaise_service, caplog
+        self, mock_rest_api_client_get_users, blaise_service, caplog
     ):
         # Arrange
-        mock_rest_api_client_get_users.side_effect = Exception("No more violins left to score Bridgerton")
+        mock_rest_api_client_get_users.side_effect = Exception(
+            "No more violins left to score Bridgerton"
+        )
         server_park = "foo"
 
         # Act
@@ -212,16 +224,17 @@ class TestGetUsers:
         )
         assert err.value.args[0] == error_message
         assert (
-                   "root",
-                   logging.ERROR,
-                   error_message,
-               ) in caplog.record_tuples
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
 
 
 class TestGetExistingDonorCases:
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
     def test_get_existing_donor_cases_calls_the_rest_api_endpoint_with_the_correct_parameters(
-            self, _mock_rest_api_client, blaise_service):
+        self, _mock_rest_api_client, blaise_service
+    ):
         # Arrange
         server_park = "cma"
         questionnaire_name = "CMA_Launcher"
@@ -238,7 +251,8 @@ class TestGetExistingDonorCases:
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
     def test_get_existing_donor_cases_returns_a_list_of_unique_ids_(
-            self, _mock_rest_api_client_get_questionnaire_data, blaise_service):
+        self, _mock_rest_api_client_get_questionnaire_data, blaise_service
+    ):
         # Arrange
         _mock_rest_api_client_get_questionnaire_data.return_value = {
             "questionnaireName": "cma_launcher",
@@ -269,7 +283,8 @@ class TestGetExistingDonorCases:
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
     def test_get_existing_donor_cases_returns_a_list_of_existing_donor_cases_for_the_correct_questionnaire_when_multiple_questionnaires_are_installed(
-            self, _mock_rest_api_client_get_questionnaire_data, blaise_service):
+        self, _mock_rest_api_client_get_questionnaire_data, blaise_service
+    ):
         # Arrange
         _mock_rest_api_client_get_questionnaire_data.return_value = {
             "questionnaireName": "cma_launcher",
@@ -300,10 +315,12 @@ class TestGetExistingDonorCases:
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
     def test_get_existing_donor_cases_logs_error_and_raises_exception(
-            self, mock_rest_api_client_get_users, blaise_service, caplog
+        self, mock_rest_api_client_get_users, blaise_service, caplog
     ):
         # Arrange
-        mock_rest_api_client_get_users.side_effect = Exception("Daryl Dixon did not claim this")
+        mock_rest_api_client_get_users.side_effect = Exception(
+            "Daryl Dixon did not claim this"
+        )
         guid = "7h15-i5-a-gu!D"
 
         # Act
@@ -317,23 +334,23 @@ class TestGetExistingDonorCases:
         )
         assert err.value.args[0] == error_message
         assert (
-                   "root",
-                   logging.ERROR,
-                   error_message,
-               ) in caplog.record_tuples
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
 
 
 class TestCreateDonorCaseForUser:
     @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
     def test_create_donor_case_for_user_logs_error_and_raises_exception(
-            self, mock_rest_api_client_create_multikey_case, blaise_service, caplog
+        self, mock_rest_api_client_create_multikey_case, blaise_service, caplog
     ):
         # Arrange
-        mock_rest_api_client_create_multikey_case.side_effect = Exception("John Snow be knowin'")
+        mock_rest_api_client_create_multikey_case.side_effect = Exception(
+            "John Snow be knowin'"
+        )
         donor_case_model = DonorCaseModel(
-            user="Arya Stark",
-            questionnaire_name="IPS2406a",
-            guid="7h15-i5-a-gu!d"
+            user="Arya Stark", questionnaire_name="IPS2406a", guid="7h15-i5-a-gu!d"
         )
 
         # Act
@@ -347,7 +364,7 @@ class TestCreateDonorCaseForUser:
         )
         assert err.value.args[0] == error_message
         assert (
-                   "root",
-                   logging.ERROR,
-                   error_message,
-               ) in caplog.record_tuples
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples

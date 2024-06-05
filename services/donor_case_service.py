@@ -2,7 +2,7 @@ import logging
 
 from models.donor_case_model import DonorCaseModel
 from services.blaise_service import BlaiseService
-from utilities.custom_exceptions import DonorCaseError, BlaiseError
+from utilities.custom_exceptions import BlaiseError, DonorCaseError
 
 
 class DonorCaseService:
@@ -45,9 +45,7 @@ class DonorCaseService:
             raise DonorCaseError(error_message)
 
     @staticmethod
-    def donor_case_does_not_exist(
-        user: str, users_with_existing_donor_cases
-    ) -> bool:
+    def donor_case_does_not_exist(user: str, users_with_existing_donor_cases) -> bool:
         try:
             if user in users_with_existing_donor_cases:
                 logging.info(f"Donor case already exists for user '{user}'")

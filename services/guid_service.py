@@ -1,7 +1,7 @@
 import logging
 
 from services.blaise_service import BlaiseService
-from utilities.custom_exceptions import GuidError, BlaiseError
+from utilities.custom_exceptions import BlaiseError, GuidError
 
 
 class GUIDService:

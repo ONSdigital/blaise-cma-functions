@@ -19,7 +19,7 @@ class BlaiseService:
         self.cma_questionnaire = "CMA_Launcher"
 
     def get_questionnaire(
-            self, server_park: str, questionnaire_name: str
+        self, server_park: str, questionnaire_name: str
     ) -> Dict[str, Any]:
         try:
             questionnaire = self.restapi_client.get_questionnaire_for_server_park(

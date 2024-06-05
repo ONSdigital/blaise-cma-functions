@@ -7,7 +7,8 @@ from services.blaise_service import BlaiseService
 from services.donor_case_service import DonorCaseService
 from services.guid_service import GUIDService
 from services.user_service import UserService
-from utilities.custom_exceptions import ConfigError, BlaiseError, GuidError, DonorCaseError, UsersError
+from utilities.custom_exceptions import (BlaiseError, ConfigError,
+                                         DonorCaseError, GuidError, UsersError)
 from utilities.logging import setup_logger
 
 setup_logger()
@@ -45,11 +46,15 @@ def create_donor_cases(request: flask.request):
         logging.error(error_message)
         return error_message, 400
     except ConfigError as e:
-        error_message = f"Error creating IPS donor cases. Custom ConfigError raised: {e}"
+        error_message = (
+            f"Error creating IPS donor cases. Custom ConfigError raised: {e}"
+        )
         logging.error(error_message)
         return error_message, 400
     except BlaiseError as e:
-        error_message = f"Error creating IPS donor cases. Custom BlaiseError raised: {e}"
+        error_message = (
+            f"Error creating IPS donor cases. Custom BlaiseError raised: {e}"
+        )
         logging.error(error_message)
         return error_message, 404
     except GuidError as e:
@@ -61,7 +66,9 @@ def create_donor_cases(request: flask.request):
         logging.error(error_message)
         return error_message, 500
     except DonorCaseError as e:
-        error_message = f"Error creating IPS donor cases. Custom DonorCaseError raised: {e}"
+        error_message = (
+            f"Error creating IPS donor cases. Custom DonorCaseError raised: {e}"
+        )
         logging.error(error_message)
         return error_message, 500
     except Exception as e:
@@ -72,10 +79,13 @@ def create_donor_cases(request: flask.request):
 
 def get_request_values(request_json):
     missing_values = []
-    if request_json["questionnaire_name"] is None or request_json["questionnaire_name"] == "":
-        missing_values.append('questionnaire_name')
+    if (
+        request_json["questionnaire_name"] is None
+        or request_json["questionnaire_name"] == ""
+    ):
+        missing_values.append("questionnaire_name")
     if request_json["role"] is None or request_json["role"] == "":
-        missing_values.append('role')
+        missing_values.append("role")
 
     if missing_values:
         error_message = f"Missing required values from request: {missing_values}"

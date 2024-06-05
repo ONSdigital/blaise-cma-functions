@@ -66,7 +66,9 @@ def test_get_guid_logs_the_correct_message(
 
 
 @mock.patch.object(BlaiseService, "get_questionnaire")
-def test_get_guid_logs_error_and_raises_guid_error_exception(get_questionnaire, guid_service, caplog):
+def test_get_guid_logs_error_and_raises_guid_error_exception(
+    get_questionnaire, guid_service, caplog
+):
     # Arrange
     get_questionnaire.return_value = {}
     blaise_server_park = "gusty"

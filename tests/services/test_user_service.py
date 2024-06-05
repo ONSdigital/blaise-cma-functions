@@ -90,7 +90,9 @@ def test_get_users_by_role_logs_and_raises_a_blaise_error_exception_when_get_use
     get_users, user_service, caplog
 ):
     # Arrange
-    get_users.side_effect = BlaiseError("All the rum has gone and Jack Sparrow doesn't understand why?")
+    get_users.side_effect = BlaiseError(
+        "All the rum has gone and Jack Sparrow doesn't understand why?"
+    )
     role = "IPS Field Interviewer"
     blaise_server_park = "gusty"
 
@@ -106,7 +108,7 @@ def test_get_users_by_role_logs_and_raises_a_blaise_error_exception_when_get_use
     )
     assert err.value.args[0] == error_message
     assert (
-               "root",
-               logging.ERROR,
-               error_message,
-           ) in caplog.record_tuples
+        "root",
+        logging.ERROR,
+        error_message,
+    ) in caplog.record_tuples
