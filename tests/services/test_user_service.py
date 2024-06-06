@@ -86,7 +86,7 @@ def test_get_users_by_role_returns_empty_list_when_no_users_are_found_with_a_giv
 
 
 @mock.patch.object(BlaiseService, "get_users")
-def test_get_users_by_role_logs_and_raises_a_blaise_error_exception_when_get_users_fails_with_blaise_error(
+def test_get_users_by_role_raises_a_blaise_error_exception_when_get_users_fails_with_blaise_error(
     get_users, user_service, caplog
 ):
     # Arrange
@@ -101,14 +101,5 @@ def test_get_users_by_role_logs_and_raises_a_blaise_error_exception_when_get_use
         user_service.get_users_by_role(blaise_server_park, role)
 
     # Assert
-    error_message = (
-        "BlaiseError caught in UserService.get_users_by_role(). "
-        "Error getting users by role for server park gusty: "
-        "All the rum has gone and Jack Sparrow doesn't understand why?"
-    )
+    error_message = "All the rum has gone and Jack Sparrow doesn't understand why?"
     assert err.value.args[0] == error_message
-    assert (
-        "root",
-        logging.ERROR,
-        error_message,
-    ) in caplog.record_tuples

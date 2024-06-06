@@ -172,10 +172,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = (
-            "Error creating IPS donor cases. "
-            "ValueError raised: Missing required values from request: ['questionnaire_name']"
-        )
+        error_message = "Error creating IPS donor cases: Missing required values from request: ['questionnaire_name']"
         assert result == (error_message, 400)
         assert (
             "root",
@@ -201,7 +198,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = "Error creating IPS donor cases. ValueError raised: Missing required values from request: ['role']"
+        error_message = "Error creating IPS donor cases: Missing required values from request: ['role']"
         assert result == (error_message, 400)
         assert (
             "root",
@@ -221,7 +218,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = "Error creating IPS donor cases. AttributeError raised: 'NoneType' object has no attribute 'get_json'"
+        error_message = "Error creating IPS donor cases: 'NoneType' object has no attribute 'get_json'"
         assert result == (error_message, 400)
         assert (
             "root",
@@ -258,8 +255,7 @@ class TestMainCreateDonorCasesHandleConfigStep:
 
         # Assert
         error_message = (
-            "Error creating IPS donor cases. "
-            "Custom ConfigError raised: "
+            "Error creating IPS donor cases: "
             "The following environment variables are not set: blaise_api_url, blaise_server_park"
         )
         assert result == (error_message, 400)
@@ -290,11 +286,7 @@ class TestMainCreateDonorCasesHandleConfigStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = (
-            "Error creating IPS donor cases. "
-            "Custom ConfigError raised: "
-            "The following environment variables are not set: blaise_server_park"
-        )
+        error_message = "Error creating IPS donor cases: The following environment variables are not set: blaise_server_park"
         assert result == (error_message, 400)
         assert (
             "root",
@@ -323,11 +315,7 @@ class TestMainCreateDonorCasesHandleConfigStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = (
-            "Error creating IPS donor cases. "
-            "Custom ConfigError raised: "
-            "The following environment variables are not set: blaise_api_url"
-        )
+        error_message = "Error creating IPS donor cases: The following environment variables are not set: blaise_api_url"
         assert result == (error_message, 400)
         assert (
             "root",
@@ -360,11 +348,8 @@ class TestMainCreateDonorCasesHandleGuidStep:
 
         # Assert
         error_message = (
-            "Error creating IPS donor cases. "
-            "Custom BlaiseError raised: "
-            "BlaiseError caught in GUIDService.get_guid(). "
-            "Error getting GUID for questionnaire IPS2402a: "
-            "Generic Exception caught in BlaiseService.get_questionnaire(). "
+            "Error creating IPS donor cases: "
+            "Exception caught in BlaiseService.get_questionnaire(). "
             "Error getting questionnaire 'IPS2402a': How do you click a button without clicking a button?"
         )
         assert result == (error_message, 404)
@@ -395,10 +380,7 @@ class TestMainCreateDonorCasesHandleGuidStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = (
-            "Error creating IPS donor cases. "
-            "Custom GuidError raised: Something bad happened, but I'm not telling you what"
-        )
+        error_message = "Error creating IPS donor cases: Something bad happened, but I'm not telling you what"
         assert result == (error_message, 500)
         assert (
             "root",
@@ -429,7 +411,7 @@ class TestMainCreateDonorCasesHandleUsersStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = "Error creating IPS donor cases. Custom BlaiseError raised: There is butter in the ports"
+        error_message = "Error creating IPS donor cases: There is butter in the ports"
         assert result == (error_message, 404)
         assert (
             "root",
@@ -458,7 +440,7 @@ class TestMainCreateDonorCasesHandleUsersStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = "Error creating IPS donor cases. Custom UsersError raised: Fuzion Tattoo is at it again"
+        error_message = "Error creating IPS donor cases: Fuzion Tattoo is at it again"
         assert result == (error_message, 500)
         assert (
             "root",
@@ -513,7 +495,7 @@ class TestMainCreateDonorCasesHandleDonorCasesStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = "Error creating IPS donor cases. Custom DonorCaseError raised: This thing unexpectedly successfully failed"
+        error_message = "Error creating IPS donor cases: This thing unexpectedly successfully failed"
         assert result == (error_message, 500)
         assert (
             "root",

@@ -126,7 +126,7 @@ class TestDonorCaseDoesNotExist:
 
         # Assert
         error_message = (
-            "Generic Exception raised in DonorCaseService.donor_case_does_not_exist(). "
+            "Exception raised in DonorCaseService.donor_case_does_not_exist(). "
             "Error checking donor case exists for james: argument of type 'NoneType' is not iterable"
         )
         assert err.value.args[0] == error_message
@@ -158,16 +158,7 @@ class TestCheckAndCreateDonorCaseForUsers:
             )
 
         # assert
-        error_message = (
-            "BlaiseError caught in DonorCaseService.check_and_create_donor_case_for_users(). "
-            "Error when checking and creating donor cases: I'm running out of error messages"
-        )
-        assert err.value.args[0] == error_message
-        assert (
-            "root",
-            logging.ERROR,
-            error_message,
-        ) in caplog.record_tuples
+        assert err.value.args[0] == "I'm running out of error messages"
 
     @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
     @mock.patch(
@@ -197,16 +188,7 @@ class TestCheckAndCreateDonorCaseForUsers:
             )
 
         # assert
-        error_message = (
-            "DonorCaseError caught in DonorCaseService.check_and_create_donor_case_for_users(). "
-            "Error when checking and creating donor cases: You sat in Sheldon's spot"
-        )
-        assert err.value.args[0] == error_message
-        assert (
-            "root",
-            logging.ERROR,
-            error_message,
-        ) in caplog.record_tuples
+        assert err.value.args[0] == "You sat in Sheldon's spot"
 
     @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
     @mock.patch(
@@ -239,13 +221,4 @@ class TestCheckAndCreateDonorCaseForUsers:
             )
 
         # assert
-        error_message = (
-            "BlaiseError caught in DonorCaseService.check_and_create_donor_case_for_users(). "
-            "Error when checking and creating donor cases: Rich has been renaming variables"
-        )
-        assert err.value.args[0] == error_message
-        assert (
-            "root",
-            logging.ERROR,
-            error_message,
-        ) in caplog.record_tuples
+        assert err.value.args[0] == "Rich has been renaming variables"

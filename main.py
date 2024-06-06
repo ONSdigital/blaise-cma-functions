@@ -43,37 +43,31 @@ def create_donor_cases(request: flask.request):
 
         return "Done!", 200
     except AttributeError as e:
-        error_message = f"Error creating IPS donor cases. AttributeError raised: {e}"
+        error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
         return error_message, 400
     except ValueError as e:
-        error_message = f"Error creating IPS donor cases. ValueError raised: {e}"
+        error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
         return error_message, 400
     except ConfigError as e:
-        error_message = (
-            f"Error creating IPS donor cases. Custom ConfigError raised: {e}"
-        )
+        error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
         return error_message, 400
     except BlaiseError as e:
-        error_message = (
-            f"Error creating IPS donor cases. Custom BlaiseError raised: {e}"
-        )
+        error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
         return error_message, 404
     except GuidError as e:
-        error_message = f"Error creating IPS donor cases. Custom GuidError raised: {e}"
+        error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
         return error_message, 500
     except UsersError as e:
-        error_message = f"Error creating IPS donor cases. Custom UsersError raised: {e}"
+        error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
         return error_message, 500
     except DonorCaseError as e:
-        error_message = (
-            f"Error creating IPS donor cases. Custom DonorCaseError raised: {e}"
-        )
+        error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
         return error_message, 500
     except Exception as e:

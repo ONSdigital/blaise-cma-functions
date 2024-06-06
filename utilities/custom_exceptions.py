@@ -12,7 +12,7 @@ class ConfigError(Exception):
         if self.message:
             return self.message
 
-        return "Configuration error"
+        return ""
 
     def __str__(self):
         return self._format_message()
@@ -26,7 +26,7 @@ class BlaiseError(Exception):
     def _format_message(self):
         if self.message:
             return self.message
-        return "Blaise error"
+        return ""
 
     def __str__(self):
         return self._format_message()
@@ -40,7 +40,7 @@ class GuidError(Exception):
     def _format_message(self):
         if self.message:
             return self.message
-        return "GUID service error"
+        return ""
 
     def __str__(self):
         return self._format_message()
@@ -54,7 +54,7 @@ class UsersError(Exception):
     def _format_message(self):
         if self.message:
             return self.message
-        return "Users service error"
+        return ""
 
     def __str__(self):
         return self._format_message()
@@ -68,7 +68,7 @@ class DonorCaseError(Exception):
     def _format_message(self):
         if self.message:
             return self.message
-        return "Custom Donor Case error"
+        return ""
 
     def __str__(self):
         return self._format_message()
