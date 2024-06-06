@@ -8,8 +8,10 @@ from utilities.custom_exceptions import RequestError
 
 class RequestService:
     def __init__(self, request: flask.request, blaise_service: BlaiseService) -> None:
+        self.blaise_service = blaise_service
+
         try:
-            request_json = request.get_json()
+            self.request_json = request.get_json()
         except Exception as e:
             error_message = (
                 "Exception raised in RequestService.init(). "
@@ -18,6 +20,19 @@ class RequestService:
             logging.error(error_message)
             raise RequestError(error_message)
 
-        self.blaise_service = blaise_service
-        self.role = request_json.get("role")
-        self.questionnaire_name = request_json.get("questionnaire_name")
+    def get_request_values(self):
+        missing_values = []
+        if (
+                self.request_json["questionnaire_name"] is None
+                or self.request_json["questionnaire_name"] == ""
+        ):
+            missing_values.append("questionnaire_name")
+        if self.request_json["role"] is None or self.request_json["role"] == "":
+            missing_values.append("role")
+
+        if missing_values:
+            error_message = f"Missing required values from request: {missing_values}"
+            logging.error(error_message)
+            raise RequestError(error_message)
+
+        return self.request_json["questionnaire_name"], self.request_json["role"]

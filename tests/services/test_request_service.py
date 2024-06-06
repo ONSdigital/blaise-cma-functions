@@ -31,17 +31,18 @@ def test_request_service_returns_valid_request_values(blaise_service):
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
     )
+    request_service = RequestService(mock_request, blaise_service)
 
     # act
-    result = RequestService(request=mock_request, blaise_service=blaise_service)
+    result = request_service.get_request_values()
 
     # assert
-    assert result.role == "IPS Manager"
-    assert result.questionnaire_name == "IPS2402a"
+    assert result[0] == "IPS2402a"
+    assert result[1] == "IPS Manager"
 
 
 def test_request_service_logs_and_raises_request_error_exception_when_given_an_invalid_request(
-    blaise_service, caplog
+        blaise_service, caplog
 ):
     # arrange
     mock_request = flask.Request.from_values(json=None)
@@ -59,7 +60,93 @@ def test_request_service_logs_and_raises_request_error_exception_when_given_an_i
     )
     assert err.value.args[0] == error_message
     assert (
-        "root",
-        40,
-        error_message,
-    ) in caplog.record_tuples
+               "root",
+               40,
+               error_message,
+           ) in caplog.record_tuples
+
+
+@pytest.mark.parametrize(
+        "questionnaire_name, role",
+        [
+            (None, None),
+            ("", None),
+            (None, ""),
+            ("", ""),
+        ],
+    )
+def test_request_service_logs_and_raises_request_error_exception_when_both_request_values_are_missing(
+        questionnaire_name, role, blaise_service, caplog
+):
+    # arrange
+    mock_request = flask.Request.from_values(
+        json={"questionnaire_name": questionnaire_name, "role": role}
+    )
+    request_service = RequestService(request=mock_request, blaise_service=blaise_service)
+
+    # act
+    with pytest.raises(RequestError) as err:
+        request_service.get_request_values()
+
+    # assert
+    error_message = "Missing required values from request: ['questionnaire_name', 'role']"
+    assert err.value.args[0] == error_message
+    assert (
+               "root",
+               40,
+               error_message,
+           ) in caplog.record_tuples
+
+
+@pytest.mark.parametrize(
+    "questionnaire_name",
+    [None, ""],
+)
+def test_request_service_logs_and_raises_request_error_exception_when_questionnaire_name_is_missing(
+        questionnaire_name, blaise_service, caplog
+):
+    # arrange
+    mock_request = flask.Request.from_values(
+        json={"questionnaire_name": questionnaire_name, "role": "IPS Manager"}
+    )
+    request_service = RequestService(request=mock_request, blaise_service=blaise_service)
+
+    # act
+    with pytest.raises(RequestError) as err:
+        request_service.get_request_values()
+
+    # assert
+    error_message = "Missing required values from request: ['questionnaire_name']"
+    assert err.value.args[0] == error_message
+    assert (
+               "root",
+               40,
+               error_message,
+           ) in caplog.record_tuples
+
+
+@pytest.mark.parametrize(
+    "role",
+    [None, ""],
+)
+def test_request_service_logs_and_raises_request_error_exception_when_role_is_missing(
+        role, blaise_service, caplog
+):
+    # arrange
+    mock_request = flask.Request.from_values(
+        json={"questionnaire_name": "IPS2402a", "role": role}
+    )
+    request_service = RequestService(request=mock_request, blaise_service=blaise_service)
+
+    # act
+    with pytest.raises(RequestError) as err:
+        request_service.get_request_values()
+
+    # assert
+    error_message = "Missing required values from request: ['role']"
+    assert err.value.args[0] == error_message
+    assert (
+               "root",
+               40,
+               error_message,
+           ) in caplog.record_tuples
