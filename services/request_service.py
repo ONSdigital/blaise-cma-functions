@@ -21,10 +21,16 @@ class RequestService:
             raise RequestError(error_message)
 
     def get_request_values(self):
+        self.validate_missing_values()
+        self.validate_role()
+
+        return self.request_json["questionnaire_name"], self.request_json["role"]
+
+    def validate_missing_values(self):
         missing_values = []
         if (
-                self.request_json["questionnaire_name"] is None
-                or self.request_json["questionnaire_name"] == ""
+            self.request_json["questionnaire_name"] is None
+            or self.request_json["questionnaire_name"] == ""
         ):
             missing_values.append("questionnaire_name")
         if self.request_json["role"] is None or self.request_json["role"] == "":
@@ -35,4 +41,12 @@ class RequestService:
             logging.error(error_message)
             raise RequestError(error_message)
 
-        return self.request_json["questionnaire_name"], self.request_json["role"]
+    def validate_role(self):
+        valid_roles = ["IPS Manager", "IPS Field Interviewer"]
+        if self.request_json["role"] not in valid_roles:
+            error_message = (
+                f"{self.request_json['role']} is not a valid role. "
+                f"Please choose one of the following roles: {valid_roles}"
+            )
+            logging.error(error_message)
+            raise RequestError(error_message)
