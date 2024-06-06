@@ -8,7 +8,7 @@ from appconfig.config import Config
 from models.donor_case_model import DonorCaseModel
 from services.blaise_service import BlaiseService
 from tests.helpers import get_default_config
-from utilities.custom_exceptions import BlaiseError
+from utilities.custom_exceptions import BlaiseError, QuestionnaireNotFound
 
 
 @pytest.fixture()
@@ -19,6 +19,103 @@ def config() -> Config:
 @pytest.fixture()
 def blaise_service(config) -> BlaiseService:
     return BlaiseService(config=config)
+
+
+class TestCheckQuestionnaireExists:
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
+    def test_check_questionnaire_exists_calls_the_rest_api_endpoint_with_the_correct_parameters(
+        self, _mock_rest_api_client, blaise_service
+    ):
+        # arrange
+        blaise_server_park = "gusty"
+        questionnaire_name = "IPS2306a"
+
+        # act
+        blaise_service.check_questionnaire_exists(
+            blaise_server_park, questionnaire_name
+        )
+
+        # assert
+        _mock_rest_api_client.assert_called_with(blaise_server_park, questionnaire_name)
+
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
+    def test_get_questionnaire_returns_true_when_questionnaire_is_installed(
+        self, _mock_rest_api_client_questionnaire_exists_on_server_park, blaise_service
+    ):
+        # Arrange
+        _mock_rest_api_client_questionnaire_exists_on_server_park.return_value = True
+
+        blaise_server_park = "gusty"
+        questionnaire_name = "LMS2309_GO1"
+
+        # Act
+        result = blaise_service.check_questionnaire_exists(
+            blaise_server_park, questionnaire_name
+        )
+
+        # Assert
+        assert result is True
+
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
+    def test_get_questionnaire_logs_and_raises_questionnaire_not_found_exception_when_questionnaire_is_not_installed(
+        self,
+        _mock_rest_api_client_questionnaire_exists_on_server_park,
+        blaise_service,
+        caplog,
+    ):
+        # Arrange
+        _mock_rest_api_client_questionnaire_exists_on_server_park.return_value = False
+
+        blaise_server_park = "gusty"
+        questionnaire_name = "LMS2309_GO1"
+
+        # Act
+        with pytest.raises(QuestionnaireNotFound) as err:
+            blaise_service.check_questionnaire_exists(
+                blaise_server_park, questionnaire_name
+            )
+
+        # Assert
+        error_message = "Questionnaire LMS2309_GO1 is not installed in Blaise"
+        assert err.value.args[0] == error_message
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
+
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
+    def test_get_questionnaire_logs_and_raises_blaise_exception_when_client_fails(
+        self,
+        _mock_rest_api_client_questionnaire_exists_on_server_park,
+        blaise_service,
+        caplog,
+    ):
+        # Arrange
+        _mock_rest_api_client_questionnaire_exists_on_server_park.side_effect = (
+            Exception("Buttercup Cumbersnatch")
+        )
+
+        blaise_server_park = "gusty"
+        questionnaire_name = "LMS2309_GO1"
+
+        # Act
+        with pytest.raises(BlaiseError) as err:
+            blaise_service.check_questionnaire_exists(
+                blaise_server_park, questionnaire_name
+            )
+
+        # Assert
+        error_message = (
+            "Exception caught in BlaiseService.check_questionnaire_exists(). "
+            "Error checking questionnaire 'LMS2309_GO1' exists: Buttercup Cumbersnatch"
+        )
+        assert err.value.args[0] == error_message
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
 
 
 class TestGetQuestionnaire:

@@ -12,8 +12,8 @@ from utilities.custom_exceptions import (
     BlaiseError,
     DonorCaseError,
     GuidError,
-    NoUsersFoundWithRole,
     UsersError,
+    UsersWithRoleNotFound,
 )
 
 
@@ -463,7 +463,7 @@ class TestMainCreateDonorCasesHandleUsersStep:
             blaise_api_url="foo", blaise_server_park="bar"
         )
         mock_get_guid.return_value = "m0ck-gu!d"
-        mock_get_users.side_effect = NoUsersFoundWithRole(
+        mock_get_users.side_effect = UsersWithRoleNotFound(
             "I've seriously run out of error messages"
         )
 

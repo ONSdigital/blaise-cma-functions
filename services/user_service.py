@@ -1,7 +1,7 @@
 import logging
 
 from services.blaise_service import BlaiseService
-from utilities.custom_exceptions import BlaiseError, NoUsersFoundWithRole, UsersError
+from utilities.custom_exceptions import BlaiseError, UsersError, UsersWithRoleNotFound
 
 
 class UserService:
@@ -14,8 +14,8 @@ class UserService:
             return self.eligible_users(users, role)
         except BlaiseError as e:
             raise BlaiseError(e.message) from e
-        except NoUsersFoundWithRole as e:
-            raise NoUsersFoundWithRole(e.message) from e
+        except UsersWithRoleNotFound as e:
+            raise UsersWithRoleNotFound(e.message) from e
         except Exception as e:
             error_message = (
                 "Exception caught in UserService.get_users_by_role(). "
@@ -30,5 +30,5 @@ class UserService:
         if not users_by_role:
             error_message = f"No users found with role '{role}'"
             logging.error(error_message)
-            raise NoUsersFoundWithRole(error_message)
+            raise UsersWithRoleNotFound(error_message)
         return users_by_role
