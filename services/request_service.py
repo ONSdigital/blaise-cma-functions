@@ -1,4 +1,5 @@
 import logging
+import re
 
 import flask
 
@@ -23,6 +24,7 @@ class RequestService:
     def get_request_values(self):
         self.validate_missing_values()
         self.validate_role()
+        self.validate_questionnaire_name()
 
         return self.request_json["questionnaire_name"], self.request_json["role"]
 
@@ -50,3 +52,17 @@ class RequestService:
             )
             logging.error(error_message)
             raise RequestError(error_message)
+
+    def validate_questionnaire_name(self):
+        result = re.match(
+            r"^[A-Za-z]{3}\d{4}.*$", self.request_json["questionnaire_name"]
+        )
+        if not result:
+            error_message = (
+                f"{self.request_json['questionnaire_name']} is not a valid questionnaire name format. "
+                "Questionnaire name must start with 3 letters, followed by 4 numbers"
+            )
+            logging.error(error_message)
+            raise RequestError(error_message)
+        else:
+            "yo"

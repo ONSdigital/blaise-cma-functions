@@ -1,3 +1,5 @@
+from contextlib import contextmanager
+
 import flask
 import pytest
 
@@ -16,6 +18,18 @@ def config() -> Config:
 @pytest.fixture()
 def blaise_service(config) -> BlaiseService:
     return BlaiseService(config=config)
+
+
+@contextmanager
+def does_not_raise(ExpectedException):
+    try:
+        yield
+
+    except ExpectedException as error:
+        raise AssertionError(f"Raised exception {error} when it should not!")
+
+    except Exception as error:
+        raise AssertionError(f"An unexpected exception {error} raised.")
 
 
 class MockRequest:
@@ -199,3 +213,90 @@ def test_request_service_logs_and_raises_request_error_exception_when_role_is_in
         40,
         error_message,
     ) in caplog.record_tuples
+
+
+@pytest.mark.parametrize(
+    "role",
+    [
+        "IPS Manager",
+        "IPS Field Interviewer",
+    ],
+)
+def test_request_service_does_not_log_and_raises_request_error_exception_when_role_is_valid(
+    role, blaise_service, caplog
+):
+    # arrange
+    mock_request = flask.Request.from_values(
+        json={"questionnaire_name": "IPS2402a", "role": role}
+    )
+    request_service = RequestService(
+        request=mock_request, blaise_service=blaise_service
+    )
+
+    # assert
+    with does_not_raise(RequestError):
+        request_service.get_request_values()
+
+
+@pytest.mark.parametrize(
+    "questionnaire_name",
+    [
+        "IPS123a",
+        "IP2402a",
+        "2402aIPS",
+        "IPSmcIPSerson",
+        "1232402a",
+    ],
+)
+def test_request_service_logs_and_raises_request_error_exception_when_questionnaire_name_is_invalid(
+    questionnaire_name, blaise_service, caplog
+):
+    # arrange
+    mock_request = flask.Request.from_values(
+        json={"questionnaire_name": questionnaire_name, "role": "IPS Manager"}
+    )
+    request_service = RequestService(
+        request=mock_request, blaise_service=blaise_service
+    )
+
+    # act
+    with pytest.raises(RequestError) as err:
+        request_service.get_request_values()
+
+    # assert
+    error_message = (
+        f"{questionnaire_name} is not a valid questionnaire name format. "
+        "Questionnaire name must start with 3 letters, followed by 4 numbers"
+    )
+    assert err.value.args[0] == error_message
+    assert (
+        "root",
+        40,
+        error_message,
+    ) in caplog.record_tuples
+
+
+@pytest.mark.parametrize(
+    "questionnaire_name",
+    [
+        "IPS2403a",
+        "IPS2403b",
+        "IPS2403",
+        "LMS2406_TST",
+        "OPN2604",
+    ],
+)
+def test_request_service_does_not_log_and_raise_request_error_exception_when_questionnaire_name_is_valid(
+    questionnaire_name, blaise_service, caplog
+):
+    # arrange
+    mock_request = flask.Request.from_values(
+        json={"questionnaire_name": questionnaire_name, "role": "IPS Manager"}
+    )
+    request_service = RequestService(
+        request=mock_request, blaise_service=blaise_service
+    )
+
+    # act
+    with does_not_raise(RequestError):
+        request_service.get_request_values()
