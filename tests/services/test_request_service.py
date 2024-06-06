@@ -159,14 +159,22 @@ def test_request_service_logs_and_raises_request_error_exception_when_role_is_mi
         error_message,
     ) in caplog.record_tuples
 
+
 @pytest.mark.parametrize(
     "role",
     [
-        "DST", "BDSS", "SEL", "Editor", "foo", "IPS Manger", "IPS Interviewer", "IPS Feld Interviewer"
+        "DST",
+        "BDSS",
+        "SEL",
+        "Editor",
+        "foo",
+        "IPS Manger",
+        "IPS Interviewer",
+        "IPS Feld Interviewer",
     ],
 )
 def test_request_service_logs_and_raises_request_error_exception_when_role_is_invalid(
-        role, blaise_service, caplog
+    role, blaise_service, caplog
 ):
     # arrange
     mock_request = flask.Request.from_values(
@@ -187,7 +195,7 @@ def test_request_service_logs_and_raises_request_error_exception_when_role_is_in
     )
     assert err.value.args[0] == error_message
     assert (
-               "root",
-               40,
-               error_message,
-           ) in caplog.record_tuples
+        "root",
+        40,
+        error_message,
+    ) in caplog.record_tuples
