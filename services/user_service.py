@@ -11,12 +11,7 @@ class UserService:
     def get_users_by_role(self, blaise_server_park: str, role: str) -> list[str]:
         try:
             users = self._blaise_service.get_users(blaise_server_park)
-            users_by_role = [user["name"] for user in users if user["role"] == role]
-            if not users_by_role:
-                error_message = f"No users found with role '{role}'"
-                logging.error(error_message)
-                raise NoUsersFoundWithRole(error_message)
-            return users_by_role
+            return self.eligible_users(users, role)
         except BlaiseError as e:
             raise BlaiseError(e.message) from e
         except NoUsersFoundWithRole as e:
@@ -28,3 +23,12 @@ class UserService:
             )
             logging.error(error_message)
             raise UsersError(error_message)
+
+    @staticmethod
+    def eligible_users(users: list, role: str) -> list[str]:
+        users_by_role = [user["name"] for user in users if user["role"] == role]
+        if not users_by_role:
+            error_message = f"No users found with role '{role}'"
+            logging.error(error_message)
+            raise NoUsersFoundWithRole(error_message)
+        return users_by_role
