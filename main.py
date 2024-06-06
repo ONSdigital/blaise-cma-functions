@@ -42,15 +42,7 @@ def create_donor_cases(request: flask.request):
         )
 
         return "Done!", 200
-    except AttributeError as e:
-        error_message = f"Error creating IPS donor cases: {e}"
-        logging.error(error_message)
-        return error_message, 400
-    except ValueError as e:
-        error_message = f"Error creating IPS donor cases: {e}"
-        logging.error(error_message)
-        return error_message, 400
-    except ConfigError as e:
+    except (AttributeError, ValueError, ConfigError) as e:
         error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
         return error_message, 400
@@ -58,19 +50,7 @@ def create_donor_cases(request: flask.request):
         error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
         return error_message, 404
-    except GuidError as e:
-        error_message = f"Error creating IPS donor cases: {e}"
-        logging.error(error_message)
-        return error_message, 500
-    except UsersError as e:
-        error_message = f"Error creating IPS donor cases: {e}"
-        logging.error(error_message)
-        return error_message, 500
-    except DonorCaseError as e:
-        error_message = f"Error creating IPS donor cases: {e}"
-        logging.error(error_message)
-        return error_message, 500
-    except Exception as e:
+    except (GuidError, UsersError, DonorCaseError, Exception) as e:
         error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
         return error_message, 500
