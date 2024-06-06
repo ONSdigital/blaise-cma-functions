@@ -12,6 +12,7 @@ from utilities.custom_exceptions import (
     BlaiseError,
     DonorCaseError,
     GuidError,
+    NoUsersFoundWithRole,
     UsersError,
 )
 
@@ -442,6 +443,39 @@ class TestMainCreateDonorCasesHandleUsersStep:
         # Assert
         error_message = "Error creating IPS donor cases: Fuzion Tattoo is at it again"
         assert result == (error_message, 500)
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
+
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch("services.guid_service.GUIDService.get_guid")
+    @mock.patch("services.user_service.UserService.get_users_by_role")
+    def test_create_donor_case_returns_message_and_422_status_code_when_the_get_users_service_raises_a_no_users_found_with_role_exception(
+        self, mock_get_users, mock_get_guid, mock_config, caplog
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+        )
+        mock_config.return_value = Config(
+            blaise_api_url="foo", blaise_server_park="bar"
+        )
+        mock_get_guid.return_value = "m0ck-gu!d"
+        mock_get_users.side_effect = NoUsersFoundWithRole(
+            "I've seriously run out of error messages"
+        )
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = create_donor_cases(mock_request)
+
+        # Assert
+        error_message = (
+            "Error creating IPS donor cases: I've seriously run out of error messages"
+        )
+        assert result == (error_message, 422)
         assert (
             "root",
             logging.ERROR,
