@@ -12,6 +12,7 @@ from utilities.custom_exceptions import (
     ConfigError,
     DonorCaseError,
     GuidError,
+    QuestionnaireNotFound,
     UsersError,
     UsersWithRoleNotFound,
 )
@@ -31,6 +32,9 @@ def create_donor_cases(request: flask.request):
         blaise_server_park = blaise_config.blaise_server_park
 
         blaise_service = BlaiseService(blaise_config)
+        blaise_service.check_questionnaire_exists(
+            blaise_server_park, questionnaire_name
+        )
 
         guid_service = GUIDService(blaise_service)
         guid = guid_service.get_guid(blaise_server_park, questionnaire_name)
@@ -52,7 +56,7 @@ def create_donor_cases(request: flask.request):
         error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
         return error_message, 404
-    except UsersWithRoleNotFound as e:
+    except (QuestionnaireNotFound, UsersWithRoleNotFound) as e:
         error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
         return error_message, 422

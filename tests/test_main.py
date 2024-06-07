@@ -12,6 +12,7 @@ from utilities.custom_exceptions import (
     BlaiseError,
     DonorCaseError,
     GuidError,
+    QuestionnaireNotFound,
     UsersError,
     UsersWithRoleNotFound,
 )
@@ -325,17 +326,52 @@ class TestMainCreateDonorCasesHandleConfigStep:
         ) in caplog.record_tuples
 
 
-class TestMainCreateDonorCasesHandleGuidStep:
-
+class TestMainCreateDonorCasesHandleBlaiseStep:
     @mock.patch("appconfig.config.Config.from_env")
-    @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
     def test_create_donor_case_returns_message_and_404_status_code_when_rest_api_fails_to_return_questionnaire(
-        self, mock_rest_api_client_get_questionnaire, mock_config, caplog
+        self, mock_rest_api_questionnaire_exists_on_server_park, mock_config, caplog
     ):
         # Arrange
         mock_request = flask.Request.from_values(
             json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
         )
+        mock_config.return_value = Config(
+            blaise_api_url="foo", blaise_server_park="bar"
+        )
+        mock_rest_api_questionnaire_exists_on_server_park.return_value = False
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = create_donor_cases(mock_request)
+
+        # Assert
+        error_message = "Error creating IPS donor cases: Questionnaire IPS2402a is not installed in Blaise"
+        assert result == (error_message, 422)
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
+
+
+class TestMainCreateDonorCasesHandleGuidStep:
+
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
+    @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
+    def test_create_donor_case_returns_message_and_404_status_code_when_rest_api_fails_to_return_questionnaire(
+        self,
+        mock_rest_api_client_get_questionnaire,
+        mock_questionnaire_exists_on_server_park,
+        mock_config,
+        caplog,
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+        )
+        mock_questionnaire_exists_on_server_park.return_value = True
         mock_config.return_value = Config(
             blaise_api_url="foo", blaise_server_park="bar"
         )
@@ -361,9 +397,14 @@ class TestMainCreateDonorCasesHandleGuidStep:
         ) in caplog.record_tuples
 
     @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
     @mock.patch("services.guid_service.GUIDService.get_guid")
     def test_create_donor_case_returns_message_and_500_status_code_when_the_guid_service_raises_an_exception(
-        self, mock_get_guid, mock_config, caplog
+        self,
+        mock_get_guid,
+        mock_questionnaire_exists_on_server_park,
+        mock_config,
+        caplog,
     ):
         # Arrange
         mock_request = flask.Request.from_values(
@@ -372,6 +413,7 @@ class TestMainCreateDonorCasesHandleGuidStep:
         mock_config.return_value = Config(
             blaise_api_url="foo", blaise_server_park="bar"
         )
+        mock_questionnaire_exists_on_server_park.return_value = True
         mock_get_guid.side_effect = GuidError(
             "Something bad happened, but I'm not telling you what"
         )
@@ -392,10 +434,16 @@ class TestMainCreateDonorCasesHandleGuidStep:
 
 class TestMainCreateDonorCasesHandleUsersStep:
     @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
     @mock.patch("services.guid_service.GUIDService.get_guid")
     @mock.patch("services.user_service.UserService.get_users_by_role")
     def test_create_donor_case_returns_message_and_404_status_code_when_the_get_users_service_raises_a_blaise_error_exception(
-        self, mock_get_users, mock_get_guid, mock_config, caplog
+        self,
+        mock_get_users,
+        mock_get_guid,
+        mock_questionnaire_exists_on_server_park,
+        mock_config,
+        caplog,
     ):
         # Arrange
         mock_request = flask.Request.from_values(
@@ -404,6 +452,7 @@ class TestMainCreateDonorCasesHandleUsersStep:
         mock_config.return_value = Config(
             blaise_api_url="foo", blaise_server_park="bar"
         )
+        mock_questionnaire_exists_on_server_park.return_value = True
         mock_get_guid.return_value = "m0ck-gu!d"
         mock_get_users.side_effect = BlaiseError("There is butter in the ports")
 
@@ -421,10 +470,16 @@ class TestMainCreateDonorCasesHandleUsersStep:
         ) in caplog.record_tuples
 
     @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
     @mock.patch("services.guid_service.GUIDService.get_guid")
     @mock.patch("services.user_service.UserService.get_users_by_role")
     def test_create_donor_case_returns_message_and_500_status_code_when_the_get_users_service_raises_a_users_error_exception(
-        self, mock_get_users, mock_get_guid, mock_config, caplog
+        self,
+        mock_get_users,
+        mock_get_guid,
+        mock_questionnaire_exists_on_server_park,
+        mock_config,
+        caplog,
     ):
         # Arrange
         mock_request = flask.Request.from_values(
@@ -433,6 +488,7 @@ class TestMainCreateDonorCasesHandleUsersStep:
         mock_config.return_value = Config(
             blaise_api_url="foo", blaise_server_park="bar"
         )
+        mock_questionnaire_exists_on_server_park.return_value = True
         mock_get_guid.return_value = "m0ck-gu!d"
         mock_get_users.side_effect = UsersError("Fuzion Tattoo is at it again")
 
@@ -450,10 +506,16 @@ class TestMainCreateDonorCasesHandleUsersStep:
         ) in caplog.record_tuples
 
     @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
     @mock.patch("services.guid_service.GUIDService.get_guid")
     @mock.patch("services.user_service.UserService.get_users_by_role")
     def test_create_donor_case_returns_message_and_422_status_code_when_the_get_users_service_raises_a_no_users_found_with_role_exception(
-        self, mock_get_users, mock_get_guid, mock_config, caplog
+        self,
+        mock_get_users,
+        mock_get_guid,
+        mock_questionnaire_exists_on_server_park,
+        mock_config,
+        caplog,
     ):
         # Arrange
         mock_request = flask.Request.from_values(
@@ -462,6 +524,7 @@ class TestMainCreateDonorCasesHandleUsersStep:
         mock_config.return_value = Config(
             blaise_api_url="foo", blaise_server_park="bar"
         )
+        mock_questionnaire_exists_on_server_park.return_value = True
         mock_get_guid.return_value = "m0ck-gu!d"
         mock_get_users.side_effect = UsersWithRoleNotFound(
             "I've seriously run out of error messages"
@@ -485,6 +548,7 @@ class TestMainCreateDonorCasesHandleUsersStep:
 
 class TestMainCreateDonorCasesHandleDonorCasesStep:
     @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
     @mock.patch("services.guid_service.GUIDService.get_guid")
     @mock.patch("services.user_service.UserService.get_users_by_role")
     @mock.patch(
@@ -495,6 +559,7 @@ class TestMainCreateDonorCasesHandleDonorCasesStep:
         mock_create_donor_case_for_users,
         mock_get_users,
         mock_get_guid,
+        mock_questionnaire_exists_on_server_park,
         mock_config,
         caplog,
     ):
@@ -505,6 +570,7 @@ class TestMainCreateDonorCasesHandleDonorCasesStep:
         mock_config.return_value = Config(
             blaise_api_url="foo", blaise_server_park="bar"
         )
+        mock_questionnaire_exists_on_server_park.return_value = True
         mock_get_guid.return_value = "m0ck-gu!d"
         mock_get_users.return_value = [
             {
