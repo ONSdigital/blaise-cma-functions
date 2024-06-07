@@ -4,12 +4,12 @@ import re
 import blaise_restapi
 
 from appconfig.config import Config
-from services.blaise_service import BlaiseService
 from utilities.custom_exceptions import (
     BlaiseError,
     ConfigError,
     QuestionnaireNotFound,
-    RequestError, UsersWithRoleNotFound,
+    RequestError,
+    UsersWithRoleNotFound,
 )
 
 
