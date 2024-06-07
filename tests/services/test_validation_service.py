@@ -371,3 +371,38 @@ def test_validation_service_does_not_log_and_raise_validation_error_exception_wh
 #             logging.ERROR,
 #             error_message,
 #         ) in caplog.record_tuples
+
+# @mock.patch.object(BlaiseService, "get_users")
+# def test_get_users_by_role_logs_and_raises_an_exception_when_no_users_are_found_with_a_given_role(
+#     get_users, user_service, caplog
+# ):
+#     # Arrange
+#     get_users.return_value = [
+#         {
+#             "name": "rich",
+#             "role": "DST",
+#             "serverParks": ["gusty", "cma"],
+#             "defaultServerPark": "gusty",
+#         },
+#         {
+#             "name": "sarah",
+#             "role": "DST",
+#             "serverParks": ["gusty"],
+#             "defaultServerPark": "gusty",
+#         },
+#     ]
+#     role = "IPS Field Interviewer"
+#     blaise_server_park = "gusty"
+#
+#     # Act
+#     with pytest.raises(UsersWithRoleNotFound) as err:
+#         user_service.get_users_by_role(blaise_server_park, role)
+#
+#     # Assert
+#     error_message = f"No users found with role '{role}'"
+#     assert err.value.args[0] == error_message
+#     assert (
+#         "root",
+#         logging.ERROR,
+#         error_message,
+#     ) in caplog.record_tuples

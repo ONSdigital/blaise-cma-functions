@@ -42,6 +42,7 @@ def create_donor_cases(request: flask.request):
 
         user_service = UserService(blaise_service)
         users_with_role = user_service.get_users_by_role(blaise_server_park, role)
+        validation_service.validate_users_with_role_exist(users_with_role, role)
 
         donor_case_service = DonorCaseService(blaise_service)
         donor_case_service.check_and_create_donor_case_for_users(

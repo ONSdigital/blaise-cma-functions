@@ -4,11 +4,12 @@ import re
 import blaise_restapi
 
 from appconfig.config import Config
+from services.blaise_service import BlaiseService
 from utilities.custom_exceptions import (
     BlaiseError,
     ConfigError,
     QuestionnaireNotFound,
-    RequestError,
+    RequestError, UsersWithRoleNotFound,
 )
 
 
@@ -84,7 +85,7 @@ class ValidationService:
         if missing_configs:
             raise ConfigError(missing_configs=missing_configs)
 
-    def validate_questionnaire_exists(self, config: Config) -> bool:
+    def validate_questionnaire_exists(self, config: Config):
         questionnaire_name = self.request_json["questionnaire_name"]
         server_park = config.blaise_server_park
         restapi_client = blaise_restapi.Client(f"http://{config.blaise_api_url}")
@@ -108,4 +109,9 @@ class ValidationService:
             logging.error(error_message)
             raise QuestionnaireNotFound(error_message)
 
-        return True
+    @staticmethod
+    def validate_users_with_role_exist(users: list, role: str):
+        if not users:
+            error_message = f"No users found with role '{role}'"
+            logging.error(error_message)
+            raise UsersWithRoleNotFound(error_message)
