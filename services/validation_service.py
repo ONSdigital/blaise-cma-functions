@@ -7,7 +7,7 @@ from services.blaise_service import BlaiseService
 from utilities.custom_exceptions import RequestError
 
 
-class RequestService:
+class ValidationService:
     def __init__(self, request: flask.request, blaise_service: BlaiseService) -> None:
         self.blaise_service = blaise_service
 

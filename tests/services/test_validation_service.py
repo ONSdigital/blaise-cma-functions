@@ -5,7 +5,7 @@ import pytest
 
 from appconfig.config import Config
 from services.blaise_service import BlaiseService
-from services.request_service import RequestService
+from services.validation_service import ValidationService
 from tests.helpers import get_default_config
 from utilities.custom_exceptions import RequestError
 
@@ -45,7 +45,7 @@ def test_request_service_returns_valid_request_values(blaise_service):
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
     )
-    request_service = RequestService(mock_request, blaise_service)
+    request_service = ValidationService(mock_request, blaise_service)
 
     # act
     result = request_service.get_request_values()
@@ -63,7 +63,7 @@ def test_request_service_logs_and_raises_request_error_exception_when_given_an_i
 
     # act
     with pytest.raises(RequestError) as err:
-        RequestService(request=mock_request, blaise_service=blaise_service)
+        ValidationService(request=mock_request, blaise_service=blaise_service)
 
     # assert
     error_message = (
@@ -96,7 +96,7 @@ def test_request_service_logs_and_raises_request_error_exception_when_both_reque
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": questionnaire_name, "role": role}
     )
-    request_service = RequestService(
+    request_service = ValidationService(
         request=mock_request, blaise_service=blaise_service
     )
 
@@ -127,7 +127,7 @@ def test_request_service_logs_and_raises_request_error_exception_when_questionna
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": questionnaire_name, "role": "IPS Manager"}
     )
-    request_service = RequestService(
+    request_service = ValidationService(
         request=mock_request, blaise_service=blaise_service
     )
 
@@ -156,7 +156,7 @@ def test_request_service_logs_and_raises_request_error_exception_when_role_is_mi
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": "IPS2402a", "role": role}
     )
-    request_service = RequestService(
+    request_service = ValidationService(
         request=mock_request, blaise_service=blaise_service
     )
 
@@ -194,7 +194,7 @@ def test_request_service_logs_and_raises_request_error_exception_when_role_is_in
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": "IPS2402a", "role": role}
     )
-    request_service = RequestService(
+    request_service = ValidationService(
         request=mock_request, blaise_service=blaise_service
     )
 
@@ -229,7 +229,7 @@ def test_request_service_does_not_log_and_raises_request_error_exception_when_ro
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": "IPS2402a", "role": role}
     )
-    request_service = RequestService(
+    request_service = ValidationService(
         request=mock_request, blaise_service=blaise_service
     )
 
@@ -255,7 +255,7 @@ def test_request_service_logs_and_raises_request_error_exception_when_questionna
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": questionnaire_name, "role": "IPS Manager"}
     )
-    request_service = RequestService(
+    request_service = ValidationService(
         request=mock_request, blaise_service=blaise_service
     )
 
@@ -293,7 +293,7 @@ def test_request_service_does_not_log_and_raise_request_error_exception_when_que
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": questionnaire_name, "role": "IPS Manager"}
     )
-    request_service = RequestService(
+    request_service = ValidationService(
         request=mock_request, blaise_service=blaise_service
     )
 
