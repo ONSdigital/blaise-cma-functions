@@ -40,44 +40,31 @@ class MockRequest:
         return self.json_data
 
 
-def test_request_service_returns_valid_request_values(blaise_service):
+def test_validation_service_returns_questionnaire_name_and_role_when_given_a_valid_request():
     # arrange
+    validation_service = ValidationService()
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
     )
-    request_service = ValidationService(mock_request, blaise_service)
 
     # act
-    result = request_service.get_request_values()
+    result = validation_service.get_valid_request_values(mock_request)
 
     # assert
     assert result[0] == "IPS2402a"
     assert result[1] == "IPS Manager"
 
 
-def test_request_service_logs_and_raises_request_error_exception_when_given_an_invalid_request(
-    blaise_service, caplog
-):
+def test_validation_service_does_not_raise_an_exception_when_given_a_valid_request():
     # arrange
-    mock_request = flask.Request.from_values(json=None)
-
-    # act
-    with pytest.raises(RequestError) as err:
-        ValidationService(request=mock_request, blaise_service=blaise_service)
+    validation_service = ValidationService()
+    mock_request = flask.Request.from_values(
+        json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+    )
 
     # assert
-    error_message = (
-        "Exception raised in RequestService.init(). "
-        "Error getting json from request '<Request 'http://localhost/' [GET]>': "
-        "415 Unsupported Media Type: Did not attempt to load JSON data because "
-        "the request Content-Type was not 'application/json'."
-    )
-    assert err.value.args[0] == error_message
-    assert (
-        "root",
-        40,
-        error_message,
-    ) in caplog.record_tuples
+    with does_not_raise(Exception):
+        validation_service.get_valid_request_values(mock_request)
 
 
 @pytest.mark.parametrize(
@@ -89,20 +76,18 @@ def test_request_service_logs_and_raises_request_error_exception_when_given_an_i
         ("", ""),
     ],
 )
-def test_request_service_logs_and_raises_request_error_exception_when_both_request_values_are_missing(
-    questionnaire_name, role, blaise_service, caplog
+def test_validation_service_logs_and_raises_validation_error_exception_when_both_validation_values_are_missing(
+    questionnaire_name, role, caplog
 ):
     # arrange
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": questionnaire_name, "role": role}
     )
-    request_service = ValidationService(
-        request=mock_request, blaise_service=blaise_service
-    )
+    validation_service = ValidationService()
 
     # act
     with pytest.raises(RequestError) as err:
-        request_service.get_request_values()
+        validation_service.get_valid_request_values(mock_request)
 
     # assert
     error_message = (
@@ -120,20 +105,18 @@ def test_request_service_logs_and_raises_request_error_exception_when_both_reque
     "questionnaire_name",
     [None, ""],
 )
-def test_request_service_logs_and_raises_request_error_exception_when_questionnaire_name_is_missing(
-    questionnaire_name, blaise_service, caplog
+def test_validation_service_logs_and_raises_validation_error_exception_when_questionnaire_name_is_missing(
+    questionnaire_name, caplog
 ):
     # arrange
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": questionnaire_name, "role": "IPS Manager"}
     )
-    request_service = ValidationService(
-        request=mock_request, blaise_service=blaise_service
-    )
+    validation_service = ValidationService()
 
     # act
     with pytest.raises(RequestError) as err:
-        request_service.get_request_values()
+        validation_service.get_valid_request_values(mock_request)
 
     # assert
     error_message = "Missing required values from request: ['questionnaire_name']"
@@ -149,20 +132,18 @@ def test_request_service_logs_and_raises_request_error_exception_when_questionna
     "role",
     [None, ""],
 )
-def test_request_service_logs_and_raises_request_error_exception_when_role_is_missing(
-    role, blaise_service, caplog
+def test_validation_service_logs_and_raises_validation_error_exception_when_role_is_missing(
+    role, caplog
 ):
     # arrange
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": "IPS2402a", "role": role}
     )
-    request_service = ValidationService(
-        request=mock_request, blaise_service=blaise_service
-    )
+    validation_service = ValidationService()
 
     # act
     with pytest.raises(RequestError) as err:
-        request_service.get_request_values()
+        validation_service.get_valid_request_values(mock_request)
 
     # assert
     error_message = "Missing required values from request: ['role']"
@@ -187,20 +168,18 @@ def test_request_service_logs_and_raises_request_error_exception_when_role_is_mi
         "IPS Feld Interviewer",
     ],
 )
-def test_request_service_logs_and_raises_request_error_exception_when_role_is_invalid(
+def test_validation_service_logs_and_raises_validation_error_exception_when_role_is_invalid(
     role, blaise_service, caplog
 ):
     # arrange
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": "IPS2402a", "role": role}
     )
-    request_service = ValidationService(
-        request=mock_request, blaise_service=blaise_service
-    )
+    validation_service = ValidationService()
 
     # act
     with pytest.raises(RequestError) as err:
-        request_service.get_request_values()
+        validation_service.get_valid_request_values(mock_request)
 
     # assert
     error_message = (
@@ -222,20 +201,18 @@ def test_request_service_logs_and_raises_request_error_exception_when_role_is_in
         "IPS Field Interviewer",
     ],
 )
-def test_request_service_does_not_log_and_raises_request_error_exception_when_role_is_valid(
-    role, blaise_service, caplog
+def test_validation_service_does_not_log_and_raises_validation_error_exception_when_role_is_valid(
+    role, caplog
 ):
     # arrange
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": "IPS2402a", "role": role}
     )
-    request_service = ValidationService(
-        request=mock_request, blaise_service=blaise_service
-    )
+    validation_service = ValidationService()
 
-    # assert
+    # act
     with does_not_raise(RequestError):
-        request_service.get_request_values()
+        validation_service.get_valid_request_values(mock_request)
 
 
 @pytest.mark.parametrize(
@@ -248,20 +225,18 @@ def test_request_service_does_not_log_and_raises_request_error_exception_when_ro
         "1232402a",
     ],
 )
-def test_request_service_logs_and_raises_request_error_exception_when_questionnaire_name_is_invalid(
-    questionnaire_name, blaise_service, caplog
+def test_validation_service_logs_and_raises_validation_error_exception_when_questionnaire_name_is_invalid(
+    questionnaire_name, caplog
 ):
     # arrange
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": questionnaire_name, "role": "IPS Manager"}
     )
-    request_service = ValidationService(
-        request=mock_request, blaise_service=blaise_service
-    )
+    validation_service = ValidationService()
 
     # act
     with pytest.raises(RequestError) as err:
-        request_service.get_request_values()
+        validation_service.get_valid_request_values(mock_request)
 
     # assert
     error_message = (
@@ -286,17 +261,15 @@ def test_request_service_logs_and_raises_request_error_exception_when_questionna
         "OPN2604",
     ],
 )
-def test_request_service_does_not_log_and_raise_request_error_exception_when_questionnaire_name_is_valid(
-    questionnaire_name, blaise_service, caplog
+def test_validation_service_does_not_log_and_raise_validation_error_exception_when_questionnaire_name_is_valid(
+    questionnaire_name, caplog
 ):
     # arrange
     mock_request = flask.Request.from_values(
         json={"questionnaire_name": questionnaire_name, "role": "IPS Manager"}
     )
-    request_service = ValidationService(
-        request=mock_request, blaise_service=blaise_service
-    )
+    validation_service = ValidationService()
 
     # act
     with does_not_raise(RequestError):
-        request_service.get_request_values()
+        validation_service.get_valid_request_values(mock_request)

@@ -6,13 +6,12 @@ import flask
 import pytest
 
 from appconfig.config import Config
-from main import create_donor_cases, get_request_values
+from main import create_donor_cases
 from models.donor_case_model import DonorCaseModel
-from utilities.custom_exceptions import (
+from utilities.custom_exceptions import (  # TODO QuestionnaireNotFound,
     BlaiseError,
     DonorCaseError,
     GuidError,
-    QuestionnaireNotFound,
     UsersError,
     UsersWithRoleNotFound,
 )
@@ -220,7 +219,11 @@ class TestMainCreateDonorCasesHandleRequestStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = "Error creating IPS donor cases: 'NoneType' object has no attribute 'get_json'"
+        error_message = (
+            "Error creating IPS donor cases: "
+            "Exception raised in ValidationService.validate_request_is_json(). "
+            "Error getting json from request 'None': 'NoneType' object has no attribute 'get_json'"
+        )
         assert result == (error_message, 400)
         assert (
             "root",
@@ -597,97 +600,6 @@ class TestMainCreateDonorCasesHandleDonorCasesStep:
         # Assert
         error_message = "Error creating IPS donor cases: This thing unexpectedly successfully failed"
         assert result == (error_message, 500)
-        assert (
-            "root",
-            logging.ERROR,
-            error_message,
-        ) in caplog.record_tuples
-
-
-class TestGetRequestValues:
-    def test_get_request_values_returns_the_questionnaire_name_and_role(self):
-        # Arrange
-        mock_request = {"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
-
-        # Act
-        result = get_request_values(mock_request)
-
-        # Assert
-        assert result[0] == "IPS2402a"
-        assert result[1] == "IPS Manager"
-        assert result == ("IPS2402a", "IPS Manager")
-        assert result != ("IPS Manager", "IPS2402a")
-
-    @pytest.mark.parametrize(
-        "questionnaire_name, role",
-        [
-            (None, None),
-            ("", None),
-            (None, ""),
-            ("", ""),
-        ],
-    )
-    def test_get_request_values_logs_and_raises_value_error_exception_when_values_are_missing(
-        self, questionnaire_name, role, caplog
-    ):
-        # Arrange
-        mock_request = {"questionnaire_name": questionnaire_name, "role": role}
-
-        # Act
-        with pytest.raises(ValueError) as err:
-            get_request_values(mock_request)
-
-        # Assert
-        error_message = (
-            "Missing required values from request: ['questionnaire_name', 'role']"
-        )
-        assert err.value.args[0] == error_message
-        assert (
-            "root",
-            logging.ERROR,
-            error_message,
-        ) in caplog.record_tuples
-
-    @pytest.mark.parametrize(
-        "questionnaire_name",
-        [None, ""],
-    )
-    def test_get_request_values_logs_and_raises_value_error_exception_when_questionnaire_name_is_missing(
-        self, questionnaire_name, caplog
-    ):
-        # Arrange
-        mock_request = {"questionnaire_name": questionnaire_name, "role": "IPS Manager"}
-
-        # Act
-        with pytest.raises(ValueError) as err:
-            get_request_values(mock_request)
-
-        # Assert
-        error_message = "Missing required values from request: ['questionnaire_name']"
-        assert err.value.args[0] == error_message
-        assert (
-            "root",
-            logging.ERROR,
-            error_message,
-        ) in caplog.record_tuples
-
-    @pytest.mark.parametrize(
-        "role",
-        [None, ""],
-    )
-    def test_get_request_values_logs_and_raises_value_error_exception_when_role_is_missing(
-        self, role, caplog
-    ):
-        # Arrange
-        mock_request = {"questionnaire_name": "IPS2402a", "role": role}
-
-        # Act
-        with pytest.raises(ValueError) as err:
-            get_request_values(mock_request)
-
-        # Assert
-        error_message = "Missing required values from request: ['role']"
-        assert err.value.args[0] == error_message
         assert (
             "root",
             logging.ERROR,

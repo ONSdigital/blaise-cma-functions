@@ -7,12 +7,14 @@ from services.blaise_service import BlaiseService
 from services.donor_case_service import DonorCaseService
 from services.guid_service import GUIDService
 from services.user_service import UserService
+from services.validation_service import ValidationService
 from utilities.custom_exceptions import (
     BlaiseError,
     ConfigError,
     DonorCaseError,
     GuidError,
     QuestionnaireNotFound,
+    RequestError,
     UsersError,
     UsersWithRoleNotFound,
 )
@@ -24,8 +26,9 @@ setup_logger()
 def create_donor_cases(request: flask.request):
     try:
         logging.info("Running Cloud Function - 'create_donor_cases'")
-        request_json = request.get_json()
-        questionnaire_name, role = get_request_values(request_json)
+        validation_service = ValidationService()
+
+        questionnaire_name, role = validation_service.get_valid_request_values(request)
 
         blaise_config = Config.from_env()
         blaise_config.validate_config(blaise_config)
@@ -48,7 +51,7 @@ def create_donor_cases(request: flask.request):
         )
 
         return "Done!", 200
-    except (AttributeError, ValueError, ConfigError) as e:
+    except (RequestError, AttributeError, ValueError, ConfigError) as e:
         error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
         return error_message, 400
@@ -64,21 +67,3 @@ def create_donor_cases(request: flask.request):
         error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
         return error_message, 500
-
-
-def get_request_values(request_json):
-    missing_values = []
-    if (
-        request_json["questionnaire_name"] is None
-        or request_json["questionnaire_name"] == ""
-    ):
-        missing_values.append("questionnaire_name")
-    if request_json["role"] is None or request_json["role"] == "":
-        missing_values.append("role")
-
-    if missing_values:
-        error_message = f"Missing required values from request: {missing_values}"
-        logging.error(error_message)
-        raise ValueError(error_message)
-
-    return request_json["questionnaire_name"], request_json["role"]

@@ -1,55 +1,45 @@
 import logging
 import re
 
-import flask
-
-from services.blaise_service import BlaiseService
 from utilities.custom_exceptions import RequestError
 
 
 class ValidationService:
-    def __init__(self, request: flask.request, blaise_service: BlaiseService) -> None:
-        self.blaise_service = blaise_service
+    def __init__(self) -> None:
+        self.request_json = None
 
+    def get_valid_request_values(self, request):
+        self.validate_request_is_json(request)
+        self.validate_request_values_are_not_empty()
+        self.validate_questionnaire_name()
+        self.validate_role()
+
+        return self.request_json["questionnaire_name"], self.request_json["role"]
+
+    def validate_request_is_json(self, request):
         try:
             self.request_json = request.get_json()
         except Exception as e:
             error_message = (
-                "Exception raised in RequestService.init(). "
+                "Exception raised in ValidationService.validate_request_is_json(). "
                 f"Error getting json from request '{request}': {e}"
             )
             logging.error(error_message)
             raise RequestError(error_message)
 
-    def get_request_values(self):
-        self.validate_missing_values()
-        self.validate_role()
-        self.validate_questionnaire_name()
-
-        return self.request_json["questionnaire_name"], self.request_json["role"]
-
-    def validate_missing_values(self):
+    def validate_request_values_are_not_empty(self):
         missing_values = []
-        if (
-            self.request_json["questionnaire_name"] is None
-            or self.request_json["questionnaire_name"] == ""
-        ):
+        questionnaire_name = self.request_json["questionnaire_name"]
+        role = self.request_json["role"]
+
+        if questionnaire_name is None or questionnaire_name == "":
             missing_values.append("questionnaire_name")
-        if self.request_json["role"] is None or self.request_json["role"] == "":
+
+        if role is None or role == "":
             missing_values.append("role")
 
         if missing_values:
             error_message = f"Missing required values from request: {missing_values}"
-            logging.error(error_message)
-            raise RequestError(error_message)
-
-    def validate_role(self):
-        valid_roles = ["IPS Manager", "IPS Field Interviewer"]
-        if self.request_json["role"] not in valid_roles:
-            error_message = (
-                f"{self.request_json['role']} is not a valid role. "
-                f"Please choose one of the following roles: {valid_roles}"
-            )
             logging.error(error_message)
             raise RequestError(error_message)
 
@@ -64,5 +54,13 @@ class ValidationService:
             )
             logging.error(error_message)
             raise RequestError(error_message)
-        else:
-            "yo"
+
+    def validate_role(self):
+        valid_roles = ["IPS Manager", "IPS Field Interviewer"]
+        if self.request_json["role"] not in valid_roles:
+            error_message = (
+                f"{self.request_json['role']} is not a valid role. "
+                f"Please choose one of the following roles: {valid_roles}"
+            )
+            logging.error(error_message)
+            raise RequestError(error_message)
