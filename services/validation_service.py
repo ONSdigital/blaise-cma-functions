@@ -1,7 +1,15 @@
 import logging
 import re
 
-from utilities.custom_exceptions import ConfigError, RequestError
+import blaise_restapi
+
+from appconfig.config import Config
+from utilities.custom_exceptions import (
+    BlaiseError,
+    ConfigError,
+    QuestionnaireNotFound,
+    RequestError,
+)
 
 
 class ValidationService:
@@ -75,3 +83,29 @@ class ValidationService:
 
         if missing_configs:
             raise ConfigError(missing_configs=missing_configs)
+
+    def validate_questionnaire_exists(self, config: Config) -> bool:
+        questionnaire_name = self.request_json["questionnaire_name"]
+        server_park = config.blaise_server_park
+        restapi_client = blaise_restapi.Client(f"http://{config.blaise_api_url}")
+
+        try:
+            questionnaire_exists = restapi_client.questionnaire_exists_on_server_park(
+                server_park, questionnaire_name
+            )
+        except Exception as e:
+            error_message = (
+                f"Exception caught in BlaiseService.check_questionnaire_exists(). "
+                f"Error checking questionnaire '{questionnaire_name}' exists: {e}"
+            )
+            logging.error(error_message)
+            raise BlaiseError(message=error_message)
+
+        if not questionnaire_exists:
+            error_message = (
+                f"Questionnaire {questionnaire_name} is not installed in Blaise"
+            )
+            logging.error(error_message)
+            raise QuestionnaireNotFound(error_message)
+
+        return True

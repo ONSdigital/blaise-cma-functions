@@ -5,7 +5,7 @@ import blaise_restapi
 
 from appconfig.config import Config
 from models.donor_case_model import DonorCaseModel
-from utilities.custom_exceptions import BlaiseError, QuestionnaireNotFound
+from utilities.custom_exceptions import BlaiseError
 
 
 class BlaiseService:
@@ -17,32 +17,6 @@ class BlaiseService:
 
         self.cma_serverpark_name = "cma"
         self.cma_questionnaire = "CMA_Launcher"
-
-    def check_questionnaire_exists(
-        self, server_park: str, questionnaire_name: str
-    ) -> bool:
-        try:
-            questionnaire_exists = (
-                self.restapi_client.questionnaire_exists_on_server_park(
-                    server_park, questionnaire_name
-                )
-            )
-        except Exception as e:
-            error_message = (
-                f"Exception caught in BlaiseService.check_questionnaire_exists(). "
-                f"Error checking questionnaire '{questionnaire_name}' exists: {e}"
-            )
-            logging.error(error_message)
-            raise BlaiseError(message=error_message)
-
-        if not questionnaire_exists:
-            error_message = (
-                f"Questionnaire {questionnaire_name} is not installed in Blaise"
-            )
-            logging.error(error_message)
-            raise QuestionnaireNotFound(error_message)
-
-        return True
 
     def get_questionnaire(
         self, server_park: str, questionnaire_name: str
