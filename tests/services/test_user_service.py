@@ -7,7 +7,7 @@ from appconfig.config import Config
 from services.blaise_service import BlaiseService
 from services.user_service import UserService
 from tests.helpers import get_default_config
-from utilities.custom_exceptions import BlaiseError, UsersError, UsersWithRoleNotFound
+from utilities.custom_exceptions import BlaiseError, UsersWithRoleNotFound
 
 
 @pytest.fixture()

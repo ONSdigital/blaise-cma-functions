@@ -1,7 +1,7 @@
 import logging
 import re
 
-from utilities.custom_exceptions import RequestError
+from utilities.custom_exceptions import ConfigError, RequestError
 
 
 class ValidationService:
@@ -64,3 +64,14 @@ class ValidationService:
             )
             logging.error(error_message)
             raise RequestError(error_message)
+
+    @staticmethod
+    def validate_config(config):
+        missing_configs = []
+        if config.blaise_api_url is None or config.blaise_api_url == "":
+            missing_configs.append("blaise_api_url")
+        if config.blaise_server_park is None or config.blaise_server_park == "":
+            missing_configs.append("blaise_server_park")
+
+        if missing_configs:
+            raise ConfigError(missing_configs=missing_configs)

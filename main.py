@@ -31,7 +31,7 @@ def create_donor_cases(request: flask.request):
         questionnaire_name, role = validation_service.get_valid_request_values(request)
 
         blaise_config = Config.from_env()
-        blaise_config.validate_config(blaise_config)
+        validation_service.validate_config(blaise_config)
         blaise_server_park = blaise_config.blaise_server_park
 
         blaise_service = BlaiseService(blaise_config)
