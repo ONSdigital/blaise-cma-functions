@@ -85,8 +85,9 @@ class ValidationService:
         if missing_configs:
             raise ConfigError(missing_configs=missing_configs)
 
-    def validate_questionnaire_exists(self, config: Config):
-        questionnaire_name = self.request_json["questionnaire_name"]
+    # TODO: Test this is called with the correct params
+    @staticmethod
+    def validate_questionnaire_exists(questionnaire_name: str, config: Config):
         server_park = config.blaise_server_park
         restapi_client = blaise_restapi.Client(f"http://{config.blaise_api_url}")
 
