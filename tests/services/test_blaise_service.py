@@ -176,7 +176,7 @@ class TestGetUsers:
 
     @mock.patch.object(blaise_restapi.Client, "get_users")
     def test_get_users_returns_a_list_of_dictionaires_containing_user_info(
-        self, _mock_rest_api_client_get_users, blaise_service, caplog, mock_get_users
+        self, _mock_rest_api_client_get_users, blaise_service, mock_get_users
     ):
         # Arrange
         _mock_rest_api_client_get_users.return_value = mock_get_users

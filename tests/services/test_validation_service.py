@@ -202,7 +202,7 @@ def test_validation_service_logs_and_raises_validation_error_exception_when_role
     ],
 )
 def test_validation_service_does_not_log_and_raises_validation_error_exception_when_role_is_valid(
-    role, caplog
+    role
 ):
     # arrange
     mock_request = flask.Request.from_values(
