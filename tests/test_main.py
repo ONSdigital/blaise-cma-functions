@@ -221,7 +221,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
         # Assert
         error_message = (
             "Error creating IPS donor cases: "
-            "Exception raised in ValidationService.validate_request_is_json(). "
+            "Exception raised in validate_request_is_json(). "
             "Error getting json from request 'None': 'NoneType' object has no attribute 'get_json'"
         )
         assert result == (error_message, 400)
@@ -389,7 +389,7 @@ class TestMainCreateDonorCasesHandleGuidStep:
         # Assert
         error_message = (
             "Error creating IPS donor cases: "
-            "Exception caught in BlaiseService.get_questionnaire(). "
+            "Exception caught in get_questionnaire(). "
             "Error getting questionnaire 'IPS2402a': How do you click a button without clicking a button?"
         )
         assert result == (error_message, 404)

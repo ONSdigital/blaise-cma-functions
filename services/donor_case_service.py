@@ -3,6 +3,7 @@ import logging
 from models.donor_case_model import DonorCaseModel
 from services.blaise_service import BlaiseService
 from utilities.custom_exceptions import BlaiseError, DonorCaseError
+from utilities.logging import function_name
 
 
 class DonorCaseService:
@@ -28,7 +29,7 @@ class DonorCaseService:
             raise DonorCaseError(e.message)
         except Exception as e:
             error_message = (
-                f"Exception caught in DonorCaseService.check_and_create_donor_case_for_users(). "
+                f"Exception caught in {function_name()}. "
                 f"Error when checking and creating donor cases: {e}"
             )
             logging.error(error_message)
@@ -45,7 +46,7 @@ class DonorCaseService:
                 return True
         except Exception as e:
             error_message = (
-                "Exception raised in DonorCaseService.donor_case_does_not_exist(). "
+                f"Exception raised in {function_name()}. "
                 f"Error checking donor case exists for {user}: {e}"
             )
             logging.error(error_message)

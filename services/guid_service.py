@@ -2,6 +2,7 @@ import logging
 
 from services.blaise_service import BlaiseService
 from utilities.custom_exceptions import BlaiseError, GuidError
+from utilities.logging import function_name
 
 
 class GUIDService:
@@ -20,7 +21,7 @@ class GUIDService:
             raise BlaiseError(e.message)
         except Exception as e:
             error_message = (
-                f"Exception caught in GUIDService.get_guid(). "
+                f"Exception caught in {function_name()}. "
                 f"Error getting GUID for questionnaire {questionnaire_name}: {e}"
             )
             logging.error(error_message)

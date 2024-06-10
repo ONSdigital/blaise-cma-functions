@@ -6,6 +6,7 @@ import blaise_restapi
 from appconfig.config import Config
 from models.donor_case_model import DonorCaseModel
 from utilities.custom_exceptions import BlaiseError
+from utilities.logging import function_name
 
 
 class BlaiseService:
@@ -29,7 +30,7 @@ class BlaiseService:
             return questionnaire
         except Exception as e:
             error_message = (
-                f"Exception caught in BlaiseService.get_questionnaire(). "
+                f"Exception caught in {function_name()}. "
                 f"Error getting questionnaire '{questionnaire_name}': {e}"
             )
             logging.error(error_message)
@@ -42,7 +43,7 @@ class BlaiseService:
             return users
         except Exception as e:
             error_message = (
-                "Exception caught in BlaiseService.get_users(). "
+                f"Exception caught in {function_name()}. "
                 f"Error getting users from server park {server_park}: {e}"
             )
             logging.error(error_message)
@@ -66,7 +67,7 @@ class BlaiseService:
             )
         except Exception as e:
             error_message = (
-                "Exception caught in BlaiseService.get_existing_donor_cases(). "
+                f"Exception caught in {function_name()}. "
                 f"Error getting existing donor cases: {e}"
             )
             logging.error(error_message)
@@ -84,7 +85,7 @@ class BlaiseService:
             logging.info(f"Created donor case for user '{donor_case_model.user}'")
         except Exception as e:
             error_message = (
-                "Exception caught in BlaiseService.create_donor_case_for_user(). "
+                f"Exception caught in {function_name()}. "
                 f"Error creating donor case for user '{donor_case_model.user}': {e}"
             )
             logging.error(error_message)

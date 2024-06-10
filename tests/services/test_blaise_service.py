@@ -129,7 +129,7 @@ class TestGetQuestionnaire:
 
         # Assert
         error_message = (
-            "Exception caught in BlaiseService.get_questionnaire(). "
+            "Exception caught in get_questionnaire(). "
             "Error getting questionnaire 'LMS2309_GO1': DFS had to end their sale"
         )
         assert err.value.args[0] == error_message
@@ -219,7 +219,7 @@ class TestGetUsers:
 
         # Assert
         error_message = (
-            "Exception caught in BlaiseService.get_users(). "
+            "Exception caught in get_users(). "
             "Error getting users from server park foo: No more violins left to score Bridgerton"
         )
         assert err.value.args[0] == error_message
@@ -329,7 +329,7 @@ class TestGetExistingDonorCases:
 
         # Assert
         error_message = (
-            "Exception caught in BlaiseService.get_existing_donor_cases(). "
+            "Exception caught in get_existing_donor_cases(). "
             "Error getting existing donor cases: Daryl Dixon did not claim this"
         )
         assert err.value.args[0] == error_message
@@ -359,7 +359,7 @@ class TestCreateDonorCaseForUser:
 
         # Assert
         error_message = (
-            "Exception caught in BlaiseService.create_donor_case_for_user(). "
+            "Exception caught in create_donor_case_for_user(). "
             "Error creating donor case for user 'Arya Stark': John Snow be knowin'"
         )
         assert err.value.args[0] == error_message

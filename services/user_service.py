@@ -2,6 +2,7 @@ import logging
 
 from services.blaise_service import BlaiseService
 from utilities.custom_exceptions import BlaiseError, UsersError, UsersWithRoleNotFound
+from utilities.logging import function_name
 
 
 class UserService:
@@ -18,7 +19,7 @@ class UserService:
             raise UsersWithRoleNotFound(e.message) from e
         except Exception as e:
             error_message = (
-                "Exception caught in UserService.get_users_by_role(). "
+                f"Exception caught in {function_name()}. "
                 f"Error getting users by role for server park {blaise_server_park}: {e}"
             )
             logging.error(error_message)
