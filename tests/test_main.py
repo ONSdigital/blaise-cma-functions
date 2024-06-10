@@ -166,7 +166,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
     )
     @mock.patch.object(blaise_restapi.Client, "get_users")
     def test_create_donor_case_returns_message_and_400_status_code_when_both_questionnaire_name_and_role_values_are_missing(
-            self, mock_get_users, questionnaire_name, role, caplog
+        self, mock_get_users, questionnaire_name, role, caplog
     ):
         # Arrange
         mock_request = flask.Request.from_values(
@@ -184,10 +184,10 @@ class TestMainCreateDonorCasesHandleRequestStep:
         )
         assert result == (error_message, 400)
         assert (
-                   "root",
-                   logging.ERROR,
-                   error_message,
-               ) in caplog.record_tuples
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
 
     @pytest.mark.parametrize(
         "questionnaire_name",
@@ -294,7 +294,7 @@ class TestMainCreateDonorCasesHandleConfigStep:
         # Assert
         error_message = (
             "Error creating IPS donor cases: "
-            "The following environment variables are not set: blaise_api_url, blaise_server_park"
+            "Missing required values from config: ['blaise_api_url', 'blaise_server_park']"
         )
         assert result == (error_message, 400)
         assert (
@@ -324,7 +324,7 @@ class TestMainCreateDonorCasesHandleConfigStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = "Error creating IPS donor cases: The following environment variables are not set: blaise_server_park"
+        error_message = "Error creating IPS donor cases: Missing required values from config: ['blaise_server_park']"
         assert result == (error_message, 400)
         assert (
             "root",
@@ -353,7 +353,7 @@ class TestMainCreateDonorCasesHandleConfigStep:
             result = create_donor_cases(mock_request)
 
         # Assert
-        error_message = "Error creating IPS donor cases: The following environment variables are not set: blaise_api_url"
+        error_message = "Error creating IPS donor cases: Missing required values from config: ['blaise_api_url']"
         assert result == (error_message, 400)
         assert (
             "root",

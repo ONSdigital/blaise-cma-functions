@@ -7,7 +7,6 @@ from appconfig.config import Config
 from utilities.custom_exceptions import (
     BlaiseError,
     ConfigError,
-    QuestionnaireNotFound,
     RequestError,
     UsersWithRoleNotFound,
 )
@@ -84,16 +83,17 @@ class ValidationService:
             missing_configs.append("blaise_server_park")
 
         if missing_configs:
-            raise ConfigError(missing_configs=missing_configs)
+            error_message = f"Missing required values from config: {missing_configs}"
+            logging.error(error_message)
+            raise ConfigError(message=error_message)
 
-    # TODO: Test this is called with the correct params
     @staticmethod
     def validate_questionnaire_exists(questionnaire_name: str, config: Config):
         server_park = config.blaise_server_park
         restapi_client = blaise_restapi.Client(f"http://{config.blaise_api_url}")
 
         try:
-            questionnaire_exists = restapi_client.questionnaire_exists_on_server_park(
+            restapi_client.questionnaire_exists_on_server_park(
                 server_park, questionnaire_name
             )
         except Exception as e:
@@ -103,13 +103,6 @@ class ValidationService:
             )
             logging.error(error_message)
             raise BlaiseError(message=error_message)
-
-        if not questionnaire_exists:
-            error_message = (
-                f"Questionnaire {questionnaire_name} is not installed in Blaise"
-            )
-            logging.error(error_message)
-            raise QuestionnaireNotFound(error_message)
 
     # @staticmethod
     # def validate_role_exists(config: Config, role_name: str):
