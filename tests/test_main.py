@@ -156,12 +156,45 @@ class TestMainCreateDonorCasesHandleRequestStep:
         )
 
     @pytest.mark.parametrize(
+        "questionnaire_name, role",
+        [
+            (None, ""),
+            (None, None),
+            ("", ""),
+            ("", None),
+        ],
+    )
+    @mock.patch.object(blaise_restapi.Client, "get_users")
+    def test_create_donor_case_returns_message_and_400_status_code_when_both_questionnaire_name_and_role_values_are_missing(
+            self, mock_get_users, questionnaire_name, role, caplog
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": questionnaire_name, "role": role}
+        )
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = create_donor_cases(mock_request)
+
+        # Assert
+        error_message = (
+            "Error creating IPS donor cases: "
+            "Missing required values from request: ['questionnaire_name', 'role']"
+        )
+        assert result == (error_message, 400)
+        assert (
+                   "root",
+                   logging.ERROR,
+                   error_message,
+               ) in caplog.record_tuples
+
+    @pytest.mark.parametrize(
         "questionnaire_name",
         [None, ""],
     )
-    @mock.patch.object(blaise_restapi.Client, "get_users")
     def test_create_donor_case_returns_message_and_400_status_code_when_questionnaire_name_value_is_missing(
-        self, mock_get_users, questionnaire_name, caplog
+        self, questionnaire_name, caplog
     ):
         # Arrange
         mock_request = flask.Request.from_values(
@@ -322,35 +355,6 @@ class TestMainCreateDonorCasesHandleConfigStep:
         # Assert
         error_message = "Error creating IPS donor cases: The following environment variables are not set: blaise_api_url"
         assert result == (error_message, 400)
-        assert (
-            "root",
-            logging.ERROR,
-            error_message,
-        ) in caplog.record_tuples
-
-
-class TestMainCreateDonorCasesHandleBlaiseStep:
-    @mock.patch("appconfig.config.Config.from_env")
-    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
-    def test_create_donor_case_returns_message_and_404_status_code_when_rest_api_fails_to_return_questionnaire(
-        self, mock_rest_api_questionnaire_exists_on_server_park, mock_config, caplog
-    ):
-        # Arrange
-        mock_request = flask.Request.from_values(
-            json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
-        )
-        mock_config.return_value = Config(
-            blaise_api_url="foo", blaise_server_park="bar"
-        )
-        mock_rest_api_questionnaire_exists_on_server_park.return_value = False
-
-        # Act
-        with caplog.at_level(logging.ERROR):
-            result = create_donor_cases(mock_request)
-
-        # Assert
-        error_message = "Error creating IPS donor cases: Questionnaire IPS2402a is not installed in Blaise"
-        assert result == (error_message, 422)
         assert (
             "root",
             logging.ERROR,
