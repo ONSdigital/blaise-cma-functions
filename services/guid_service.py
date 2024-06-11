@@ -25,4 +25,4 @@ class GUIDService:
                 f"Error getting GUID for questionnaire {questionnaire_name}: {e}"
             )
             logging.error(error_message)
-            raise GuidError(message=error_message)
+            raise GuidError(error_message)

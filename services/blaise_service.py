@@ -34,7 +34,7 @@ class BlaiseService:
                 f"Error getting questionnaire '{questionnaire_name}': {e}"
             )
             logging.error(error_message)
-            raise BlaiseError(message=error_message)
+            raise BlaiseError(error_message)
 
     def get_users(self, server_park: str) -> dict[str, Any]:
         try:

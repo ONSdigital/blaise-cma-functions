@@ -86,7 +86,7 @@ class ValidationService:
         if missing_configs:
             error_message = f"Missing required values from config: {missing_configs}"
             logging.error(error_message)
-            raise ConfigError(message=error_message)
+            raise ConfigError(error_message)
 
     @staticmethod
     def validate_questionnaire_exists(questionnaire_name: str, config: Config):
@@ -103,31 +103,7 @@ class ValidationService:
                 f"Error checking questionnaire '{questionnaire_name}' exists: {e}"
             )
             logging.error(error_message)
-            raise BlaiseError(message=error_message)
-
-    # @staticmethod
-    # def validate_role_exists(config: Config, role_name: str):
-    #     server_park = config.blaise_server_park
-    #     restapi_client = blaise_restapi.Client(f"http://{config.blaise_api_url}")
-    #
-    #     try:
-    #         restapi_client.questionnaire_exists_on_server_park(
-    #             server_park, questionnaire_name
-    #         )
-    #     except Exception as e:
-    #         error_message = (
-    #             f"Exception caught in BlaiseService.check_questionnaire_exists(). "
-    #             f"Error checking questionnaire '{questionnaire_name}' exists: {e}"
-    #         )
-    #         logging.error(error_message)
-    #         raise BlaiseError(message=error_message)
-    #
-    #     if not questionnaire_exists:
-    #         error_message = (
-    #             f"Questionnaire {questionnaire_name} is not installed in Blaise"
-    #         )
-    #         logging.error(error_message)
-    #         raise QuestionnaireNotFound(error_message)
+            raise BlaiseError(error_message)
 
     @staticmethod
     def validate_users_with_role_exist(users: list, role: str):

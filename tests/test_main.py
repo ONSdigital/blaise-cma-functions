@@ -8,7 +8,7 @@ import pytest
 from appconfig.config import Config
 from main import create_donor_cases
 from models.donor_case_model import DonorCaseModel
-from utilities.custom_exceptions import (  # TODO QuestionnaireNotFound,
+from utilities.custom_exceptions import (
     BlaiseError,
     DonorCaseError,
     GuidError,
