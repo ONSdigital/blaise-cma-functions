@@ -36,7 +36,9 @@ class DonorCaseService:
             raise DonorCaseError(error_message)
 
     @staticmethod
-    def donor_case_does_not_exist(user: str, users_with_existing_donor_cases: list[str]) -> bool:
+    def donor_case_does_not_exist(
+        user: str, users_with_existing_donor_cases: list[str]
+    ) -> bool:
         try:
             if user in users_with_existing_donor_cases:
                 logging.info(f"Donor case already exists for user '{user}'")
