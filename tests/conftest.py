@@ -14,7 +14,7 @@ def donor_case_model_inputs():
 
 
 @pytest.fixture
-def mock_get_users() -> list[dict[str, str | list[str]] | dict[str, str | list[str]]]:
+def mock_get_users():
     return [
         {
             "name": "rich",
