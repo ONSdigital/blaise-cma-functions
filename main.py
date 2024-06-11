@@ -23,27 +23,35 @@ from utilities.logging import setup_logger
 setup_logger()
 
 
-def create_donor_cases(request: flask.request):
+def create_donor_cases(request: flask.request) -> tuple[str, int]:
     try:
         logging.info("Running Cloud Function - 'create_donor_cases'")
         validation_service = ValidationService()
 
+        # Request Handler
         questionnaire_name, role = validation_service.get_valid_request_values(request)
 
+        # Config Handler
         blaise_config = Config.from_env()
         validation_service.validate_config(blaise_config)
         blaise_server_park = blaise_config.blaise_server_park
 
+        # Blaise Handler
         blaise_service = BlaiseService(blaise_config)
-        validation_service.validate_questionnaire_exists(questionnaire_name, blaise_config)
+        validation_service.validate_questionnaire_exists(
+            questionnaire_name, blaise_config
+        )
 
+        # GUID Handler
         guid_service = GUIDService(blaise_service)
         guid = guid_service.get_guid(blaise_server_park, questionnaire_name)
 
+        # User Handler
         user_service = UserService(blaise_service)
         users_with_role = user_service.get_users_by_role(blaise_server_park, role)
         validation_service.validate_users_with_role_exist(users_with_role, role)
 
+        # Donor Case Handler
         donor_case_service = DonorCaseService(blaise_service)
         donor_case_service.check_and_create_donor_case_for_users(
             questionnaire_name, guid, users_with_role
