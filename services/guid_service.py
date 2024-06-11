@@ -6,7 +6,7 @@ from utilities.logging import function_name
 
 
 class GUIDService:
-    def __init__(self, blaise_service: BlaiseService):
+    def __init__(self, blaise_service: BlaiseService) -> None:
         self._blaise_service = blaise_service
 
     def get_guid(self, server_park: str, questionnaire_name: str) -> str:

@@ -18,10 +18,10 @@ from utilities.custom_exceptions import (  # TODO QuestionnaireNotFound,
 
 
 class MockRequest:
-    def __init__(self, json_data):
+    def __init__(self, json_data) -> None:
         self.json_data = json_data
 
-    def get_json(self):
+    def get_json(self) -> dict[str, any]:
         return self.json_data
 
 

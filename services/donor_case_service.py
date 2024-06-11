@@ -7,7 +7,7 @@ from utilities.logging import function_name
 
 
 class DonorCaseService:
-    def __init__(self, blaise_service: BlaiseService):
+    def __init__(self, blaise_service: BlaiseService) -> None:
         self._blaise_service = blaise_service
 
     def check_and_create_donor_case_for_users(
@@ -36,7 +36,7 @@ class DonorCaseService:
             raise DonorCaseError(error_message)
 
     @staticmethod
-    def donor_case_does_not_exist(user: str, users_with_existing_donor_cases) -> bool:
+    def donor_case_does_not_exist(user: str, users_with_existing_donor_cases: list[str]) -> bool:
         try:
             if user in users_with_existing_donor_cases:
                 logging.info(f"Donor case already exists for user '{user}'")

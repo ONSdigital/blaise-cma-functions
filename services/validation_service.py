@@ -2,6 +2,7 @@ import logging
 import re
 
 import blaise_restapi
+import flask
 
 from appconfig.config import Config
 from utilities.custom_exceptions import (
@@ -17,7 +18,7 @@ class ValidationService:
     def __init__(self) -> None:
         self.request_json = None
 
-    def get_valid_request_values(self, request):
+    def get_valid_request_values(self, request: flask.request) -> tuple[str, str]:
         self.validate_request_is_json(request)
         self.validate_request_values_are_not_empty()
         self.validate_questionnaire_name()

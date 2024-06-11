@@ -2,7 +2,7 @@ import pytest
 
 
 class DonorCaseModelInputs:
-    def __init__(self):
+    def __init__(self) -> None:
         self.user = "james"
         self.questionnaire_name = "IPS2306a"
         self.guid = "7bded891-3aa6-41b2-824b-0be514018806"
@@ -14,7 +14,7 @@ def donor_case_model_inputs():
 
 
 @pytest.fixture
-def mock_get_users():
+def mock_get_users() -> list[dict[str, str | list[str]] | dict[str, str | list[str]]]:
     return [
         {
             "name": "rich",
@@ -32,7 +32,7 @@ def mock_get_users():
 
 
 @pytest.fixture
-def mock_get_questionnaire():
+def mock_get_questionnaire() -> dict[str, any]:
     return {
         "name": "LMS2309_GO1",
         "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",

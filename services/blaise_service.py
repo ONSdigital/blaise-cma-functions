@@ -10,7 +10,7 @@ from utilities.logging import function_name
 
 
 class BlaiseService:
-    def __init__(self, config: Config):
+    def __init__(self, config: Config) -> None:
         self._config = config
         self.restapi_client = blaise_restapi.Client(
             f"http://{self._config.blaise_api_url}"
@@ -36,7 +36,7 @@ class BlaiseService:
             logging.error(error_message)
             raise BlaiseError(message=error_message)
 
-    def get_users(self, server_park: str) -> list[Dict[str, Any]]:
+    def get_users(self, server_park: str) -> dict[str, Any]:
         try:
             users = self.restapi_client.get_users()
             logging.info(f"Got {len(users)} users from server park {server_park}")
@@ -49,7 +49,7 @@ class BlaiseService:
             logging.error(error_message)
             raise BlaiseError(error_message)
 
-    def get_existing_donor_cases(self, guid):
+    def get_existing_donor_cases(self, guid: str):
         try:
             cases = self.restapi_client.get_questionnaire_data(
                 self.cma_serverpark_name,
