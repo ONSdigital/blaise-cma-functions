@@ -9,7 +9,12 @@ from appconfig.config import Config
 from services.blaise_service import BlaiseService
 from services.validation_service import ValidationService
 from tests.helpers import get_default_config
-from utilities.custom_exceptions import BlaiseError, ConfigError, RequestError
+from utilities.custom_exceptions import (
+    BlaiseError,
+    ConfigError,
+    RequestError,
+    UsersWithRoleNotFound,
+)
 
 
 @pytest.fixture()
@@ -406,7 +411,7 @@ class TestValidateQuestionnaireExists:
         # assert
         error_message = (
             "Exception caught in validate_questionnaire_exists(). "
-            f"Error checking questionnaire 'IPS2403a' exists: Bendybug Cannotkrump"
+            "Error checking questionnaire 'IPS2403a' exists: Bendybug Cannotkrump"
         )
         assert err.value.args[0] == error_message
         assert (
@@ -416,38 +421,36 @@ class TestValidateQuestionnaireExists:
         ) in caplog.record_tuples
 
 
-# TODO
-# @mock.patch.object(BlaiseService, "get_users")
-# def test_get_users_by_role_logs_and_raises_an_exception_when_no_users_are_found_with_a_given_role(
-#     get_users, user_service, caplog
-# ):
-#     # Arrange
-#     get_users.return_value = [
-#         {
-#             "name": "rich",
-#             "role": "DST",
-#             "serverParks": ["gusty", "cma"],
-#             "defaultServerPark": "gusty",
-#         },
-#         {
-#             "name": "sarah",
-#             "role": "DST",
-#             "serverParks": ["gusty"],
-#             "defaultServerPark": "gusty",
-#         },
-#     ]
-#     role = "IPS Field Interviewer"
-#     blaise_server_park = "gusty"
-#
-#     # Act
-#     with pytest.raises(UsersWithRoleNotFound) as err:
-#         user_service.get_users_by_role(blaise_server_park, role)
-#
-#     # Assert
-#     error_message = f"No users found with role '{role}'"
-#     assert err.value.args[0] == error_message
-#     assert (
-#         "root",
-#         logging.ERROR,
-#         error_message,
-#     ) in caplog.record_tuples
+class TestValidateUsers:
+    def test_validate_users_with_role_exist_does_not_raise_an_exception_when_users_with_role_exist(
+        self,
+    ):
+        # arrange
+        mock_users = ["Rich"]
+        mock_role = "Lord and Saviour"
+        validation_service = ValidationService()
+
+        # assert
+        with does_not_raise(BlaiseError):
+            validation_service.validate_users_with_role_exist(mock_users, mock_role)
+
+    def test_validate_users_with_role_exist_logs_and_raises_a_users_with_role_not_found_error_exception_when_no_users_with_role_exist(
+        self, caplog
+    ):
+        # arrange
+        mock_users = []
+        mock_role = "Lord and Saviour"
+        validation_service = ValidationService()
+
+        # act
+        with pytest.raises(UsersWithRoleNotFound) as err:
+            validation_service.validate_users_with_role_exist(mock_users, mock_role)
+
+        # assert
+        error_message = "No users found with role 'Lord and Saviour'"
+        assert err.value.args[0] == error_message
+        assert (
+            "root",
+            40,
+            error_message,
+        ) in caplog.record_tuples
