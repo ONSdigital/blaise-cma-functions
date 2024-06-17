@@ -16,6 +16,10 @@ isort = "^5.13.2"
 codecov = "^2.1.13"
 blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client", rev = "v1.0.0"}
 google-cloud-logging = "^3.10.0"
+flake8 = "^7.0.0"
+
+[tool.isort]
+profile = "black"
 
 [build-system]
 requires = ["poetry-core"]
