@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class DonorCaseModel:
-    def __init__(self, user, questionnaire_name, guid):
+    def __init__(self, user: str, questionnaire_name: str, guid: str) -> None:
         self.user = user
         self.questionnaire_name = questionnaire_name
         self.guid = guid
@@ -19,7 +19,7 @@ class DonorCaseModel:
         self.key_values = self.format_key_values()
         self.data_fields = self.format_data_fields()
 
-    def format_data_fields(self):
+    def format_data_fields(self) -> dict[str, any]:
         return {
             "mainSurveyID": f"{self.guid}",
             "id": f"{self.user}",
@@ -33,7 +33,8 @@ class DonorCaseModel:
     def format_key_values(self) -> list[str]:
         return [self.guid, self.user]
 
-    def format_key_names(self) -> list[str]:
+    @staticmethod
+    def format_key_names() -> list[str]:
         return ["MainSurveyID", "ID"]
 
     def get_full_date(self):
