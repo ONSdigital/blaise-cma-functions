@@ -5,10 +5,12 @@ import blaise_restapi
 
 from appconfig.config import Config
 from models.donor_case_model import DonorCaseModel
+from utilities.custom_exceptions import BlaiseError
+from utilities.logging import function_name
 
 
 class BlaiseService:
-    def __init__(self, config: Config):
+    def __init__(self, config: Config) -> None:
         self._config = config
         self.restapi_client = blaise_restapi.Client(
             f"http://{self._config.blaise_api_url}"
@@ -27,19 +29,27 @@ class BlaiseService:
             logging.info(f"Got questionnaire '{questionnaire_name}'")
             return questionnaire
         except Exception as e:
-            logging.error(f"Error getting questionnaire {questionnaire_name}: {e}")
-            return None
+            error_message = (
+                f"Exception caught in {function_name()}. "
+                f"Error getting questionnaire '{questionnaire_name}': {e}"
+            )
+            logging.error(error_message)
+            raise BlaiseError(error_message)
 
-    def get_users(self, server_park: str) -> list[Dict[str, Any]]:
+    def get_users(self, server_park: str) -> dict[str, Any]:
         try:
             users = self.restapi_client.get_users()
             logging.info(f"Got {len(users)} users from server park {server_park}")
             return users
         except Exception as e:
-            logging.error(f"Error getting users from server park {server_park}: {e}")
-            return []
+            error_message = (
+                f"Exception caught in {function_name()}. "
+                f"Error getting users from server park {server_park}: {e}"
+            )
+            logging.error(error_message)
+            raise BlaiseError(error_message)
 
-    def get_existing_donor_cases(self, guid):
+    def get_existing_donor_cases(self, guid: str):
         try:
             cases = self.restapi_client.get_questionnaire_data(
                 self.cma_serverpark_name,
@@ -56,7 +66,12 @@ class BlaiseService:
                 )
             )
         except Exception as e:
-            logging.error(f"Error getting existing donor cases: {e}")
+            error_message = (
+                f"Exception caught in {function_name()}. "
+                f"Error getting existing donor cases: {e}"
+            )
+            logging.error(error_message)
+            raise BlaiseError(error_message)
 
     def create_donor_case_for_user(self, donor_case_model: DonorCaseModel) -> None:
         try:
@@ -69,6 +84,9 @@ class BlaiseService:
             )
             logging.info(f"Created donor case for user '{donor_case_model.user}'")
         except Exception as e:
-            logging.error(
-                f"Error creating donor case for user '{donor_case_model.user}':  {e}"
+            error_message = (
+                f"Exception caught in {function_name()}. "
+                f"Error creating donor case for user '{donor_case_model.user}': {e}"
             )
+            logging.error(error_message)
+            raise BlaiseError(error_message)
