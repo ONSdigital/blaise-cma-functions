@@ -80,13 +80,13 @@ class BlaiseService:
                 self.cma_questionnaire,
                 ["MainSurveyID", "CMA_ForWhom", "CMA_Status"],
             )
-            counter = 0
+            number_of_cases = 0
 
             for entry in cases["reportingData"]:
                 if (entry["mainSurveyID"] == guid and entry["cmA_Status"] != "" and entry["cmA_ForWhom"] == user):
-                    counter += 1
+                    number_of_cases += 1
 
-            return counter
+            return number_of_cases
         except Exception as e:
             error_message = (
                 f"Exception caught in {function_name()}. "
