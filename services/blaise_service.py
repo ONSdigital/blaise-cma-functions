@@ -54,14 +54,14 @@ class BlaiseService:
             cases = self.restapi_client.get_questionnaire_data(
                 self.cma_serverpark_name,
                 self.cma_questionnaire,
-                ["MainSurveyID", "CMA_ForWhom"],
+                ["MainSurveyID", "CMA_ForWhom", "CMA_Status"],
             )
             return sorted(
                 set(
                     [
                         entry["cmA_ForWhom"]
                         for entry in cases["reportingData"]
-                        if entry["mainSurveyID"] == guid
+                        if (entry["mainSurveyID"] == guid and entry["cmA_Status"] == "")
                     ]
                 )
             )
@@ -69,6 +69,28 @@ class BlaiseService:
             error_message = (
                 f"Exception caught in {function_name()}. "
                 f"Error getting existing donor cases: {e}"
+            )
+            logging.error(error_message)
+            raise BlaiseError(error_message)
+
+    def get_number_of_existing_cases(self, guid: str, user: str):
+        try:
+            cases = self.restapi_client.get_questionnaire_data(
+                self.cma_serverpark_name,
+                self.cma_questionnaire,
+                ["MainSurveyID", "CMA_ForWhom", "CMA_Status"],
+            )
+            counter = 0
+
+            for entry in cases["reportingData"]:
+                if (entry["mainSurveyID"] == guid and entry["cmA_Status"] != "" and entry["cmA_ForWhom"] == user):
+                    counter += 1
+
+            return counter
+        except Exception as e:
+            error_message = (
+                f"Exception caught in {function_name()}. "
+                f"Error getting existing cases: {e}"
             )
             logging.error(error_message)
             raise BlaiseError(error_message)
