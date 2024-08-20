@@ -95,6 +95,28 @@ class BlaiseService:
             logging.error(error_message)
             raise BlaiseError(error_message)
 
+    def get_donor_cases_for_user(self, guid: str, user: str) -> []:
+        try:
+            cases = self.restapi_client.get_questionnaire_data(
+                self.cma_serverpark_name,
+                self.cma_questionnaire,
+                ["MainSurveyID", "CMA_ForWhom", "CMA_Status"],
+            )
+            donor_cases = []
+
+            for entry in cases["reportingData"]:
+                if (entry["mainSurveyID"] == guid and entry["cmA_Status"] != "" and entry["cmA_ForWhom"] == user):
+                    donor_cases.append(entry)
+
+            return donor_cases
+        except Exception as e:
+            error_message = (
+                f"Exception caught in {function_name()}. "
+                f"Error getting existing cases: {e}"
+            )
+            logging.error(error_message)
+            raise BlaiseError(error_message)
+
     def create_donor_case_for_user(self, donor_case_model: DonorCaseModel) -> None:
         try:
             self.restapi_client.create_multikey_case(
