@@ -25,7 +25,7 @@ setup_logger()
 
 def reissue_new_donor_case(request: flask.request) -> tuple[str, int]:
     try:
-        logging.info("Running Cloud Function - 'reissue_new_donor_cases'")
+        logging.info("Running Cloud Function - 'reissue_new_donor_case'")
         validation_service = ValidationService()
 
         # Request Handler
