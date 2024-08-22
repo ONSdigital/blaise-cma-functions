@@ -45,8 +45,16 @@ class DonorCaseService:
             for donor_case in donor_cases:
                 donor_case_ids.append(donor_case["id"])
 
-            numbers = [int(re.search(r'\d+$', id).group()) for id in donor_case_ids]
-            max_number = max(numbers)
+            numbers = [
+                int(match.group())
+                for id in donor_case_ids
+                if (match := re.search(r'\d+$', id))
+            ]
+
+            if len(numbers) == 0:
+                max_number = 0
+            else:
+                max_number = max(numbers)
 
             donor_case_model = DonorCaseModel(user, questionnaire_name, guid, donor_case_count=max_number+1)
             logging.info(f"New Donor case created for user {user} with ID of {donor_case_model.data_fields['id']}")
