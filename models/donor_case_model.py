@@ -4,11 +4,10 @@ from datetime import datetime
 
 
 class DonorCaseModel:
-    def __init__(self, user: str, questionnaire_name: str, guid: str, spawn_count: int = 0, donor_case_count: int = 1) -> None:
+    def __init__(self, user: str, questionnaire_name: str, guid: str, donor_case_count: int = 1) -> None:
         self.user = user
         self.questionnaire_name = questionnaire_name
         self.guid = guid
-        self.spawn_count = spawn_count
         self.donor_case_count = donor_case_count
 
         self.full_date = self.get_full_date()
@@ -28,7 +27,6 @@ class DonorCaseModel:
             "cmA_ForWhom": f"{self.user}",
             "cmA_AllowSpawning": "1",
             "cmA_IsDonorCase": "1",
-            "cmA_SpawnCount": f"{self.spawn_count}",
             "cmA_EndDate": f"{self.last_day_of_month}",
             "cmA_ContactData": f"MainSurveyID\t{self.guid}\tID\tDonor-{self.donor_case_count}\tCaseNote\tThis is the Donor Case. Select the add case button to spawn a new case with an empty shift. Then select the show all cases filter to show the case.\tcaseinfo.Year\t{self.year}\tcaseinfo.Survey\t{self.tla}\tcaseinfo.Month\t{self.month}\tcaseinfo.ShiftNo\t\tcaseinfo.IOut\t",
         }

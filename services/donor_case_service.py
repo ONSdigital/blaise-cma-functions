@@ -22,10 +22,7 @@ class DonorCaseService:
                 if self.donor_case_does_not_exist(
                     user, users_with_existing_donor_cases
                 ):
-                    spawn_count = self._blaise_service.get_number_of_existing_cases(guid, user)
-                    if spawn_count > 0:
-                        spawn_count += 100
-                    donor_case_model = DonorCaseModel(user, questionnaire_name, guid, spawn_count)
+                    donor_case_model = DonorCaseModel(user, questionnaire_name, guid)
                     self._blaise_service.create_donor_case_for_user(donor_case_model)
         except BlaiseError as e:
             raise BlaiseError(e.message)
@@ -39,19 +36,21 @@ class DonorCaseService:
             logging.error(error_message)
             raise DonorCaseError(error_message)
 
-    def reset_donor_case_for_user(self, questionnaire_name: str, guid: str, user: str) -> None:
+
+    def reissue_new_donor_case(self, questionnaire_name: str, guid: str, user: str) -> None:
         try:
             donor_cases = self._blaise_service.get_donor_cases_for_user(guid, user)
+            logging.info(f"Found {len(donor_cases)} Donor Cases for {user}")
             donor_case_ids = []
 
             for donor_case in donor_cases:
-                donor_case_ids.append(donor_case.data_fields["id"])
+                donor_case_ids.append(donor_case["id"])
 
             numbers = [int(re.search(r'\d+$', id).group()) for id in donor_case_ids]
             max_number = max(numbers)
 
             donor_case_model = DonorCaseModel(user, questionnaire_name, guid, donor_case_count=max_number+1)
-            logging.info(f"New Donor case created for user '{user}' with ID of '{donor_case_model.data_fields["id"]}'")
+            logging.info(f"New Donor case created for user {user} with ID of {donor_case_model.data_fields['id']}")
             self._blaise_service.create_donor_case_for_user(donor_case_model)
 
         except BlaiseError as e:
