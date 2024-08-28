@@ -61,7 +61,7 @@ class BlaiseService:
                     [
                         entry["cmA_ForWhom"]
                         for entry in cases["reportingData"]
-                        if entry["mainSurveyID"] == guid
+                        if entry["mainSurveyID"] == guid and (entry["cmA_Status"] == "" or entry["cmA_Status"] == None)
                     ]
                 )
             )
