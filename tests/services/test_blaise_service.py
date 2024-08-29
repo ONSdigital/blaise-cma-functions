@@ -261,14 +261,22 @@ class TestGetExistingDonorCases:
                 {
                     "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
                     "cmA_ForWhom": "rich",
+                    "cmA_Status": None,
                 },
                 {
                     "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
                     "cmA_ForWhom": "james",
+                    "cmA_Status": None,
                 },
                 {
                     "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
                     "cmA_ForWhom": "rich",
+                    "cmA_Status": "",
+                },
+                {
+                    "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
+                    "cmA_ForWhom": "james",
+                    "cmA_Status": "",
                 },
             ],
         }
@@ -293,14 +301,22 @@ class TestGetExistingDonorCases:
                 {
                     "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
                     "cmA_ForWhom": "cal",
-                },
-                {
-                    "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
-                    "cmA_ForWhom": "james",
+                    "cmA_Status": "",
                 },
                 {
                     "mainSurveyID": "861ecb9b-4154-4f50-9b47-7fd52c098313",
                     "cmA_ForWhom": "cal",
+                    "cmA_Status": None,
+                },
+                {
+                    "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
+                    "cmA_ForWhom": "james",
+                    "cmA_Status": "",
+                },
+                {
+                    "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
+                    "cmA_ForWhom": "james",
+                    "cmA_Status": None,
                 },
             ],
         }
