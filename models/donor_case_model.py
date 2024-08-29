@@ -23,12 +23,12 @@ class DonorCaseModel:
     def format_data_fields(self) -> dict[str, any]:
         return {
             "mainSurveyID": f"{self.guid}",
-            "id": f"Donor-{self.donor_case_count}",
+            "id": f"{self.user}-{self.donor_case_count}",
             "cmA_ForWhom": f"{self.user}",
             "cmA_AllowSpawning": "1",
             "cmA_IsDonorCase": "1",
             "cmA_EndDate": f"{self.last_day_of_month}",
-            "cmA_ContactData": f"MainSurveyID\t{self.guid}\tID\tDonor-{self.donor_case_count}\tCaseNote\tThis is the Donor Case. Select the add case button to spawn a new case with an empty shift. Then select the show all cases filter to show the case.\tcaseinfo.Year\t{self.year}\tcaseinfo.Survey\t{self.tla}\tcaseinfo.Month\t{self.month}\tcaseinfo.ShiftNo\t\tcaseinfo.IOut\t",
+            "cmA_ContactData": f"MainSurveyID\t{self.guid}\tID\t{self.user}-{self.donor_case_count}\tCaseNote\tThis is the Donor Case. Select the add case button to spawn a new case with an empty shift. Then select the show all cases filter to show the case.\tcaseinfo.Year\t{self.year}\tcaseinfo.Survey\t{self.tla}\tcaseinfo.Month\t{self.month}\tcaseinfo.ShiftNo\t\tcaseinfo.IOut\t",
         }
 
     def format_key_values(self) -> list[str]:
