@@ -31,6 +31,15 @@ example request to the `create_multikey_case` within the 'blaise_api_python_clie
 
 ```
 
+## Reissue New Donor Case
+
+example HTTP request
+```python
+{
+    "questionnaire_name": "IPS2405a",
+    "user": "test-user"
+}
+```
 ### Local Setup
 
 Clone the project locally:
