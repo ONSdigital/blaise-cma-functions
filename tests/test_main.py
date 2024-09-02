@@ -850,6 +850,7 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
             error_message,
         ) in caplog.record_tuples
 
+
 class TestMainCreateDonorCasesHandleConfigStep:
     @pytest.mark.parametrize(
         "blaise_api_url, blaise_server_park",
@@ -946,6 +947,7 @@ class TestMainCreateDonorCasesHandleConfigStep:
             error_message,
         ) in caplog.record_tuples
 
+
 class TestMainReissueNewDonorCasesHandleGuidStep:
 
     @mock.patch("appconfig.config.Config.from_env")
@@ -1015,6 +1017,65 @@ class TestMainReissueNewDonorCasesHandleGuidStep:
 
         # Assert
         error_message = "Error reissuing IPS donor cases: Something bad happened, but I'm not telling you what"
+        assert result == (error_message, 500)
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
+
+
+class TestMainReissueNewDonorCasesHandleDonorCasesStep:
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
+    @mock.patch("services.guid_service.GUIDService.get_guid")
+    @mock.patch("services.user_service.UserService.get_users_by_role")
+    @mock.patch(
+        "services.donor_case_service.DonorCaseService.check_and_create_donor_case_for_users"
+    )
+    def test_reissue_new_donor_case_returns_message_and_500_status_code_when_the_check_and_create_donor_case_for_users_service_raises_an_exception(
+        self,
+        mock_create_donor_case_for_users,
+        mock_get_users,
+        mock_get_guid,
+        mock_questionnaire_exists_on_server_park,
+        mock_config,
+        caplog,
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "user": "test-user"}
+        )
+        mock_config.return_value = Config(
+            blaise_api_url="foo", blaise_server_park="bar"
+        )
+        mock_questionnaire_exists_on_server_park.return_value = True
+        mock_get_guid.return_value = "m0ck-gu!d"
+        mock_get_users.return_value = [
+            {
+                "name": "rich",
+                "user": "test-user-1",
+                "serverParks": ["gusty", "cma"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "sarah",
+                "user": "test-user-2",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+        ]
+        mock_create_donor_case_for_users.side_effect = DonorCaseError(
+            "This thing unexpectedly successfully failed"
+        )
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = reissue_new_donor_case(mock_request)
+
+        # Assert
+        error_message = "Error reissuing IPS donor cases: This thing unexpectedly successfully failed"
+       
         assert result == (error_message, 500)
         assert (
             "root",
