@@ -54,7 +54,7 @@ class BlaiseService:
             cases = self.restapi_client.get_questionnaire_data(
                 self.cma_serverpark_name,
                 self.cma_questionnaire,
-                ["MainSurveyID", "CMA_ForWhom"],
+                ["MainSurveyID", "CMA_ForWhom", "cmA_Status"],
             )
             return sorted(
                 set(
