@@ -945,3 +945,79 @@ class TestMainCreateDonorCasesHandleConfigStep:
             logging.ERROR,
             error_message,
         ) in caplog.record_tuples
+
+class TestMainReissueNewDonorCasesHandleGuidStep:
+
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
+    @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
+    def test_reissue_new_donor_case_returns_message_and_404_status_code_when_rest_api_fails_to_return_questionnaire(
+        self,
+        mock_rest_api_client_get_questionnaire,
+        mock_questionnaire_exists_on_server_park,
+        mock_config,
+        caplog,
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "user": "test-user"}
+        )
+        mock_questionnaire_exists_on_server_park.return_value = True
+        mock_config.return_value = Config(
+            blaise_api_url="foo", blaise_server_park="bar"
+        )
+        mock_rest_api_client_get_questionnaire.side_effect = BlaiseError(
+            "How do you click a button without clicking a button?"
+        )
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = reissue_new_donor_case(mock_request)
+
+        # Assert
+        error_message = (
+            "Error reissuing IPS donor cases: "
+            "Exception caught in get_questionnaire(). "
+            "Error getting questionnaire 'IPS2402a': How do you click a button without clicking a button?"
+        )
+        assert result == (error_message, 404)
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
+
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
+    @mock.patch("services.guid_service.GUIDService.get_guid")
+    def test_reissue_new_donor_case_returns_message_and_500_status_code_when_the_guid_service_raises_an_exception(
+        self,
+        mock_get_guid,
+        mock_questionnaire_exists_on_server_park,
+        mock_config,
+        caplog,
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "user": "test-user"}
+        )
+        mock_config.return_value = Config(
+            blaise_api_url="foo", blaise_server_park="bar"
+        )
+        mock_questionnaire_exists_on_server_park.return_value = True
+        mock_get_guid.side_effect = GuidError(
+            "Something bad happened, but I'm not telling you what"
+        )
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = reissue_new_donor_case(mock_request)
+
+        # Assert
+        error_message = "Error reissuing IPS donor cases: Something bad happened, but I'm not telling you what"
+        assert result == (error_message, 500)
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
