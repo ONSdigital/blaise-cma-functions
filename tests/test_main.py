@@ -1028,14 +1028,16 @@ class TestMainReissueNewDonorCasesHandleGuidStep:
 class TestMainReissueNewDonorCasesHandleDonorCasesStep:
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
+    @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
     @mock.patch("services.guid_service.GUIDService.get_guid")
     @mock.patch("services.user_service.UserService.get_users_by_role")
     @mock.patch(
-        "services.donor_case_service.DonorCaseService.check_and_create_donor_case_for_users"
+        "services.donor_case_service.DonorCaseService.reissue_new_donor_case_for_user"
     )
-    def test_reissue_new_donor_case_returns_message_and_500_status_code_when_the_check_and_create_donor_case_for_users_service_raises_an_exception(
+    def test_reissue_new_donor_case_returns_message_and_500_status_code_when_the_reissue_new_donor_case_for_user_raises_an_exception(
         self,
-        mock_create_donor_case_for_users,
+        mock_reissue_new_donor_case_for_user,
+        mock_get_donor_cases_for_user,
         mock_get_users,
         mock_get_guid,
         mock_questionnaire_exists_on_server_park,
@@ -1065,7 +1067,8 @@ class TestMainReissueNewDonorCasesHandleDonorCasesStep:
                 "defaultServerPark": "gusty",
             },
         ]
-        mock_create_donor_case_for_users.side_effect = DonorCaseError(
+        mock_get_donor_cases_for_user.return_value = ["rich"]
+        mock_reissue_new_donor_case_for_user.side_effect = DonorCaseError(
             "This thing unexpectedly successfully failed"
         )
 
