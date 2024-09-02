@@ -38,9 +38,7 @@ class BlaiseService:
 
     def get_users(self, server_park: str) -> dict[str, Any]:
         try:
-            users = self.restapi_client.get_users()
-            logging.info(f"Got {len(users)} users from server park {server_park}")
-            return users
+            return self.restapi_client.get_users()
         except Exception as e:
             error_message = (
                 f"Exception caught in {function_name()}. "
