@@ -849,3 +849,99 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
             logging.ERROR,
             error_message,
         ) in caplog.record_tuples
+
+class TestMainCreateDonorCasesHandleConfigStep:
+    @pytest.mark.parametrize(
+        "blaise_api_url, blaise_server_park",
+        [
+            (None, None),
+            ("", None),
+            (None, ""),
+            ("", ""),
+        ],
+    )
+    @mock.patch("appconfig.config.Config.from_env")
+    def test_reissue_new_donor_case_returns_message_and_400_status_code_when_both_configs_are_missing(
+        self, mock_config, blaise_api_url, blaise_server_park, caplog
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "user": "test-user"}
+        )
+        mock_config.return_value = Config(
+            blaise_api_url=blaise_api_url, blaise_server_park=blaise_server_park
+        )
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = reissue_new_donor_case(mock_request)
+
+        # Assert
+        error_message = (
+            "Error reissuing IPS donor cases: "
+            "Missing required values from config: ['blaise_api_url', 'blaise_server_park']"
+        )
+        assert result == (error_message, 400)
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
+
+    @pytest.mark.parametrize(
+        "blaise_server_park",
+        [None, ""],
+    )
+    @mock.patch("appconfig.config.Config.from_env")
+    def test_reissue_new_donor_case_returns_message_and_400_status_code_when_blaise_server_park_config_is_missing(
+        self, mock_config, blaise_server_park, caplog
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "user": "test-user"}
+        )
+        mock_config.return_value = Config(
+            blaise_api_url="foo", blaise_server_park=blaise_server_park
+        )
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = reissue_new_donor_case(mock_request)
+
+        # Assert
+        error_message = "Error reissuing IPS donor cases: Missing required values from config: ['blaise_server_park']"
+        assert result == (error_message, 400)
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
+
+    @pytest.mark.parametrize(
+        "blaise_api_url",
+        [None, ""],
+    )
+    @mock.patch("appconfig.config.Config.from_env")
+    def test_reissue_new_donor_case_returns_message_and_400_status_code_when_blaise_api_url_config_is_missing(
+        self, mock_config, blaise_api_url, caplog
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "user": "test-user"}
+        )
+        mock_config.return_value = Config(
+            blaise_api_url=blaise_api_url, blaise_server_park="bar"
+        )
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = reissue_new_donor_case(mock_request)
+
+        # Assert
+        error_message = "Error reissuing IPS donor cases: Missing required values from config: ['blaise_api_url']"
+        assert result == (error_message, 400)
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
