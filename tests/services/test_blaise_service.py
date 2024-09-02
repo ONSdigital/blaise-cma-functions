@@ -238,7 +238,7 @@ class TestGetExistingDonorCases:
         # Arrange
         server_park = "cma"
         questionnaire_name = "CMA_Launcher"
-        field_data = ["MainSurveyID", "CMA_ForWhom"]
+        field_data = ["MainSurveyID", "CMA_ForWhom", "cmA_Status"]
         guid = "7bded891-3aa6-41b2-824b-0be514018806"
 
         # Act
