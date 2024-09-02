@@ -1,4 +1,5 @@
 from unittest import mock
+import logging
 
 import pytest
 
@@ -72,3 +73,61 @@ def test_get_users_by_role_raises_a_blaise_error_exception_when_get_users_fails_
     # Assert
     error_message = "All the rum has gone and Jack Sparrow doesn't understand why?"
     assert err.value.args[0] == error_message
+
+
+@mock.patch.object(BlaiseService, "get_users")
+def test_get_users_by_role_logs_the_number_of_ips_users_found(
+    get_users, user_service, caplog
+):
+    # Arrange
+    get_users.return_value = [
+            {
+                "name": "rich",
+                "role": "DST",
+                "serverParks": ["gusty", "cma"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "el",
+                "role": "IPS Field Interviewer",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "sidra",
+                "role": "IPS Manager",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "sarah",
+                "role": "DST",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "cal",
+                "role": "IPS Field Interviewer",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "kris",
+                "role": "IPS Researcher",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+        ]
+    role = "IPS Field Interviewer"
+    blaise_server_park = "gusty"
+
+    # Act
+    with caplog.at_level(logging.INFO):
+        user_service.get_users_by_role(blaise_server_park, role)
+
+    # Assert
+    assert (
+               "root",
+               logging.INFO,
+               "Got 2 users from server park gusty for role IPS Field Interviewer",
+           ) in caplog.record_tuples
