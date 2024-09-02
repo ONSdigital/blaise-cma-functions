@@ -37,7 +37,7 @@ class DonorCaseService:
             raise DonorCaseError(error_message)
 
 
-    def reissue_new_donor_case(self, questionnaire_name: str, guid: str, user: str) -> None:
+    def reissue_new_donor_case_for_user(self, questionnaire_name: str, guid: str, user: str) -> None:
         try:
             donor_cases = self._blaise_service.get_donor_cases_for_user(guid, user)
             donor_case_ids = []

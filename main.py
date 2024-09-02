@@ -48,7 +48,7 @@ def reissue_new_donor_case(request: flask.request) -> tuple[str, int]:
 
         # Donor Case Handler
         donor_case_service = DonorCaseService(blaise_service)
-        donor_case_service.reissue_new_donor_case(
+        donor_case_service.reissue_new_donor_case_for_user(
             questionnaire_name, guid, user
         )
 
