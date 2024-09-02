@@ -1,5 +1,5 @@
-from unittest import mock
 import logging
+from unittest import mock
 
 import pytest
 
@@ -81,43 +81,43 @@ def test_get_users_by_role_logs_the_number_of_ips_users_found(
 ):
     # Arrange
     get_users.return_value = [
-            {
-                "name": "rich",
-                "role": "DST",
-                "serverParks": ["gusty", "cma"],
-                "defaultServerPark": "gusty",
-            },
-            {
-                "name": "el",
-                "role": "IPS Field Interviewer",
-                "serverParks": ["gusty"],
-                "defaultServerPark": "gusty",
-            },
-            {
-                "name": "sidra",
-                "role": "IPS Manager",
-                "serverParks": ["gusty"],
-                "defaultServerPark": "gusty",
-            },
-            {
-                "name": "sarah",
-                "role": "DST",
-                "serverParks": ["gusty"],
-                "defaultServerPark": "gusty",
-            },
-            {
-                "name": "cal",
-                "role": "IPS Field Interviewer",
-                "serverParks": ["gusty"],
-                "defaultServerPark": "gusty",
-            },
-            {
-                "name": "kris",
-                "role": "IPS Researcher",
-                "serverParks": ["gusty"],
-                "defaultServerPark": "gusty",
-            },
-        ]
+        {
+            "name": "rich",
+            "role": "DST",
+            "serverParks": ["gusty", "cma"],
+            "defaultServerPark": "gusty",
+        },
+        {
+            "name": "el",
+            "role": "IPS Field Interviewer",
+            "serverParks": ["gusty"],
+            "defaultServerPark": "gusty",
+        },
+        {
+            "name": "sidra",
+            "role": "IPS Manager",
+            "serverParks": ["gusty"],
+            "defaultServerPark": "gusty",
+        },
+        {
+            "name": "sarah",
+            "role": "DST",
+            "serverParks": ["gusty"],
+            "defaultServerPark": "gusty",
+        },
+        {
+            "name": "cal",
+            "role": "IPS Field Interviewer",
+            "serverParks": ["gusty"],
+            "defaultServerPark": "gusty",
+        },
+        {
+            "name": "kris",
+            "role": "IPS Researcher",
+            "serverParks": ["gusty"],
+            "defaultServerPark": "gusty",
+        },
+    ]
     role = "IPS Field Interviewer"
     blaise_server_park = "gusty"
 
@@ -127,7 +127,7 @@ def test_get_users_by_role_logs_the_number_of_ips_users_found(
 
     # Assert
     assert (
-               "root",
-               logging.INFO,
-               "Got 2 users from server park gusty for role IPS Field Interviewer",
-           ) in caplog.record_tuples
+        "root",
+        logging.INFO,
+        "Got 2 users from server park gusty for role IPS Field Interviewer",
+    ) in caplog.record_tuples

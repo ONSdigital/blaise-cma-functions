@@ -13,7 +13,9 @@ class UserService:
         try:
             blaise_users = self._blaise_service.get_users(blaise_server_park)
             ips_users = [user["name"] for user in blaise_users if user["role"] == role]
-            logging.info(f"Got {len(ips_users)} users from server park {blaise_server_park} for role {role}")
+            logging.info(
+                f"Got {len(ips_users)} users from server park {blaise_server_park} for role {role}"
+            )
             return ips_users
         except BlaiseError as e:
             raise BlaiseError(e.message) from e
