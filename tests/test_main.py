@@ -6,7 +6,7 @@ import flask
 import pytest
 
 from appconfig.config import Config
-from main import create_donor_cases
+from main import create_donor_cases, reissue_new_donor_case
 from models.donor_case_model import DonorCaseModel
 from utilities.custom_exceptions import (
     BlaiseError,
@@ -604,6 +604,246 @@ class TestMainCreateDonorCasesHandleDonorCasesStep:
         # Assert
         error_message = "Error creating IPS donor cases: This thing unexpectedly successfully failed"
         assert result == (error_message, 500)
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
+
+# Reissue New Donor Case
+class TestMainReissueNewDonorCasesHandleRequestStep:
+
+    @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
+    @mock.patch("services.blaise_service.BlaiseService.get_users")
+    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
+    @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
+    def test_reissue_new_donor_case_is_called_the_correct_number_of_times_with_the_correct_information(
+        self,
+        mock_create_donor_case_for_user,
+        mock_get_existing_donor_cases,
+        mock_get_users,
+        mock_get_questionnaire,
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "user": "test-user"}
+        )
+        mock_get_questionnaire.return_value = {
+            "name": "LMS2309_GO1",
+            "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",
+            "serverParkName": "gusty",
+            "installDate": "2024-04-24T09:49:34.2685322+01:00",
+            "status": "Active",
+            "dataRecordCount": 0,
+            "hasData": False,
+            "blaiseVersion": "5.9.9.2735",
+            "nodes": [
+                {"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Active"},
+                {"nodeName": "blaise-gusty-data-entry-1", "nodeStatus": "Active"},
+                {"nodeName": "blaise-gusty-data-entry-2", "nodeStatus": "Active"},
+            ],
+        }
+        mock_get_users.return_value = [
+            {
+                "name": "rich",
+                "role": "DST",
+                "serverParks": ["gusty", "cma"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "sarah",
+                "role": "DST",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+        ]
+        mock_get_existing_donor_cases.return_value = ["rich"]
+        mock_donor_case_model = DonorCaseModel(
+            "rich", "LMS2309_GO1", "25615bf2-f331-47ba-9d05-6659a513a1f2"
+        )
+
+        # Act
+        reissue_new_donor_case(mock_request)
+
+        # Assert
+        assert mock_create_donor_case_for_user.called_with(mock_donor_case_model)
+
+    @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
+    @mock.patch.object(blaise_restapi.Client, "get_users")
+    @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
+    @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
+    def test_reissue_new_donor_case_is_called_the_correct_number_of_times_with_the_correct_information_when_mocking_the_blaise_service(
+        self,
+        mock_create_multikey_case,
+        mock_get_questionnaire_data,
+        mock_get_users,
+        mock_get_questionnaire_for_server_park,
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "user": "IPS Manager"}
+        )
+        mock_get_questionnaire_for_server_park.return_value = {
+            "name": "IPS2302a",
+            "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",
+            "serverParkName": "gusty",
+            "installDate": "2024-04-24T09:49:34.2685322+01:00",
+            "status": "Active",
+            "dataRecordCount": 0,
+            "hasData": False,
+            "blaiseVersion": "5.9.9.2735",
+            "nodes": [
+                {"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Active"},
+                {"nodeName": "blaise-gusty-data-entry-1", "nodeStatus": "Active"},
+                {"nodeName": "blaise-gusty-data-entry-2", "nodeStatus": "Active"},
+            ],
+        }
+        mock_get_users.return_value = [
+            {
+                "name": "rich",
+                "role": "DST",
+                "serverParks": ["gusty", "cma"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "sarah",
+                "role": "DST",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+        ]
+        mock_get_questionnaire_data.return_value = {
+            "questionnaireName": "CMA_Launcher",
+            "questionnaireId": "25615bf2-f331-47ba-9d05-6659a513a1f2",
+            "reportingData": [
+                {"cmA_ForWhom": "999"},
+                {"cmA_ForWhom": "james"},
+                {"cmA_ForWhom": "rich"},
+            ],
+        }
+
+        # Act
+        reissue_new_donor_case(mock_request)
+
+        # Assert
+        assert mock_create_multikey_case.called_with(
+            "cma",
+            "CMA_Launcher",
+            ["MainSurveyID", "ID"],
+            ["25615bf2-f331-47ba-9d05-6659a513a1f2", "rich"],
+            {
+                "mainSurveyID": "25615bf2-f331-47ba-9d05-6659a513a1f2",
+                "id": "rich",
+                "cmA_ForWhom": "rich",
+                "cmA_AllowSpawning": "1",
+                "cmA_IsDonorCase": "1",
+                "cmA_ContactData": "MainSurveyID    25615bf2-f331-47ba-9d05-6659a513a1f2    ID    rich    ContactInfoShort    IPS,April    CaseNote    This is the Donor Case. Select add case to spawn a new case with an empty shift.    Year    2023    Month    April    Stage    2303    ShiftNo    '",
+            },
+        )
+
+    @pytest.mark.parametrize(
+        "questionnaire_name, user",
+        [
+            (None, ""),
+            (None, None),
+            ("", ""),
+            ("", None),
+        ],
+    )
+    @mock.patch.object(blaise_restapi.Client, "get_users")
+    def test_reissue_new_donor_case_returns_message_and_400_status_code_when_both_questionnaire_name_and_user_values_are_missing(
+        self, mock_get_users, questionnaire_name, user, caplog
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": questionnaire_name, "user": user}
+        )
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = reissue_new_donor_case(mock_request)
+
+        # Assert
+        error_message = (
+            "Error reissuing IPS donor cases: "
+            "Missing required values from request: ['questionnaire_name', 'user']"
+        )
+        assert result == (error_message, 400)
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
+
+    @pytest.mark.parametrize(
+        "questionnaire_name",
+        [None, ""],
+    )
+    def test_reissue_new_donor_case_returns_message_and_400_status_code_when_questionnaire_name_value_is_missing(
+        self, questionnaire_name, caplog
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": questionnaire_name, "user": "test-user"}
+        )
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = reissue_new_donor_case(mock_request)
+
+        # Assert
+        error_message = "Error reissuing IPS donor cases: Missing required values from request: ['questionnaire_name']"
+        assert result == (error_message, 400)
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
+
+    @pytest.mark.parametrize(
+        "user",
+        [None, ""],
+    )
+    @mock.patch.object(blaise_restapi.Client, "get_users")
+    def test_reissue_new_donor_case_returns_message_and_400_status_code_when_role_value_is_missing(
+        self, mock_get_users, user, caplog
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2306a", "user": user}
+        )
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = reissue_new_donor_case(mock_request)
+
+        # Assert
+        error_message = "Error reissuing IPS donor cases: Missing required values from request: ['user']"
+        assert result == (error_message, 400)
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
+
+    @mock.patch.object(blaise_restapi.Client, "get_users")
+    def test_reissue_new_donor_case_returns_message_and_400_status_code_when_the_request_is_not_json(
+        self, mock_get_users, caplog
+    ):
+        # Arrange
+        mock_request = None
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = reissue_new_donor_case(mock_request)
+
+        # Assert
+        error_message = (
+            "Error reissuing IPS donor cases: "
+            "Exception raised in validate_request_is_json(). "
+            "Error getting json from request 'None': 'NoneType' object has no attribute 'get_json'"
+        )
+        assert result == (error_message, 400)
         assert (
             "root",
             logging.ERROR,
