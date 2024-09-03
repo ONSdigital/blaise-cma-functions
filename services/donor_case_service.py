@@ -48,7 +48,7 @@ class DonorCaseService:
                 )
                 logging.error(error_message)
                 raise DonorCaseError(error_message)
-            
+
             donor_case_ids = []
 
             for donor_case in donor_cases:
@@ -65,7 +65,7 @@ class DonorCaseService:
             else:
                 max_number = max(numbers)
 
-            donor_case_prefix = str(max_number + 1)+"-"
+            donor_case_prefix = str(max_number + 1) + "-"
             donor_case_model = DonorCaseModel(
                 user, questionnaire_name, guid, donor_case_prefix=donor_case_prefix
             )

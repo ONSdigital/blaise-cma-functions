@@ -280,7 +280,10 @@ class TestReissueNewDonorCaseForUser:
                 questionnaire_name, guid, user
             )
 
-        assert err.value.args[0] == "Exception caught in reissue_new_donor_case_for_user(). Cannot reissue a new donor case. User has no existing donor cases."
+        assert (
+            err.value.args[0]
+            == "Exception caught in reissue_new_donor_case_for_user(). Cannot reissue a new donor case. User has no existing donor cases."
+        )
 
     @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
     def test_reissue_new_donor_case_for_user_raises_blaise_error_when_get_donor_cases_fails(
