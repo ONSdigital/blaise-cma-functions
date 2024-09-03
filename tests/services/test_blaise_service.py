@@ -384,3 +384,31 @@ class TestCreateDonorCaseForUser:
             logging.ERROR,
             error_message,
         ) in caplog.record_tuples
+
+class TestGetDonorCasesForUser:
+    @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
+    def test_get_donor_cases_for_user_logs_error_and_raises_exception(
+        self, mock_rest_api_client_get_questionnaire_data, blaise_service, caplog
+    ):
+        # Arrange
+        mock_rest_api_client_get_questionnaire_data.side_effect = Exception(
+            "The Wall has fallen"
+        )
+        guid = "7h15-i5-a-gu!d"
+        user = "Jon Snow"
+
+        # Act
+        with pytest.raises(BlaiseError) as err:
+            blaise_service.get_donor_cases_for_user(guid, user)
+
+        # Assert
+        error_message = (
+            "Exception caught in get_donor_cases_for_user(). "
+            "Error getting existing cases: The Wall has fallen"
+        )
+        assert err.value.args[0] == error_message
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
