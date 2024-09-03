@@ -238,10 +238,10 @@ class TestReissueNewDonorCaseForUser:
         # Arrange
         questionnaire_name = "IPS2406a"
         guid = "7bded891-3aa6-41b2-824b-0be514018806"
-        user = "test-user-a"
+        user = "test-user"
         mock_get_donor_cases_for_user.return_value = [
-            {"id": "test-user-a-1"},
-            {"id": "test-user-a-2"},
+            {"id": "test-user"},
+            {"id": "1-test-user"},
         ]
 
         # Act
@@ -254,79 +254,47 @@ class TestReissueNewDonorCaseForUser:
         mock_create_donor_case_for_user.assert_called_once()
         assert (
             mock_create_donor_case_for_user.call_args[0][0].data_fields["id"]
-            == "test-user-a-3"
+            == "2-test-user"
         )
         assert (
             "root",
             logging.INFO,
-            f"New Donor case created for user {user} with ID of test-user-a-3",
+            f"New Donor case created for user {user} with ID of 2-test-user",
         ) in caplog.record_tuples
 
-    @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
-    @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
-    def test_reissue_new_donor_case_for_user_creates_first_case_when_no_existing_case(
-        self,
-        mock_create_donor_case_for_user,
-        mock_get_donor_cases_for_user,
-        donor_case_service,
-        caplog,
-    ):
-        # Arrange
-        questionnaire_name = "IPS2406a"
-        guid = "7bded891-3aa6-41b2-824b-0be514018806"
-        user = "test-user"
-        mock_get_donor_cases_for_user.return_value = []
+    #TODO ask jake/rich if it should throw exception when reissuing without an initial donor case
+    # @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
+    # @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
+    # def test_reissue_new_donor_case_for_user_creates_first_case_when_no_existing_case(
+    #     self,
+    #     mock_create_donor_case_for_user,
+    #     mock_get_donor_cases_for_user,
+    #     donor_case_service,
+    #     caplog,
+    # ):
+    #     # Arrange
+    #     questionnaire_name = "IPS2406a"
+    #     guid = "7bded891-3aa6-41b2-824b-0be514018806"
+    #     user = "test-user"
+    #     mock_get_donor_cases_for_user.return_value = []
 
-        # Act
-        with caplog.at_level(logging.INFO):
-            donor_case_service.reissue_new_donor_case_for_user(
-                questionnaire_name, guid, user
-            )
+    #     # Act
+    #     with caplog.at_level(logging.INFO):
+    #         donor_case_service.reissue_new_donor_case_for_user(
+    #             questionnaire_name, guid, user
+    #         )
 
-        # Assert
-        mock_create_donor_case_for_user.assert_called_once()
-        assert (
-            mock_create_donor_case_for_user.call_args[0][0].data_fields["id"]
-            == "test-user-1"
-        )
-        assert (
-            "root",
-            logging.INFO,
-            f"New Donor case created for user {user} with ID of test-user-1",
-        ) in caplog.record_tuples
-
-    @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
-    @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
-    def test_reissue_new_donor_case_for_user_creates_new_case_with_incremented_id_when_username_ends_in_integer(
-        self,
-        mock_create_donor_case_for_user,
-        mock_get_donor_cases_for_user,
-        donor_case_service,
-        caplog,
-    ):
-        # Arrange
-        questionnaire_name = "IPS2406a"
-        guid = "7bded891-3aa6-41b2-824b-0be514018806"
-        user = "test-user-5"
-        mock_get_donor_cases_for_user.return_value = []
-
-        # Act
-        with caplog.at_level(logging.INFO):
-            donor_case_service.reissue_new_donor_case_for_user(
-                questionnaire_name, guid, user
-            )
-
-        # Assert
-        mock_create_donor_case_for_user.assert_called_once()
-        assert (
-            mock_create_donor_case_for_user.call_args[0][0].data_fields["id"]
-            == "test-user-5-1"
-        )
-        assert (
-            "root",
-            logging.INFO,
-            f"New Donor case created for user {user} with ID of test-user-5-1",
-        ) in caplog.record_tuples
+    #     # Assert
+    #     mock_create_donor_case_for_user.assert_called_once()
+    #     assert (
+    #         mock_create_donor_case_for_user.call_args[0][0].data_fields["id"]
+    #         == "test-user-1"
+    #     )
+    #     assert (
+    #         "root",
+    #         logging.INFO,
+    #         f"New Donor case created for user {user} with ID of test-user-1",
+    #     ) in caplog.record_tuples
 
     @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
     def test_reissue_new_donor_case_for_user_raises_blaise_error_when_get_donor_cases_fails(

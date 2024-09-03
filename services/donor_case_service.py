@@ -49,7 +49,7 @@ class DonorCaseService:
             numbers = [
                 int(match.group())
                 for id in donor_case_ids
-                if (match := re.search(r"\d+$", id))
+                if (match := re.search(r"^\d+", id))
             ]
 
             if len(numbers) == 0:
@@ -57,8 +57,9 @@ class DonorCaseService:
             else:
                 max_number = max(numbers)
 
+            donor_case_prefix = str(max_number + 1)+"-"
             donor_case_model = DonorCaseModel(
-                user, questionnaire_name, guid, donor_case_count=max_number + 1
+                user, questionnaire_name, guid, donor_case_prefix=donor_case_prefix
             )
             logging.info(
                 f"New Donor case created for user {user} with ID of {donor_case_model.data_fields['id']}"
