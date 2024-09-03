@@ -385,6 +385,7 @@ class TestCreateDonorCaseForUser:
             error_message,
         ) in caplog.record_tuples
 
+
 class TestGetDonorCasesForUser:
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
     def test_get_donor_cases_for_user_calls_rest_api_and_returns_correct_cases(
@@ -459,7 +460,7 @@ class TestGetDonorCasesForUser:
 
         # Assert
         assert result == []
-    
+
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
     def test_get_donor_cases_for_user_logs_error_and_raises_exception(
         self, mock_rest_api_client_get_questionnaire_data, blaise_service, caplog
