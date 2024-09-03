@@ -387,6 +387,80 @@ class TestCreateDonorCaseForUser:
 
 class TestGetDonorCasesForUser:
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
+    def test_get_donor_cases_for_user_calls_rest_api_and_returns_correct_cases(
+        self, mock_rest_api_client_get_questionnaire_data, blaise_service
+    ):
+        # Arrange
+        mock_rest_api_client_get_questionnaire_data.return_value = {
+            "reportingData": [
+                {
+                    "mainSurveyID": "7h15-i5-a-gu!d",
+                    "cmA_ForWhom": "Jon Snow",
+                    "cmA_Status": "",
+                    "id": "case1",
+                },
+                {
+                    "mainSurveyID": "7h15-i5-a-gu!d",
+                    "cmA_ForWhom": "Arya Stark",
+                    "cmA_Status": "",
+                    "id": "case2",
+                },
+                {
+                    "mainSurveyID": "7h15-i5-a-gu!d",
+                    "cmA_ForWhom": "Jon Snow",
+                    "cmA_Status": "Completed",
+                    "id": "case3",
+                },
+                {
+                    "mainSurveyID": "different-guid",
+                    "cmA_ForWhom": "Jon Snow",
+                    "cmA_Status": "",
+                    "id": "case4",
+                },
+            ]
+        }
+        guid = "7h15-i5-a-gu!d"
+        user = "Jon Snow"
+
+        # Act
+        result = blaise_service.get_donor_cases_for_user(guid, user)
+
+        # Assert
+        assert len(result) == 1
+        assert result[0]["id"] == "case1"
+        assert result[0]["cmA_ForWhom"] == "Jon Snow"
+
+    @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
+    def test_get_donor_cases_for_user_returns_empty_list_when_no_cases_found(
+        self, mock_rest_api_client_get_questionnaire_data, blaise_service
+    ):
+        # Arrange
+        mock_rest_api_client_get_questionnaire_data.return_value = {
+            "reportingData": [
+                {
+                    "mainSurveyID": "different-guid",
+                    "cmA_ForWhom": "Jon Snow",
+                    "cmA_Status": "",
+                    "id": "case1",
+                },
+                {
+                    "mainSurveyID": "different-guid",
+                    "cmA_ForWhom": "Arya Stark",
+                    "cmA_Status": "",
+                    "id": "case2",
+                },
+            ]
+        }
+        guid = "7h15-i5-a-gu!d"
+        user = "Jon Snow"
+
+        # Act
+        result = blaise_service.get_donor_cases_for_user(guid, user)
+
+        # Assert
+        assert result == []
+    
+    @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
     def test_get_donor_cases_for_user_logs_error_and_raises_exception(
         self, mock_rest_api_client_get_questionnaire_data, blaise_service, caplog
     ):
