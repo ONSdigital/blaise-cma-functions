@@ -58,7 +58,9 @@ class TestGetValidRequestValues:
         )
 
         # act
-        result = validation_service.get_valid_request_values_for_create_donor_cases(mock_request)
+        result = validation_service.get_valid_request_values_for_create_donor_cases(
+            mock_request
+        )
 
         # assert
         assert result[0] == "IPS2402a"
@@ -75,7 +77,9 @@ class TestGetValidRequestValues:
 
         # assert
         with does_not_raise(Exception):
-            validation_service.get_valid_request_values_for_create_donor_cases(mock_request)
+            validation_service.get_valid_request_values_for_create_donor_cases(
+                mock_request
+            )
 
     @pytest.mark.parametrize(
         "questionnaire_name, role",
@@ -97,7 +101,9 @@ class TestGetValidRequestValues:
 
         # act
         with pytest.raises(RequestError) as err:
-            validation_service.get_valid_request_values_for_create_donor_cases(mock_request)
+            validation_service.get_valid_request_values_for_create_donor_cases(
+                mock_request
+            )
 
         # assert
         error_message = (
@@ -125,7 +131,9 @@ class TestGetValidRequestValues:
 
         # act
         with pytest.raises(RequestError) as err:
-            validation_service.get_valid_request_values_for_create_donor_cases(mock_request)
+            validation_service.get_valid_request_values_for_create_donor_cases(
+                mock_request
+            )
 
         # assert
         error_message = "Missing required values from request: ['questionnaire_name']"
@@ -157,7 +165,9 @@ class TestGetValidRequestValues:
 
         # act
         with pytest.raises(RequestError) as err:
-            validation_service.get_valid_request_values_for_create_donor_cases(mock_request)
+            validation_service.get_valid_request_values_for_create_donor_cases(
+                mock_request
+            )
 
         # assert
         error_message = (
@@ -192,7 +202,9 @@ class TestGetValidRequestValues:
 
         # act
         with does_not_raise(RequestError):
-            validation_service.get_valid_request_values_for_create_donor_cases(mock_request)
+            validation_service.get_valid_request_values_for_create_donor_cases(
+                mock_request
+            )
 
     @pytest.mark.parametrize(
         "role",
@@ -209,7 +221,9 @@ class TestGetValidRequestValues:
 
         # act
         with pytest.raises(RequestError) as err:
-            validation_service.get_valid_request_values_for_create_donor_cases(mock_request)
+            validation_service.get_valid_request_values_for_create_donor_cases(
+                mock_request
+            )
 
         # assert
         error_message = "Missing required values from request: ['role']"
@@ -244,7 +258,9 @@ class TestGetValidRequestValues:
 
         # act
         with pytest.raises(RequestError) as err:
-            validation_service.get_valid_request_values_for_create_donor_cases(mock_request)
+            validation_service.get_valid_request_values_for_create_donor_cases(
+                mock_request
+            )
 
         # assert
         error_message = (
@@ -276,7 +292,9 @@ class TestGetValidRequestValues:
 
         # act
         with does_not_raise(RequestError):
-            validation_service.get_valid_request_values_for_create_donor_cases(mock_request)
+            validation_service.get_valid_request_values_for_create_donor_cases(
+                mock_request
+            )
 
 
 class TestValidateConfig:

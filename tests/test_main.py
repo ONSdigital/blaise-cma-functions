@@ -610,6 +610,7 @@ class TestMainCreateDonorCasesHandleDonorCasesStep:
             error_message,
         ) in caplog.record_tuples
 
+
 # Reissue New Donor Case
 class TestMainReissueNewDonorCasesHandleRequestStep:
 
@@ -1078,7 +1079,7 @@ class TestMainReissueNewDonorCasesHandleDonorCasesStep:
 
         # Assert
         error_message = "Error reissuing IPS donor cases: This thing unexpectedly successfully failed"
-       
+
         assert result == (error_message, 500)
         assert (
             "root",

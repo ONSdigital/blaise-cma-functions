@@ -4,7 +4,9 @@ from datetime import datetime
 
 
 class DonorCaseModel:
-    def __init__(self, user: str, questionnaire_name: str, guid: str, donor_case_count: int = 1) -> None:
+    def __init__(
+        self, user: str, questionnaire_name: str, guid: str, donor_case_count: int = 1
+    ) -> None:
         self.user = user
         self.questionnaire_name = questionnaire_name
         self.guid = guid

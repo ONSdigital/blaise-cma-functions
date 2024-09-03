@@ -29,7 +29,11 @@ def reissue_new_donor_case(request: flask.request) -> tuple[str, int]:
         validation_service = ValidationService()
 
         # Request Handler
-        questionnaire_name, user = validation_service.get_valid_request_values_for_reissue_new_donor_case(request)
+        questionnaire_name, user = (
+            validation_service.get_valid_request_values_for_reissue_new_donor_case(
+                request
+            )
+        )
 
         # Config Handler
         blaise_config = Config.from_env()
@@ -73,7 +77,9 @@ def create_donor_cases(request: flask.request) -> tuple[str, int]:
         validation_service = ValidationService()
 
         # Request Handler
-        questionnaire_name, role = validation_service.get_valid_request_values_for_create_donor_cases(request)
+        questionnaire_name, role = (
+            validation_service.get_valid_request_values_for_create_donor_cases(request)
+        )
 
         # Config Handler
         blaise_config = Config.from_env()

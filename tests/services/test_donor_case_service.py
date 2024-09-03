@@ -224,6 +224,7 @@ class TestCheckAndCreateDonorCaseForUsers:
         # assert
         assert err.value.args[0] == "Rich has been renaming variables"
 
+
 class TestReissueNewDonorCaseForUser:
     @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
     @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
@@ -245,11 +246,16 @@ class TestReissueNewDonorCaseForUser:
 
         # Act
         with caplog.at_level(logging.INFO):
-            donor_case_service.reissue_new_donor_case_for_user(questionnaire_name, guid, user)
+            donor_case_service.reissue_new_donor_case_for_user(
+                questionnaire_name, guid, user
+            )
 
         # Assert
         mock_create_donor_case_for_user.assert_called_once()
-        assert mock_create_donor_case_for_user.call_args[0][0].data_fields["id"] == "test-user-3"
+        assert (
+            mock_create_donor_case_for_user.call_args[0][0].data_fields["id"]
+            == "test-user-3"
+        )
         assert (
             "root",
             logging.INFO,
@@ -273,11 +279,16 @@ class TestReissueNewDonorCaseForUser:
 
         # Act
         with caplog.at_level(logging.INFO):
-            donor_case_service.reissue_new_donor_case_for_user(questionnaire_name, guid, user)
+            donor_case_service.reissue_new_donor_case_for_user(
+                questionnaire_name, guid, user
+            )
 
         # Assert
         mock_create_donor_case_for_user.assert_called_once()
-        assert mock_create_donor_case_for_user.call_args[0][0].data_fields["id"] == "test-user-1"
+        assert (
+            mock_create_donor_case_for_user.call_args[0][0].data_fields["id"]
+            == "test-user-1"
+        )
         assert (
             "root",
             logging.INFO,
@@ -301,11 +312,16 @@ class TestReissueNewDonorCaseForUser:
 
         # Act
         with caplog.at_level(logging.INFO):
-            donor_case_service.reissue_new_donor_case_for_user(questionnaire_name, guid, user)
+            donor_case_service.reissue_new_donor_case_for_user(
+                questionnaire_name, guid, user
+            )
 
         # Assert
         mock_create_donor_case_for_user.assert_called_once()
-        assert mock_create_donor_case_for_user.call_args[0][0].data_fields["id"] == "test-user-5-1"
+        assert (
+            mock_create_donor_case_for_user.call_args[0][0].data_fields["id"]
+            == "test-user-5-1"
+        )
         assert (
             "root",
             logging.INFO,
@@ -319,14 +335,18 @@ class TestReissueNewDonorCaseForUser:
         donor_case_service,
     ):
         # Arrange
-        mock_get_donor_cases_for_user.side_effect = BlaiseError("Failed to fetch donor cases")
+        mock_get_donor_cases_for_user.side_effect = BlaiseError(
+            "Failed to fetch donor cases"
+        )
         questionnaire_name = "IPS2406a"
         guid = "7bded891-3aa6-41b2-824b-0be514018806"
         user = "test-user"
 
         # Act & Assert
         with pytest.raises(BlaiseError) as err:
-            donor_case_service.reissue_new_donor_case_for_user(questionnaire_name, guid, user)
+            donor_case_service.reissue_new_donor_case_for_user(
+                questionnaire_name, guid, user
+            )
 
         assert err.value.args[0] == "Failed to fetch donor cases"
 
@@ -340,14 +360,18 @@ class TestReissueNewDonorCaseForUser:
     ):
         # Arrange
         mock_get_donor_cases_for_user.return_value = [{"id": "donor_case_1"}]
-        mock_create_donor_case_for_user.side_effect = DonorCaseError("Failed to create donor case")
+        mock_create_donor_case_for_user.side_effect = DonorCaseError(
+            "Failed to create donor case"
+        )
         questionnaire_name = "IPS2406a"
         guid = "7bded891-3aa6-41b2-824b-0be514018806"
         user = "test-user"
 
         # Act & Assert
         with pytest.raises(DonorCaseError) as err:
-            donor_case_service.reissue_new_donor_case_for_user(questionnaire_name, guid, user)
+            donor_case_service.reissue_new_donor_case_for_user(
+                questionnaire_name, guid, user
+            )
 
         assert err.value.args[0] == "Failed to create donor case"
 
@@ -361,13 +385,20 @@ class TestReissueNewDonorCaseForUser:
     ):
         # Arrange
         mock_get_donor_cases_for_user.return_value = [{"id": "donor_case_1"}]
-        mock_create_donor_case_for_user.side_effect = Exception("Unexpected error occurred")
+        mock_create_donor_case_for_user.side_effect = Exception(
+            "Unexpected error occurred"
+        )
         questionnaire_name = "IPS2406a"
         guid = "7bded891-3aa6-41b2-824b-0be514018806"
         user = "test-user"
 
         # Act & Assert
         with pytest.raises(DonorCaseError) as err:
-            donor_case_service.reissue_new_donor_case_for_user(questionnaire_name, guid, user)
+            donor_case_service.reissue_new_donor_case_for_user(
+                questionnaire_name, guid, user
+            )
 
-        assert "Exception caught in reissue_new_donor_case_for_user(). Error when resetting donor case: Unexpected error occurred" in str(err.value)
+        assert (
+            "Exception caught in reissue_new_donor_case_for_user(). Error when resetting donor case: Unexpected error occurred"
+            in str(err.value)
+        )

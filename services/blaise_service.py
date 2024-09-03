@@ -61,7 +61,8 @@ class BlaiseService:
                     [
                         entry["cmA_ForWhom"]
                         for entry in cases["reportingData"]
-                        if entry["mainSurveyID"] == guid and (entry["cmA_Status"] == "" or entry["cmA_Status"] == None)
+                        if entry["mainSurveyID"] == guid
+                        and (entry["cmA_Status"] == "" or entry["cmA_Status"] == None)
                     ]
                 )
             )
@@ -101,7 +102,11 @@ class BlaiseService:
             donor_cases = []
 
             for entry in cases["reportingData"]:
-                if (entry["mainSurveyID"] == guid and entry["cmA_Status"] == "" and entry["cmA_ForWhom"] == user):
+                if (
+                    entry["mainSurveyID"] == guid
+                    and entry["cmA_Status"] == ""
+                    and entry["cmA_ForWhom"] == user
+                ):
                     donor_cases.append(entry)
 
             return donor_cases

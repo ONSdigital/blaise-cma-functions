@@ -1,10 +1,10 @@
 import logging
+import re
 
 from models.donor_case_model import DonorCaseModel
 from services.blaise_service import BlaiseService
 from utilities.custom_exceptions import BlaiseError, DonorCaseError
 from utilities.logging import function_name
-import re
 
 
 class DonorCaseService:
@@ -36,8 +36,9 @@ class DonorCaseService:
             logging.error(error_message)
             raise DonorCaseError(error_message)
 
-
-    def reissue_new_donor_case_for_user(self, questionnaire_name: str, guid: str, user: str) -> None:
+    def reissue_new_donor_case_for_user(
+        self, questionnaire_name: str, guid: str, user: str
+    ) -> None:
         try:
             donor_cases = self._blaise_service.get_donor_cases_for_user(guid, user)
             donor_case_ids = []
@@ -48,7 +49,7 @@ class DonorCaseService:
             numbers = [
                 int(match.group())
                 for id in donor_case_ids
-                if (match := re.search(r'\d+$', id))
+                if (match := re.search(r"\d+$", id))
             ]
 
             if len(numbers) == 0:
@@ -56,8 +57,12 @@ class DonorCaseService:
             else:
                 max_number = max(numbers)
 
-            donor_case_model = DonorCaseModel(user, questionnaire_name, guid, donor_case_count=max_number+1)
-            logging.info(f"New Donor case created for user {user} with ID of {donor_case_model.data_fields['id']}")
+            donor_case_model = DonorCaseModel(
+                user, questionnaire_name, guid, donor_case_count=max_number + 1
+            )
+            logging.info(
+                f"New Donor case created for user {user} with ID of {donor_case_model.data_fields['id']}"
+            )
             self._blaise_service.create_donor_case_for_user(donor_case_model)
 
         except BlaiseError as e:
