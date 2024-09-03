@@ -41,6 +41,14 @@ class DonorCaseService:
     ) -> None:
         try:
             donor_cases = self._blaise_service.get_donor_cases_for_user(guid, user)
+            if len(donor_cases) == 0:
+                error_message = (
+                    f"Exception caught in {function_name()}. "
+                    f"Cannot reissue a new donor case. User has no existing donor cases."
+                )
+                logging.error(error_message)
+                raise DonorCaseError(error_message)
+            
             donor_case_ids = []
 
             for donor_case in donor_cases:
