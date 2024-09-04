@@ -4,7 +4,6 @@ from unittest import mock
 import pytest
 
 from appconfig.config import Config
-from models.donor_case_model import DonorCaseModel
 from services.blaise_service import BlaiseService
 from services.donor_case_service import DonorCaseService
 from tests.helpers import get_default_config

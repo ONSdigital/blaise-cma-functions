@@ -27,10 +27,13 @@ class MockRequest:
 
 class TestMainCreateDonorCaseFunction:
 
-    @pytest.mark.parametrize("role", [
-        ("IPS Field Interviewer"),
-        ("IPS Manager"),
-    ])
+    @pytest.mark.parametrize(
+        "role",
+        [
+            ("IPS Field Interviewer"),
+            ("IPS Manager"),
+        ],
+    )
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
     @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
@@ -47,8 +50,7 @@ class TestMainCreateDonorCaseFunction:
     ):
         # Arrange
         mock_config.return_value = Config(
-            blaise_api_url="mock-blaise-api-url",
-            blaise_server_park="gusty"
+            blaise_api_url="mock-blaise-api-url", blaise_server_park="gusty"
         )
 
         mock_client_instance = mock.Mock()
@@ -687,6 +689,73 @@ class TestMainCreateDonorCasesHandleDonorCasesStep:
             logging.ERROR,
             error_message,
         ) in caplog.record_tuples
+
+
+class TestMainReissueNewDonorCaseFunction:
+    @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
+    @mock.patch("services.blaise_service.BlaiseService.get_users")
+    @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch("blaise_restapi.Client")
+    def test_reissue_new_donor_case_returns_done_and_200_status_code_for_valid_request(
+        self,
+        mock_client,
+        mock_config,
+        mock_get_donor_cases_for_user,
+        mock_get_users,
+        mock_get_questionnaire,
+    ):
+        # Arrange
+        mock_config.return_value = Config(
+            blaise_api_url="mock-blaise-api-url", blaise_server_park="gusty"
+        )
+
+        mock_client_instance = mock.Mock()
+        mock_client.return_value = mock_client_instance
+        mock_client_instance.questionnaire_exists_on_server_park.return_value = True
+
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "user": "test-user"}
+        )
+        mock_get_questionnaire.return_value = {
+            "name": "LMS2309_GO1",
+            "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",
+            "serverParkName": "gusty",
+            "installDate": "2024-04-24T09:49:34.2685322+01:00",
+            "status": "Active",
+            "dataRecordCount": 0,
+            "hasData": False,
+            "blaiseVersion": "5.9.9.2735",
+            "nodes": [
+                {"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Active"},
+                {"nodeName": "blaise-gusty-data-entry-1", "nodeStatus": "Active"},
+                {"nodeName": "blaise-gusty-data-entry-2", "nodeStatus": "Active"},
+            ],
+        }
+        mock_get_users.return_value = [
+            {
+                "name": "rich",
+                "role": "DST",
+                "serverParks": ["gusty", "cma"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "sarah",
+                "role": "DST",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+        ]
+        mock_get_donor_cases_for_user.return_value = [
+            {"id": "rich", "cmA_ForWhom": "rich"}
+        ]
+
+        # Act
+        response, status = reissue_new_donor_case(mock_request)
+
+        # Assert
+        assert response == "Done!"
+        assert status == 200
 
 
 class TestMainReissueNewDonorCasesHandleRequestStep:
