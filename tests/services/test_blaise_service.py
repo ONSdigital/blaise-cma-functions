@@ -357,7 +357,7 @@ class TestCreateDonorCaseForUser:
         assert (
                    "root",
                    logging.INFO,
-                   "Created donor case for user 'Arya Stark' for IPS2406a",
+                   "Created donor case for user 'Arya Stark' for questionnaire IPS2406a",
                ) in caplog.record_tuples
 
     @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
