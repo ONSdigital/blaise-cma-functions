@@ -18,13 +18,24 @@ class ValidationService:
     def __init__(self) -> None:
         self.request_json = None
 
-    def get_valid_request_values(self, request: flask.request) -> tuple[str, str]:
+    def get_valid_request_values_for_create_donor_cases(
+        self, request: flask.request
+    ) -> tuple[str, str]:
         self.validate_request_is_json(request)
         self.validate_request_values_are_not_empty()
         self.validate_questionnaire_name()
         self.validate_role()
 
         return self.request_json["questionnaire_name"], self.request_json["role"]
+
+    def get_valid_request_values_for_reissue_new_donor_case(
+        self, request: flask.request
+    ) -> tuple[str, str]:
+        self.validate_request_is_json(request)
+        self.validate_request_values_are_not_empty_for_reissue_new_donor_case()
+        self.validate_questionnaire_name()
+
+        return self.request_json["questionnaire_name"], self.request_json["user"]
 
     def validate_request_is_json(self, request):
         try:
@@ -47,6 +58,22 @@ class ValidationService:
 
         if role is None or role == "":
             missing_values.append("role")
+
+        if missing_values:
+            error_message = f"Missing required values from request: {missing_values}"
+            logging.error(error_message)
+            raise RequestError(error_message)
+
+    def validate_request_values_are_not_empty_for_reissue_new_donor_case(self):
+        missing_values = []
+        questionnaire_name = self.request_json["questionnaire_name"]
+        user = self.request_json["user"]
+
+        if questionnaire_name is None or questionnaire_name == "":
+            missing_values.append("questionnaire_name")
+
+        if user is None or user == "":
+            missing_values.append("user")
 
         if missing_values:
             error_message = f"Missing required values from request: {missing_values}"

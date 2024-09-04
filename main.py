@@ -23,13 +23,64 @@ from utilities.logging import setup_logger
 setup_logger()
 
 
+def reissue_new_donor_case(request: flask.request) -> tuple[str, int]:
+    try:
+        logging.info("Running Cloud Function - 'reissue_new_donor_case'")
+        validation_service = ValidationService()
+
+        # Request Handler
+        questionnaire_name, user = (
+            validation_service.get_valid_request_values_for_reissue_new_donor_case(
+                request
+            )
+        )
+
+        # Config Handler
+        blaise_config = Config.from_env()
+        validation_service.validate_config(blaise_config)
+        blaise_server_park = blaise_config.blaise_server_park
+
+        # Blaise Handler
+        blaise_service = BlaiseService(blaise_config)
+        validation_service.validate_questionnaire_exists(
+            questionnaire_name, blaise_config
+        )
+
+        # GUID Handler
+        guid_service = GUIDService(blaise_service)
+        guid = guid_service.get_guid(blaise_server_park, questionnaire_name)
+
+        # Donor Case Handler
+        donor_case_service = DonorCaseService(blaise_service)
+        donor_case_service.reissue_new_donor_case_for_user(
+            questionnaire_name, guid, user
+        )
+
+        logging.info("Finished Running Cloud Function - 'reissue_new_donor_case'")
+        return f"Successfully reissued new donor case for user: {user}", 200
+    except (RequestError, AttributeError, ValueError, ConfigError) as e:
+        error_message = f"Error reissuing IPS donor cases: {e}"
+        logging.error(error_message)
+        return error_message, 400
+    except BlaiseError as e:
+        error_message = f"Error reissuing IPS donor cases: {e}"
+        logging.error(error_message)
+        return error_message, 404
+    except (GuidError, UsersError, DonorCaseError, Exception) as e:
+        error_message = f"Error reissuing IPS donor cases: {e}"
+        logging.error(error_message)
+        return error_message, 500
+
+
 def create_donor_cases(request: flask.request) -> tuple[str, int]:
     try:
         logging.info("Running Cloud Function - 'create_donor_cases'")
         validation_service = ValidationService()
 
         # Request Handler
-        questionnaire_name, role = validation_service.get_valid_request_values(request)
+        questionnaire_name, role = (
+            validation_service.get_valid_request_values_for_create_donor_cases(request)
+        )
 
         # Config Handler
         blaise_config = Config.from_env()
@@ -57,7 +108,8 @@ def create_donor_cases(request: flask.request) -> tuple[str, int]:
             questionnaire_name, guid, users_with_role
         )
 
-        return "Done!", 200
+        logging.info("Finished Running Cloud Function - 'create_donor_cases'")
+        return f"Successfully created donor cases for user role: {role}", 200
     except (RequestError, AttributeError, ValueError, ConfigError) as e:
         error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
