@@ -805,9 +805,8 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         "user",
         [None, ""],
     )
-    @mock.patch.object(blaise_restapi.Client, "get_users")
     def test_reissue_new_donor_case_returns_message_and_400_status_code_when_role_value_is_missing(
-        self, mock_get_users, user, caplog
+        self, user, caplog
     ):
         # Arrange
         mock_request = flask.Request.from_values(
@@ -852,7 +851,7 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         ) in caplog.record_tuples
 
 
-class TestMainCreateDonorCasesHandleConfigStep:
+class TestMainReissueNewDonorCasesHandleConfigStep:
     @pytest.mark.parametrize(
         "blaise_api_url, blaise_server_park",
         [
