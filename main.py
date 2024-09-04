@@ -56,7 +56,8 @@ def reissue_new_donor_case(request: flask.request) -> tuple[str, int]:
             questionnaire_name, guid, user
         )
 
-        return "Done!", 200
+        logging.info("Finished Running Cloud Function - 'reissue_new_donor_case'")
+        return f"Successfully reissued new donor case for user: {user}", 200
     except (RequestError, AttributeError, ValueError, ConfigError) as e:
         error_message = f"Error reissuing IPS donor cases: {e}"
         logging.error(error_message)
@@ -107,7 +108,8 @@ def create_donor_cases(request: flask.request) -> tuple[str, int]:
             questionnaire_name, guid, users_with_role
         )
 
-        return "Done!", 200
+        logging.info("Finished Running Cloud Function - 'create_donor_cases'")
+        return f"Successfully created donor cases for user role: {role}", 200
     except (RequestError, AttributeError, ValueError, ConfigError) as e:
         error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)

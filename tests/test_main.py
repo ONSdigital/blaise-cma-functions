@@ -101,7 +101,7 @@ class TestMainCreateDonorCaseFunction:
         response, status_code = create_donor_cases(mock_request)
 
         # Assert
-        assert response == "Done!"
+        assert response == f"Successfully created donor cases for user role: {role}"
         assert status_code == 200
 
 
@@ -754,7 +754,7 @@ class TestMainReissueNewDonorCaseFunction:
         response, status = reissue_new_donor_case(mock_request)
 
         # Assert
-        assert response == "Done!"
+        assert response == f"Successfully reissued new donor case for user: test-user"
         assert status == 200
 
 
