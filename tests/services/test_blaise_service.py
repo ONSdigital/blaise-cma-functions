@@ -338,6 +338,30 @@ class TestGetExistingDonorCases:
 
 class TestCreateDonorCaseForUser:
     @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
+    def test_create_donor_case_for_user_logs_an_informative_message(
+            self,
+            mock_rest_api_client_create_multikey_case,
+            blaise_service,
+            caplog
+    ):
+        # Arrange
+        mock_rest_api_client_create_multikey_case.return_value = {}
+        donor_case_model = DonorCaseModel(
+            user="Arya Stark", questionnaire_name="IPS2406a", guid="7h15-i5-a-gu!d"
+        )
+
+        # Act
+        with caplog.at_level(logging.INFO):
+            blaise_service.create_donor_case_for_user(donor_case_model)
+
+        # Assert
+        assert (
+                   "root",
+                   logging.INFO,
+                   "Created donor case for user 'Arya Stark' for IPS2406a",
+               ) in caplog.record_tuples
+
+    @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
     def test_create_donor_case_for_user_logs_error_and_raises_exception(
         self, mock_rest_api_client_create_multikey_case, blaise_service, caplog
     ):
