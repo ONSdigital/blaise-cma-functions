@@ -25,6 +25,84 @@ class MockRequest:
         return self.json_data
 
 
+class TestMainCreateDonorCaseFunction:
+
+    @pytest.mark.parametrize("role", [
+        ("IPS Field Interviewer"),
+        ("IPS Manager"),
+    ])
+    @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
+    @mock.patch("services.blaise_service.BlaiseService.get_users")
+    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch("blaise_restapi.Client")
+    def test_create_donor_case_returns_done_and_200_status_code_for_valid_request(
+        self,
+        mock_client,
+        mock_config,
+        mock_get_existing_donor_cases,
+        mock_get_users,
+        mock_get_questionnaire,
+        role,
+    ):
+        # Arrange
+        mock_config.return_value = Config(
+            blaise_api_url="mock-blaise-api-url",
+            blaise_server_park="gusty"
+        )
+
+        mock_client_instance = mock.Mock()
+        mock_client.return_value = mock_client_instance
+        mock_client_instance.questionnaire_exists_on_server_park.return_value = True
+
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "role": role}
+        )
+        mock_get_questionnaire.return_value = {
+            "name": "LMS2309_GO1",
+            "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",
+            "serverParkName": "gusty",
+            "installDate": "2024-04-24T09:49:34.2685322+01:00",
+            "status": "Active",
+            "dataRecordCount": 0,
+            "hasData": False,
+            "blaiseVersion": "5.9.9.2735",
+            "nodes": [
+                {"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Active"},
+                {"nodeName": "blaise-gusty-data-entry-1", "nodeStatus": "Active"},
+                {"nodeName": "blaise-gusty-data-entry-2", "nodeStatus": "Active"},
+            ],
+        }
+        mock_get_users.return_value = [
+            {
+                "name": "rich",
+                "role": "IPS Field Interviewer",
+                "serverParks": ["gusty", "cma"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "sarah",
+                "role": "DST",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "salleh",
+                "role": "IPS Manager",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+        ]
+        mock_get_existing_donor_cases.return_value = ["rich"]
+
+        # Act
+        response, status_code = create_donor_cases(mock_request)
+
+        # Assert
+        assert response == "Done!"
+        assert status_code == 200
+
+
 class TestMainCreateDonorCasesHandleRequestStep:
 
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
@@ -611,7 +689,6 @@ class TestMainCreateDonorCasesHandleDonorCasesStep:
         ) in caplog.record_tuples
 
 
-# Reissue New Donor Case
 class TestMainReissueNewDonorCasesHandleRequestStep:
 
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
