@@ -223,6 +223,37 @@ class TestCheckAndCreateDonorCaseForUsers:
         # assert
         assert err.value.args[0] == "Rich has been renaming variables"
 
+    @mock.patch("services.donor_case_service.DonorCaseModel")
+    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
+    @mock.patch(
+        "services.donor_case_service.DonorCaseService.donor_case_does_not_exist"
+    )
+    @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
+    def test_check_and_create_donor_case_calls_create_donor_case_for_user_with_the_expected_parameters(
+            self,
+            mock_create_donor_case_for_user,
+            mock_donor_case_does_not_exist,
+            mock_get_existing_donor_cases,
+            mock_donor_case_model,
+            donor_case_service,
+            caplog,
+    ):
+        # arrange
+        mock_get_existing_donor_cases.return_value = ["james", "rich"]
+        mock_donor_case_does_not_exist.return_value = True
+
+        questionnaire_name = "IPS2406a"
+        guid = "7bded891-3aa6-41b2-824b-0be514018806"
+        users_with_role = ["IPS Manager"]
+
+        # act
+        donor_case_service.check_and_create_donor_case_for_users(
+            questionnaire_name, guid, users_with_role
+        )
+
+        # assert
+        mock_create_donor_case_for_user.assert_called_with(mock_donor_case_model.return_value)
+
 
 class TestReissueNewDonorCaseForUser:
     @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
