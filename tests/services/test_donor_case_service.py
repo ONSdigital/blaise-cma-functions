@@ -230,13 +230,13 @@ class TestCheckAndCreateDonorCaseForUsers:
     )
     @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
     def test_check_and_create_donor_case_calls_create_donor_case_for_user_with_the_expected_parameters(
-            self,
-            mock_create_donor_case_for_user,
-            mock_donor_case_does_not_exist,
-            mock_get_existing_donor_cases,
-            mock_donor_case_model,
-            donor_case_service,
-            caplog,
+        self,
+        mock_create_donor_case_for_user,
+        mock_donor_case_does_not_exist,
+        mock_get_existing_donor_cases,
+        mock_donor_case_model,
+        donor_case_service,
+        caplog,
     ):
         # arrange
         mock_get_existing_donor_cases.return_value = ["james", "rich"]
@@ -252,7 +252,9 @@ class TestCheckAndCreateDonorCaseForUsers:
         )
 
         # assert
-        mock_create_donor_case_for_user.assert_called_with(mock_donor_case_model.return_value)
+        mock_create_donor_case_for_user.assert_called_with(
+            mock_donor_case_model.return_value
+        )
 
     @mock.patch("services.donor_case_service.DonorCaseModel")
     @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
@@ -264,23 +266,23 @@ class TestCheckAndCreateDonorCaseForUsers:
         "services.donor_case_service.DonorCaseService.assert_expected_number_of_donor_cases_created"
     )
     def test_check_and_create_donor_case_calls_assert_expected_number_of_donor_cases_created_with_the_expected_parameters(
-            self,
-            mock_assert_expected_number_of_donor_cases_created,
-            _mock_create_donor_case_for_user,
-            mock_donor_case_does_not_exist,
-            mock_get_existing_donor_cases,
-            _mock_donor_case_model,
-            donor_case_service,
-            caplog,
+        self,
+        mock_assert_expected_number_of_donor_cases_created,
+        _mock_create_donor_case_for_user,
+        mock_donor_case_does_not_exist,
+        mock_get_existing_donor_cases,
+        _mock_donor_case_model,
+        donor_case_service,
+        caplog,
     ):
         # arrange
         mock_get_existing_donor_cases.return_value = ["sarah"]
         mock_donor_case_does_not_exist.side_effect = [True, True, False, True]
         users_with_role = [
-            "james",    # needs a donor case
-            "rich",     # needs a donor case
-            "sarah",    # has a donor case
-            "kris"      # needs a donor case
+            "james",  # needs a donor case
+            "rich",  # needs a donor case
+            "sarah",  # has a donor case
+            "kris",  # needs a donor case
         ]
 
         questionnaire_name = "IPS2406a"
@@ -293,15 +295,15 @@ class TestCheckAndCreateDonorCaseForUsers:
 
         # assert
         mock_assert_expected_number_of_donor_cases_created.assert_called_with(
-            expected_number_of_cases_to_create=3,
-            total_donor_cases_created=3
+            expected_number_of_cases_to_create=3, total_donor_cases_created=3
         )
 
-    def test_assert_expected_number_of_donor_cases_created_logs_an_error(self, donor_case_service, caplog):
+    def test_assert_expected_number_of_donor_cases_created_logs_an_error(
+        self, donor_case_service, caplog
+    ):
         # act
         donor_case_service.assert_expected_number_of_donor_cases_created(
-            expected_number_of_cases_to_create=100,
-            total_donor_cases_created=1
+            expected_number_of_cases_to_create=100, total_donor_cases_created=1
         )
 
         # assert
