@@ -155,26 +155,6 @@ class TestGetUsers:
         _mock_rest_api_client.assert_called_with()
 
     @mock.patch.object(blaise_restapi.Client, "get_users")
-    def test_get_users_returns_a_list_of_dictionaires_logs_the_correct_information(
-        self, _mock_rest_api_client_get_users, blaise_service, caplog, mock_get_users
-    ):
-        # Arrange
-        _mock_rest_api_client_get_users.return_value = mock_get_users
-
-        blaise_server_park = "gusty"
-
-        # Act
-        with caplog.at_level(logging.INFO):
-            blaise_service.get_users(blaise_server_park)
-
-        # Assert
-        assert (
-            "root",
-            logging.INFO,
-            "Got 2 users from server park gusty",
-        ) in caplog.record_tuples
-
-    @mock.patch.object(blaise_restapi.Client, "get_users")
     def test_get_users_returns_a_list_of_dictionaires_containing_user_info(
         self, _mock_rest_api_client_get_users, blaise_service, mock_get_users
     ):
@@ -357,6 +337,26 @@ class TestGetExistingDonorCases:
 
 
 class TestCreateDonorCaseForUser:
+    @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
+    def test_create_donor_case_for_user_logs_an_informative_message(
+        self, _mock_rest_api_client_create_multikey_case, blaise_service, caplog
+    ):
+        # Arrange
+        donor_case_model = DonorCaseModel(
+            user="Arya Stark", questionnaire_name="IPS2406a", guid="7h15-i5-a-gu!d"
+        )
+
+        # Act
+        with caplog.at_level(logging.INFO):
+            blaise_service.create_donor_case_for_user(donor_case_model)
+
+        # Assert
+        assert (
+            "root",
+            logging.INFO,
+            "Created donor case for user 'Arya Stark' for questionnaire IPS2406a",
+        ) in caplog.record_tuples
+
     @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
     def test_create_donor_case_for_user_logs_error_and_raises_exception(
         self, mock_rest_api_client_create_multikey_case, blaise_service, caplog
