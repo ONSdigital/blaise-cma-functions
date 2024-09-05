@@ -308,10 +308,10 @@ class TestCheckAndCreateDonorCaseForUsers:
 
         # assert
         assert (
-                   "root",
-                   logging.ERROR,
-                   "Expected to create 100 donor cases.  Only created 1",
-               ) in caplog.record_tuples
+            "root",
+            logging.ERROR,
+            "Expected to create 100 donor cases.  Only created 1",
+        ) in caplog.record_tuples
 
 
 class TestReissueNewDonorCaseForUser:

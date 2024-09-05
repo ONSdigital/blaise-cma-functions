@@ -105,7 +105,6 @@ class DonorCaseService:
             logging.error(error_message)
             raise DonorCaseError(error_message)
 
-
     @staticmethod
     def donor_case_does_not_exist(
         user: str, users_with_existing_donor_cases: list[str]
