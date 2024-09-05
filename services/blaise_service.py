@@ -84,7 +84,6 @@ class BlaiseService:
             logging.info(
                 f"Created donor case for user '{donor_case_model.user}' for questionnaire {donor_case_model.questionnaire_name}"
             )
-            print()
         except Exception as e:
             error_message = (
                 f"Exception caught in {function_name()}. "
