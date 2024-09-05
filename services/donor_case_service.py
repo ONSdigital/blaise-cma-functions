@@ -11,6 +11,11 @@ class DonorCaseService:
     def __init__(self, blaise_service: BlaiseService) -> None:
         self._blaise_service = blaise_service
 
+    @staticmethod
+    def assert_expected_number_of_donor_cases_created(expected_number_of_cases_to_create: int, total_donor_cases_created: int):
+        if expected_number_of_cases_to_create != total_donor_cases_created:
+            logging.error(f"Expected to create {expected_number_of_cases_to_create} donor cases.  Only created {total_donor_cases_created}")
+
     def check_and_create_donor_case_for_users(
         self, questionnaire_name: str, guid: str, users_with_role: list
     ) -> None:
@@ -38,10 +43,10 @@ class DonorCaseService:
             logging.error(error_message)
             raise DonorCaseError(error_message)
 
-        expected_number_of_cases_to_create = len(users_with_role) - len(users_with_existing_donor_cases)
-        if expected_number_of_cases_to_create != total_donor_cases_created:
-            logging.error(
-                f"Exepcted to create {expected_number_of_cases_to_create} number of cases.  Only created {total_donor_cases_created}")
+        self.assert_expected_number_of_donor_cases_created(
+            expected_number_of_cases_to_create=len(users_with_role) - len(users_with_existing_donor_cases),
+            total_donor_cases_created=total_donor_cases_created
+        )
 
     def reissue_new_donor_case_for_user(
         self, questionnaire_name: str, guid: str, user: str
@@ -92,6 +97,7 @@ class DonorCaseService:
             )
             logging.error(error_message)
             raise DonorCaseError(error_message)
+
 
     @staticmethod
     def donor_case_does_not_exist(
