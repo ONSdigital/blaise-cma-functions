@@ -155,26 +155,6 @@ class TestGetUsers:
         _mock_rest_api_client.assert_called_with()
 
     @mock.patch.object(blaise_restapi.Client, "get_users")
-    def test_get_users_returns_a_list_of_dictionaires_logs_the_correct_information(
-        self, _mock_rest_api_client_get_users, blaise_service, caplog, mock_get_users
-    ):
-        # Arrange
-        _mock_rest_api_client_get_users.return_value = mock_get_users
-
-        blaise_server_park = "gusty"
-
-        # Act
-        with caplog.at_level(logging.INFO):
-            blaise_service.get_users(blaise_server_park)
-
-        # Assert
-        assert (
-            "root",
-            logging.INFO,
-            "Got 2 users from server park gusty",
-        ) in caplog.record_tuples
-
-    @mock.patch.object(blaise_restapi.Client, "get_users")
     def test_get_users_returns_a_list_of_dictionaires_containing_user_info(
         self, _mock_rest_api_client_get_users, blaise_service, mock_get_users
     ):
@@ -238,7 +218,7 @@ class TestGetExistingDonorCases:
         # Arrange
         server_park = "cma"
         questionnaire_name = "CMA_Launcher"
-        field_data = ["MainSurveyID", "CMA_ForWhom"]
+        field_data = ["MainSurveyID", "CMA_ForWhom", "cmA_Status"]
         guid = "7bded891-3aa6-41b2-824b-0be514018806"
 
         # Act
@@ -261,14 +241,22 @@ class TestGetExistingDonorCases:
                 {
                     "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
                     "cmA_ForWhom": "rich",
+                    "cmA_Status": None,
                 },
                 {
                     "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
                     "cmA_ForWhom": "james",
+                    "cmA_Status": None,
                 },
                 {
                     "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
                     "cmA_ForWhom": "rich",
+                    "cmA_Status": "",
+                },
+                {
+                    "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
+                    "cmA_ForWhom": "james",
+                    "cmA_Status": "",
                 },
             ],
         }
@@ -293,14 +281,22 @@ class TestGetExistingDonorCases:
                 {
                     "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
                     "cmA_ForWhom": "cal",
-                },
-                {
-                    "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
-                    "cmA_ForWhom": "james",
+                    "cmA_Status": "",
                 },
                 {
                     "mainSurveyID": "861ecb9b-4154-4f50-9b47-7fd52c098313",
                     "cmA_ForWhom": "cal",
+                    "cmA_Status": None,
+                },
+                {
+                    "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
+                    "cmA_ForWhom": "james",
+                    "cmA_Status": "",
+                },
+                {
+                    "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
+                    "cmA_ForWhom": "james",
+                    "cmA_Status": None,
                 },
             ],
         }
@@ -342,6 +338,26 @@ class TestGetExistingDonorCases:
 
 class TestCreateDonorCaseForUser:
     @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
+    def test_create_donor_case_for_user_logs_an_informative_message(
+        self, _mock_rest_api_client_create_multikey_case, blaise_service, caplog
+    ):
+        # Arrange
+        donor_case_model = DonorCaseModel(
+            user="Arya Stark", questionnaire_name="IPS2406a", guid="7h15-i5-a-gu!d"
+        )
+
+        # Act
+        with caplog.at_level(logging.INFO):
+            blaise_service.create_donor_case_for_user(donor_case_model)
+
+        # Assert
+        assert (
+            "root",
+            logging.INFO,
+            "Created donor case for user 'Arya Stark' for questionnaire IPS2406a",
+        ) in caplog.record_tuples
+
+    @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
     def test_create_donor_case_for_user_logs_error_and_raises_exception(
         self, mock_rest_api_client_create_multikey_case, blaise_service, caplog
     ):
@@ -361,6 +377,109 @@ class TestCreateDonorCaseForUser:
         error_message = (
             "Exception caught in create_donor_case_for_user(). "
             "Error creating donor case for user 'Arya Stark': John Snow be knowin'"
+        )
+        assert err.value.args[0] == error_message
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
+
+
+class TestGetDonorCasesForUser:
+    @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
+    def test_get_donor_cases_for_user_calls_rest_api_and_returns_correct_cases(
+        self, mock_rest_api_client_get_questionnaire_data, blaise_service
+    ):
+        # Arrange
+        mock_rest_api_client_get_questionnaire_data.return_value = {
+            "reportingData": [
+                {
+                    "mainSurveyID": "7h15-i5-a-gu!d",
+                    "cmA_ForWhom": "Jon Snow",
+                    "cmA_Status": "",
+                    "id": "case1",
+                },
+                {
+                    "mainSurveyID": "7h15-i5-a-gu!d",
+                    "cmA_ForWhom": "Arya Stark",
+                    "cmA_Status": "",
+                    "id": "case2",
+                },
+                {
+                    "mainSurveyID": "7h15-i5-a-gu!d",
+                    "cmA_ForWhom": "Jon Snow",
+                    "cmA_Status": "Completed",
+                    "id": "case3",
+                },
+                {
+                    "mainSurveyID": "different-guid",
+                    "cmA_ForWhom": "Jon Snow",
+                    "cmA_Status": "",
+                    "id": "case4",
+                },
+            ]
+        }
+        guid = "7h15-i5-a-gu!d"
+        user = "Jon Snow"
+
+        # Act
+        result = blaise_service.get_donor_cases_for_user(guid, user)
+
+        # Assert
+        assert len(result) == 1
+        assert result[0]["id"] == "case1"
+        assert result[0]["cmA_ForWhom"] == "Jon Snow"
+
+    @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
+    def test_get_donor_cases_for_user_returns_empty_list_when_no_cases_found(
+        self, mock_rest_api_client_get_questionnaire_data, blaise_service
+    ):
+        # Arrange
+        mock_rest_api_client_get_questionnaire_data.return_value = {
+            "reportingData": [
+                {
+                    "mainSurveyID": "different-guid",
+                    "cmA_ForWhom": "Jon Snow",
+                    "cmA_Status": "",
+                    "id": "case1",
+                },
+                {
+                    "mainSurveyID": "different-guid",
+                    "cmA_ForWhom": "Arya Stark",
+                    "cmA_Status": "",
+                    "id": "case2",
+                },
+            ]
+        }
+        guid = "7h15-i5-a-gu!d"
+        user = "Jon Snow"
+
+        # Act
+        result = blaise_service.get_donor_cases_for_user(guid, user)
+
+        # Assert
+        assert result == []
+
+    @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
+    def test_get_donor_cases_for_user_logs_error_and_raises_exception(
+        self, mock_rest_api_client_get_questionnaire_data, blaise_service, caplog
+    ):
+        # Arrange
+        mock_rest_api_client_get_questionnaire_data.side_effect = Exception(
+            "The Wall has fallen"
+        )
+        guid = "7h15-i5-a-gu!d"
+        user = "Jon Snow"
+
+        # Act
+        with pytest.raises(BlaiseError) as err:
+            blaise_service.get_donor_cases_for_user(guid, user)
+
+        # Assert
+        error_message = (
+            "Exception caught in get_donor_cases_for_user(). "
+            "Error getting existing cases: The Wall has fallen"
         )
         assert err.value.args[0] == error_message
         assert (
