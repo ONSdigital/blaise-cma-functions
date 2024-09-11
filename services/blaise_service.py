@@ -7,6 +7,7 @@ from appconfig.config import Config
 from models.donor_case_model import DonorCaseModel
 from utilities.custom_exceptions import BlaiseError
 from utilities.logging import function_name
+from utilities.regex import extract_username
 
 
 class BlaiseService:
@@ -52,7 +53,7 @@ class BlaiseService:
             cases = self.restapi_client.get_questionnaire_data(
                 self.cma_serverpark_name,
                 self.cma_questionnaire,
-                ["MainSurveyID", "CMA_ForWhom", "cmA_Status"],
+                ["MainSurveyID", "CMA_ForWhom", "CMA_IsDonorCase"],
             )
             return sorted(
                 set(
@@ -60,7 +61,7 @@ class BlaiseService:
                         entry["cmA_ForWhom"]
                         for entry in cases["reportingData"]
                         if (entry["mainSurveyID"] == guid)
-                        and (entry["cmA_Status"] == "" or entry["cmA_Status"] is None)
+                        and (entry["cmA_IsDonorCase"] == "1")
                     ]
                 )
             )
@@ -105,7 +106,7 @@ class BlaiseService:
                 if (
                     entry["mainSurveyID"] == guid
                     and entry["cmA_IsDonorCase"] == "1"
-                    and entry["cmA_ForWhom"] == user
+                    and extract_username(entry["id"]) == user
                 ):
                     donor_cases.append(entry)
 
