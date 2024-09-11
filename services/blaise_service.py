@@ -97,14 +97,14 @@ class BlaiseService:
             cases = self.restapi_client.get_questionnaire_data(
                 self.cma_serverpark_name,
                 self.cma_questionnaire,
-                ["MainSurveyID", "CMA_ForWhom", "CMA_Status", "id"],
+                ["MainSurveyID", "CMA_ForWhom", "CMA_IsDonorCase", "id"],
             )
             donor_cases = []
 
             for entry in cases["reportingData"]:
                 if (
                     entry["mainSurveyID"] == guid
-                    and entry["cmA_Status"] == ""
+                    and entry["cmA_IsDonorCase"] == "1"
                     and entry["cmA_ForWhom"] == user
                 ):
                     donor_cases.append(entry)
