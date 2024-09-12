@@ -120,9 +120,9 @@ class BlaiseService:
                     and entry["cmA_IsDonorCase"] == "1"
                     and extract_username_from_case_id(entry["id"]) == user
                 ):
-                    print("Extracted name: ", extract_username_from_case_id(entry["id"]))
                     donor_cases.append(entry)
 
+                print("Extracted name: ", extract_username_from_case_id(entry["id"]))
             return donor_cases
         except Exception as e:
             error_message = (
