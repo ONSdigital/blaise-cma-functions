@@ -7,7 +7,7 @@ from appconfig.config import Config
 from models.donor_case_model import DonorCaseModel
 from utilities.custom_exceptions import BlaiseError
 from utilities.logging import function_name
-from utilities.regex import extract_username
+from utilities.regex import extract_username_from_case_id
 
 
 class BlaiseService:
@@ -106,7 +106,7 @@ class BlaiseService:
                 if (
                     entry["mainSurveyID"] == guid
                     and entry["cmA_IsDonorCase"] == "1"
-                    and extract_username(entry["id"]) == user
+                    and extract_username_from_case_id(entry["id"]) == user
                 ):
                     donor_cases.append(entry)
 

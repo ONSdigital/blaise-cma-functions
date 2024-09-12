@@ -9,7 +9,7 @@ from models.donor_case_model import DonorCaseModel
 from services.blaise_service import BlaiseService
 from tests.helpers import get_default_config
 from utilities.custom_exceptions import BlaiseError
-from utilities.regex import extract_username
+from utilities.regex import extract_username_from_case_id
 
 
 @pytest.fixture()
@@ -429,9 +429,9 @@ class TestGetDonorCasesForUser:
 
         # Assert
         assert len(result) == 1
-        assert extract_username(result[0]["id"]) == "jonsnow"
+        assert extract_username_from_case_id(result[0]["id"]) == "jonsnow"
         assert result[0]["cmA_IsDonorCase"] == "1"
-    
+
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
     def test_get_donor_cases_for_user_returns_donor_cases_for_specified_user_when_the_user_has_a_similar_username_to_other_users(
         self, mock_rest_api_client_get_questionnaire_data, blaise_service
@@ -439,14 +439,14 @@ class TestGetDonorCasesForUser:
         # Arrange
         mock_rest_api_client_get_questionnaire_data.return_value = {
             "reportingData": [
-                # Old donor case model ID 
-                 {
+                # Old donor case model ID
+                {
                     "mainSurveyID": "7h15-i5-a-gu!d",
                     "cmA_ForWhom": "Jon Snow32",
                     "cmA_IsDonorCase": "1",
                     "id": "jonsnow32",
                 },
-                # New donor case model ID 
+                # New donor case model ID
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
                     "cmA_ForWhom": "Jon Snow32",
@@ -487,8 +487,8 @@ class TestGetDonorCasesForUser:
 
         # Assert
         assert len(result) == 2
-        assert extract_username(result[0]["id"]) == "jonsnow32"
-        assert extract_username(result[1]["id"]) == "jonsnow32"
+        assert extract_username_from_case_id(result[0]["id"]) == "jonsnow32"
+        assert extract_username_from_case_id(result[1]["id"]) == "jonsnow32"
         assert result[0]["cmA_IsDonorCase"] == "1"
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
