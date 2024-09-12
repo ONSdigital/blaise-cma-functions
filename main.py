@@ -45,10 +45,14 @@ def reissue_new_donor_case(request: flask.request) -> tuple[str, int]:
         validation_service.validate_questionnaire_exists(
             questionnaire_name, blaise_config
         )
-
+        
         # GUID Handler
         guid_service = GUIDService(blaise_service)
         guid = guid_service.get_guid(blaise_server_park, questionnaire_name)
+
+        # User Handler
+        user_service = UserService(blaise_service)
+        user_service.get_user_by_username(blaise_server_park, user)
 
         # Donor Case Handler
         donor_case_service = DonorCaseService(blaise_service)

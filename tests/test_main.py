@@ -1170,6 +1170,94 @@ class TestMainReissueNewDonorCasesHandleGuidStep:
             error_message,
         ) in caplog.record_tuples
 
+class TestMainReissueNewDonorCasesHandleUsersStep:
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
+    @mock.patch("services.guid_service.GUIDService.get_guid")
+    @mock.patch("services.user_service.UserService.get_user_by_username")
+    def test_reissue_new_donor_case_returns_message_and_404_status_code_when_the_get_user_by_username_raises_a_blaise_error_exception(
+        self,
+        mock_get_user_by_username,
+        mock_get_guid,
+        mock_questionnaire_exists_on_server_park,
+        mock_config,
+        caplog,
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "user": "test-user"}
+        )
+        mock_config.return_value = Config(
+            blaise_api_url="foo", blaise_server_park="bar"
+        )
+        mock_questionnaire_exists_on_server_park.return_value = True
+        mock_get_guid.return_value = "m0ck-gu!d"
+        mock_get_user_by_username.side_effect = BlaiseError("There is butter in the ports")
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = reissue_new_donor_case(mock_request)
+
+        # Assert
+        error_message = "Error reissuing IPS donor cases: There is butter in the ports"
+        assert result == (error_message, 404)
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
+
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
+    @mock.patch("services.guid_service.GUIDService.get_guid")
+    @mock.patch("services.user_service.UserService.get_user_by_username")
+    def test_reissue_new_donor_case_returns_message_and_500_status_code_when_the_get_users_service_raises_a_users_error_exception(
+        self,
+        mock_get_user_by_username,
+        mock_get_guid,
+        mock_questionnaire_exists_on_server_park,
+        mock_config,
+        caplog,
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "user": "random-nonexistent-user"}
+        )
+        mock_config.return_value = Config(
+            blaise_api_url="foo", blaise_server_park="bar"
+        )
+        mock_questionnaire_exists_on_server_park.return_value = True
+        mock_get_guid.return_value = "m0ck-gu!d"
+        mock_get_user_by_username.return_value = [
+            {
+                "name": "rich",
+                "role": "IPS Field Interviewer",
+                "serverParks": ["gusty", "cma"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "sarah",
+                "role": "IPS Manager",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },  
+        ]
+
+        # Act
+        with caplog.at_level(logging.ERROR):
+            result = reissue_new_donor_case(mock_request)
+
+        # Assert
+        error_message = "Error reissuing IPS donor cases: User random-nonexistent-user not found in server park cma"
+        assert result == (error_message, 500)
+        assert (
+            "root",
+            logging.ERROR,
+            error_message,
+        ) in caplog.record_tuples
+
+
+
 
 class TestMainReissueNewDonorCasesHandleDonorCasesStep:
     @mock.patch("appconfig.config.Config.from_env")

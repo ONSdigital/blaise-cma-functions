@@ -28,3 +28,26 @@ class UserService:
             )
             logging.error(error_message)
             raise UsersError(error_message)
+        
+    def get_user_by_username(self, blaise_server_park: str, username: str) -> dict:
+        try:
+            blaise_users = self._blaise_service.get_users(blaise_server_park)
+            user = next(
+                (user for user in blaise_users if user["name"] == username), None
+            )
+            if user:
+                logging.info(f"Got user {username} from server park {blaise_server_park}")
+                return user
+            else:
+                error_message = f"User {username} not found in server park {blaise_server_park}"
+                logging.error(error_message)
+                raise UsersError(error_message)
+        except BlaiseError as e:
+            raise BlaiseError(e.message) from e
+        except Exception as e:
+            error_message = (
+                f"Exception caught in {function_name()}. "
+                f"Error getting user by username for server park {blaise_server_park}: {e}"
+            )
+            logging.error(error_message)
+            raise UsersError(error_message)

@@ -48,17 +48,6 @@ class BlaiseService:
             logging.error(error_message)
             raise BlaiseError(error_message)
 
-    def get_user_by_username(self, server_park: str) -> dict[str, Any]:
-        try:
-            return self.restapi_client.get_users()
-        except Exception as e:
-            error_message = (
-                f"Exception caught in {function_name()}. "
-                f"Error getting users from server park {server_park}: {e}"
-            )
-            logging.error(error_message)
-            raise BlaiseError(error_message)
-
     def get_existing_donor_cases(self, guid: str):
         try:
             cases = self.restapi_client.get_questionnaire_data(
