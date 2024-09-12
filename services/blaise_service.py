@@ -115,6 +115,11 @@ class BlaiseService:
             print("CASES: ", cases["reportingData"])
 
             for entry in cases["reportingData"]:
+                print("Look here nerd. tis be ze entry:")
+                print(entry)
+                print("end")
+                print(extract_username_from_case_id(entry["id"]))
+                print("extracted username above")
                 if (
                     entry["mainSurveyID"] == guid
                     and entry["cmA_IsDonorCase"] == "1"
