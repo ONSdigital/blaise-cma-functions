@@ -101,6 +101,7 @@ class BlaiseService:
                 ["MainSurveyID", "CMA_ForWhom", "CMA_IsDonorCase", "id"],
             )
             donor_cases = []
+            print("CASES: ", cases["reportingData"])
 
             for entry in cases["reportingData"]:
                 if (
