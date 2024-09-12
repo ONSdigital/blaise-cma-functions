@@ -490,6 +490,67 @@ class TestGetDonorCasesForUser:
         assert extract_username_from_case_id(result[0]["id"]) == "jonsnow32"
         assert extract_username_from_case_id(result[1]["id"]) == "jonsnow32"
         assert result[0]["cmA_IsDonorCase"] == "1"
+        assert result[1]["cmA_IsDonorCase"] == "1"
+
+    @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
+    def test_get_donor_cases_for_user_returns_donor_cases_for_specified_user_when_the_id_begins_with_number(
+        self, mock_rest_api_client_get_questionnaire_data, blaise_service
+    ):
+        # Arrange
+        mock_rest_api_client_get_questionnaire_data.return_value = {
+            "reportingData": [
+                # Old donor case model ID
+                {
+                    "mainSurveyID": "7h15-i5-a-gu!d",
+                    "cmA_ForWhom": "Jon Snow32",
+                    "cmA_IsDonorCase": "1",
+                    "id": "1jonsnow32",
+                },
+                # New donor case model ID
+                {
+                    "mainSurveyID": "7h15-i5-a-gu!d",
+                    "cmA_ForWhom": "Jon Snow32",
+                    "cmA_IsDonorCase": "1",
+                    "id": "1-1jonsnow32",
+                },
+                {
+                    "mainSurveyID": "7h15-i5-a-gu!d",
+                    "cmA_ForWhom": "Arya Stark",
+                    "cmA_IsDonorCase": "1",
+                    "id": "aryastark",
+                },
+                {
+                    "mainSurveyID": "7h15-i5-a-gu!d",
+                    "cmA_ForWhom": "Jon Snow32ing",
+                    "cmA_IsDonorCase": "1",
+                    "id": "jonsnow32ing",
+                },
+                {
+                    "mainSurveyID": "7h15-i5-a-gu!d",
+                    "cmA_ForWhom": "Jon Snowy",
+                    "cmA_IsDonorCase": "1",
+                    "id": "jonsnowy",
+                },
+                {
+                    "mainSurveyID": "different-guid",
+                    "cmA_ForWhom": "Jon Snow",
+                    "cmA_IsDonorCase": "1",
+                    "id": "jonsnow",
+                },
+            ]
+        }
+        guid = "7h15-i5-a-gu!d"
+        user = "1jonsnow32"
+
+        # Act
+        result = blaise_service.get_donor_cases_for_user(guid, user)
+
+        # Assert
+        assert len(result) == 2
+        assert extract_username_from_case_id(result[0]["id"]) == "1jonsnow32"
+        assert extract_username_from_case_id(result[1]["id"]) == "1jonsnow32"
+        assert result[0]["cmA_IsDonorCase"] == "1"
+        assert result[1]["cmA_IsDonorCase"] == "1"
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
     def test_get_donor_cases_for_user_returns_empty_list_when_a_specified_user_has_no_donor_case_and_has_a_similar_username_to_other_users(
