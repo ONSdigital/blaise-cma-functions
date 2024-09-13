@@ -49,8 +49,6 @@ class DonorCaseService:
             logging.error(error_message)
             raise DonorCaseError(error_message)
 
-        print("Users with role: ", len(users_with_role));
-        print("Users with existing donor cases: ", len(users_with_existing_donor_cases));
         self.assert_expected_number_of_donor_cases_created(
             expected_number_of_cases_to_create=len(users_with_role)
             - len(users_with_existing_donor_cases),
