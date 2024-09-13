@@ -56,14 +56,12 @@ class BlaiseService:
                 ["MainSurveyID", "id", "CMA_IsDonorCase"],
             )
             return sorted(
-                set(
-                    [
-                        entry["id"]
-                        for entry in cases["reportingData"]
-                        if (entry["mainSurveyID"] == guid)
-                        and (entry["cmA_IsDonorCase"] == "1")
-                    ]
-                )
+                [
+                    entry["id"]
+                    for entry in cases["reportingData"]
+                    if (entry["mainSurveyID"] == guid)
+                    and (entry["cmA_IsDonorCase"] == "1")
+                ]
             )
         except Exception as e:
             error_message = (
