@@ -7,6 +7,7 @@ from appconfig.config import Config
 from models.donor_case_model import DonorCaseModel
 from utilities.custom_exceptions import BlaiseError
 from utilities.logging import function_name
+from utilities.regex import extract_username_from_case_id
 
 
 class BlaiseService:
@@ -52,17 +53,15 @@ class BlaiseService:
             cases = self.restapi_client.get_questionnaire_data(
                 self.cma_serverpark_name,
                 self.cma_questionnaire,
-                ["MainSurveyID", "CMA_ForWhom", "cmA_Status"],
+                ["MainSurveyID", "id", "CMA_IsDonorCase"],
             )
             return sorted(
-                set(
-                    [
-                        entry["cmA_ForWhom"]
-                        for entry in cases["reportingData"]
-                        if (entry["mainSurveyID"] == guid)
-                        and (entry["cmA_Status"] == "" or entry["cmA_Status"] is None)
-                    ]
-                )
+                [
+                    entry["id"]
+                    for entry in cases["reportingData"]
+                    if (entry["mainSurveyID"] == guid)
+                    and (entry["cmA_IsDonorCase"] == "1")
+                ]
             )
         except Exception as e:
             error_message = (
@@ -97,15 +96,15 @@ class BlaiseService:
             cases = self.restapi_client.get_questionnaire_data(
                 self.cma_serverpark_name,
                 self.cma_questionnaire,
-                ["MainSurveyID", "CMA_ForWhom", "CMA_Status", "id"],
+                ["MainSurveyID", "CMA_IsDonorCase", "id"],
             )
             donor_cases = []
 
             for entry in cases["reportingData"]:
                 if (
                     entry["mainSurveyID"] == guid
-                    and entry["cmA_Status"] == ""
-                    and entry["cmA_ForWhom"] == user
+                    and entry["cmA_IsDonorCase"] == "1"
+                    and extract_username_from_case_id(entry["id"]) == user
                 ):
                     donor_cases.append(entry)
 
