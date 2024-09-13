@@ -53,12 +53,12 @@ class BlaiseService:
             cases = self.restapi_client.get_questionnaire_data(
                 self.cma_serverpark_name,
                 self.cma_questionnaire,
-                ["MainSurveyID", "CMA_ForWhom", "CMA_IsDonorCase"],
+                ["MainSurveyID", "id", "CMA_IsDonorCase"],
             )
             return sorted(
                 set(
                     [
-                        entry["cmA_ForWhom"]
+                        entry["id"]
                         for entry in cases["reportingData"]
                         if (entry["mainSurveyID"] == guid)
                         and (entry["cmA_IsDonorCase"] == "1")

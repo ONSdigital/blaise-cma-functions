@@ -219,7 +219,7 @@ class TestGetExistingDonorCases:
         # Arrange
         server_park = "cma"
         questionnaire_name = "CMA_Launcher"
-        field_data = ["MainSurveyID", "CMA_ForWhom", "CMA_IsDonorCase"]
+        field_data = ["MainSurveyID", "id", "CMA_IsDonorCase"]
         guid = "7bded891-3aa6-41b2-824b-0be514018806"
 
         # Act
@@ -241,22 +241,22 @@ class TestGetExistingDonorCases:
             "reportingData": [
                 {
                     "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
-                    "cmA_ForWhom": "rich",
+                    "id": "rich",
                     "cmA_IsDonorCase": "1",
                 },
                 {
                     "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
-                    "cmA_ForWhom": "james",
+                    "id": "james",
                     "cmA_IsDonorCase": "1",
                 },
                 {
                     "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
-                    "cmA_ForWhom": "rich",
+                    "id": "rich",
                     "cmA_IsDonorCase": "",
                 },
                 {
                     "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
-                    "cmA_ForWhom": "james",
+                    "id": "james",
                     "cmA_IsDonorCase": "",
                 },
             ],
@@ -281,22 +281,22 @@ class TestGetExistingDonorCases:
             "reportingData": [
                 {
                     "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
-                    "cmA_ForWhom": "cal",
+                    "id": "cal",
                     "cmA_IsDonorCase": "1",
                 },
                 {
                     "mainSurveyID": "861ecb9b-4154-4f50-9b47-7fd52c098313",
-                    "cmA_ForWhom": "cal",
+                    "id": "cal",
                     "cmA_IsDonorCase": "1",
                 },
                 {
                     "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
-                    "cmA_ForWhom": "james",
+                    "id": "james",
                     "cmA_IsDonorCase": "1",
                 },
                 {
                     "mainSurveyID": "7bded891-3aa6-41b2-824b-0be514018806",
-                    "cmA_ForWhom": "james",
+                    "id": "james",
                     "cmA_IsDonorCase": "",
                 },
             ],
@@ -397,25 +397,25 @@ class TestGetDonorCasesForUser:
             "reportingData": [
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Jon Snow",
+                    "id": "Jon Snow",
                     "cmA_IsDonorCase": "1",
                     "id": "jonsnow",
                 },
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Arya Stark",
+                    "id": "Arya Stark",
                     "cmA_IsDonorCase": "1",
                     "id": "aryastark",
                 },
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Jon Snow",
+                    "id": "Jon Snow",
                     "cmA_IsDonorCase": "",
                     "id": "jonsnow-3",
                 },
                 {
                     "mainSurveyID": "different-guid",
-                    "cmA_ForWhom": "Jon Snow",
+                    "id": "Jon Snow",
                     "cmA_IsDonorCase": "",
                     "id": "jonsnow-2",
                 },
@@ -442,38 +442,38 @@ class TestGetDonorCasesForUser:
                 # Old donor case model ID
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Jon Snow32",
+                    "id": "Jon Snow32",
                     "cmA_IsDonorCase": "1",
                     "id": "jonsnow32",
                 },
                 # New donor case model ID
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Jon Snow32",
+                    "id": "Jon Snow32",
                     "cmA_IsDonorCase": "1",
                     "id": "1-jonsnow32",
                 },
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Arya Stark",
+                    "id": "Arya Stark",
                     "cmA_IsDonorCase": "1",
                     "id": "aryastark",
                 },
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Jon Snow32ing",
+                    "id": "Jon Snow32ing",
                     "cmA_IsDonorCase": "1",
                     "id": "jonsnow32ing",
                 },
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Jon Snowy",
+                    "id": "Jon Snowy",
                     "cmA_IsDonorCase": "1",
                     "id": "jonsnowy",
                 },
                 {
                     "mainSurveyID": "different-guid",
-                    "cmA_ForWhom": "Jon Snow",
+                    "id": "Jon Snow",
                     "cmA_IsDonorCase": "1",
                     "id": "jonsnow",
                 },
@@ -502,38 +502,38 @@ class TestGetDonorCasesForUser:
                 # Old donor case model ID
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Jon Snow32",
+                    "id": "Jon Snow32",
                     "cmA_IsDonorCase": "1",
                     "id": "1jonsnow32",
                 },
                 # New donor case model ID
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Jon Snow32",
+                    "id": "Jon Snow32",
                     "cmA_IsDonorCase": "1",
                     "id": "1-1jonsnow32",
                 },
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Arya Stark",
+                    "id": "Arya Stark",
                     "cmA_IsDonorCase": "1",
                     "id": "aryastark",
                 },
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Jon Snow32ing",
+                    "id": "Jon Snow32ing",
                     "cmA_IsDonorCase": "1",
                     "id": "jonsnow32ing",
                 },
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Jon Snowy",
+                    "id": "Jon Snowy",
                     "cmA_IsDonorCase": "1",
                     "id": "jonsnowy",
                 },
                 {
                     "mainSurveyID": "different-guid",
-                    "cmA_ForWhom": "Jon Snow",
+                    "id": "Jon Snow",
                     "cmA_IsDonorCase": "1",
                     "id": "jonsnow",
                 },
@@ -561,31 +561,31 @@ class TestGetDonorCasesForUser:
             "reportingData": [
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Jon Snow32",
+                    "id": "Jon Snow32",
                     "cmA_IsDonorCase": "1",
                     "id": "jonsnow32",
                 },
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Arya Stark",
+                    "id": "Arya Stark",
                     "cmA_IsDonorCase": "1",
                     "id": "aryastark",
                 },
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Jon Snowing",
+                    "id": "Jon Snowing",
                     "cmA_IsDonorCase": "1",
                     "id": "jonsnowing",
                 },
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Jon Snowy",
+                    "id": "Jon Snowy",
                     "cmA_IsDonorCase": "",
                     "id": "jonsnowy",
                 },
                 {
                     "mainSurveyID": "7h15-i5-a-gu!d",
-                    "cmA_ForWhom": "Jon Snowy",
+                    "id": "Jon Snowy",
                     "cmA_IsDonorCase": "",
                     "id": "1-jonsnowy",
                 },
@@ -610,13 +610,13 @@ class TestGetDonorCasesForUser:
             "reportingData": [
                 {
                     "mainSurveyID": "different-guid",
-                    "cmA_ForWhom": "Jon Snow",
+                    "id": "Jon Snow",
                     "cmA_IsDonorCase": "1",
                     "id": "jonsnow",
                 },
                 {
                     "mainSurveyID": "different-guid",
-                    "cmA_ForWhom": "Arya Stark",
+                    "id": "Arya Stark",
                     "cmA_IsDonorCase": "1",
                     "id": "aryastark",
                 },
