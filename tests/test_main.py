@@ -745,6 +745,12 @@ class TestMainReissueNewDonorCaseFunction:
                 "serverParks": ["gusty"],
                 "defaultServerPark": "gusty",
             },
+            {
+                "name": "test-user",
+                "role": "IPS Interviewer",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
         ]
         mock_get_donor_cases_for_user.return_value = [
             {"id": "rich", "cmA_ForWhom": "rich"}
@@ -1170,14 +1176,15 @@ class TestMainReissueNewDonorCasesHandleGuidStep:
             error_message,
         ) in caplog.record_tuples
 
+
 class TestMainReissueNewDonorCasesHandleUsersStep:
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
     @mock.patch("services.guid_service.GUIDService.get_guid")
-    @mock.patch("services.user_service.UserService.get_user_by_username")
-    def test_reissue_new_donor_case_returns_message_and_404_status_code_when_the_get_user_by_username_raises_a_blaise_error_exception(
+    @mock.patch("services.user_service.UserService.get_user_by_name")
+    def test_reissue_new_donor_case_returns_message_and_404_status_code_when_the_get_user_by_name_raises_a_blaise_error_exception(
         self,
-        mock_get_user_by_username,
+        mock_get_user_by_name,
         mock_get_guid,
         mock_questionnaire_exists_on_server_park,
         mock_config,
@@ -1192,7 +1199,7 @@ class TestMainReissueNewDonorCasesHandleUsersStep:
         )
         mock_questionnaire_exists_on_server_park.return_value = True
         mock_get_guid.return_value = "m0ck-gu!d"
-        mock_get_user_by_username.side_effect = BlaiseError("There is butter in the ports")
+        mock_get_user_by_name.side_effect = BlaiseError("There is butter in the ports")
 
         # Act
         with caplog.at_level(logging.ERROR):
@@ -1210,10 +1217,10 @@ class TestMainReissueNewDonorCasesHandleUsersStep:
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
     @mock.patch("services.guid_service.GUIDService.get_guid")
-    @mock.patch("services.user_service.UserService.get_user_by_username")
-    def test_reissue_new_donor_case_returns_message_and_500_status_code_when_the_get_users_service_raises_a_users_error_exception(
+    @mock.patch("services.blaise_service.BlaiseService.get_users")
+    def test_reissue_new_donor_case_raises_an_exception_and_returns_message_and_500_status_code_when_specified_user_is_not_found(
         self,
-        mock_get_user_by_username,
+        mock_get_users,
         mock_get_guid,
         mock_questionnaire_exists_on_server_park,
         mock_config,
@@ -1228,7 +1235,7 @@ class TestMainReissueNewDonorCasesHandleUsersStep:
         )
         mock_questionnaire_exists_on_server_park.return_value = True
         mock_get_guid.return_value = "m0ck-gu!d"
-        mock_get_user_by_username.return_value = [
+        mock_get_users.return_value = [
             {
                 "name": "rich",
                 "role": "IPS Field Interviewer",
@@ -1240,7 +1247,7 @@ class TestMainReissueNewDonorCasesHandleUsersStep:
                 "role": "IPS Manager",
                 "serverParks": ["gusty"],
                 "defaultServerPark": "gusty",
-            },  
+            },
         ]
 
         # Act
@@ -1248,7 +1255,7 @@ class TestMainReissueNewDonorCasesHandleUsersStep:
             result = reissue_new_donor_case(mock_request)
 
         # Assert
-        error_message = "Error reissuing IPS donor cases: User random-nonexistent-user not found in server park cma"
+        error_message = "Error reissuing IPS donor cases: Exception caught in get_user_by_name(). Error getting user by username for server park bar: User random-nonexistent-user not found in server park bar"
         assert result == (error_message, 500)
         assert (
             "root",
@@ -1257,14 +1264,12 @@ class TestMainReissueNewDonorCasesHandleUsersStep:
         ) in caplog.record_tuples
 
 
-
-
 class TestMainReissueNewDonorCasesHandleDonorCasesStep:
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
     @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
     @mock.patch("services.guid_service.GUIDService.get_guid")
-    @mock.patch("services.user_service.UserService.get_users_by_role")
+    @mock.patch("services.user_service.UserService.get_user_by_name")
     @mock.patch(
         "services.donor_case_service.DonorCaseService.reissue_new_donor_case_for_user"
     )
@@ -1290,18 +1295,24 @@ class TestMainReissueNewDonorCasesHandleDonorCasesStep:
         mock_get_users.return_value = [
             {
                 "name": "rich",
-                "user": "test-user-1",
+                "role": "DST",
                 "serverParks": ["gusty", "cma"],
                 "defaultServerPark": "gusty",
             },
             {
                 "name": "sarah",
-                "user": "test-user-2",
+                "role": "DST",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "test-user",
+                "role": "IPS Interviewer",
                 "serverParks": ["gusty"],
                 "defaultServerPark": "gusty",
             },
         ]
-        mock_get_donor_cases_for_user.return_value = ["rich"]
+        mock_get_donor_cases_for_user.return_value = ["test-user"]
         mock_reissue_new_donor_case_for_user.side_effect = DonorCaseError(
             "This thing unexpectedly successfully failed"
         )
