@@ -221,7 +221,7 @@ class TestGetExistingDonorCases:
         questionnaire_name = "CMA_Launcher"
         field_data = ["MainSurveyID", "id", "CMA_IsDonorCase"]
         guid = "7bded891-3aa6-41b2-824b-0be514018806"
-        filter = f"MainSurveyID={guid}"
+        filter = f"MainSurveyID='{guid}'"
 
         # Act
         blaise_service.get_existing_donor_cases(guid)
