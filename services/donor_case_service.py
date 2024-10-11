@@ -52,8 +52,6 @@ class DonorCaseService:
             logging.error(error_message)
             raise DonorCaseError(error_message)
 
-        # TODO: To be tested in a sandbox with IPS users and IPS users with multiple donor cases for the same questionnaire
-        # TODO: Update tests or create new tests to cover this
         users_with_existing_donor_cases_excluding_duplicates = []
         for caseID in users_with_existing_donor_cases:
             username = extract_username_from_case_id(caseID)
