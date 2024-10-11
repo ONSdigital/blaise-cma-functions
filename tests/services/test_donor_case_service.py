@@ -313,6 +313,32 @@ class TestCheckAndCreateDonorCaseForUsers:
             "Expected to create 100 donor cases. Only created 1",
         ) in caplog.record_tuples
 
+    def test_filter_duplicate_donor_cases_on_unique_list(self, donor_case_service):
+        # Arrange
+        donor_cases = [
+            "rich",
+            "james",
+            "sarah",
+        ]
+
+        # Act
+        result = donor_case_service.filter_duplicate_donor_cases(donor_cases)
+
+        # Assert
+        assert result == ["rich", "james", "sarah"]
+
+    def test_filter_duplicate_donor_cases_returns_list_of_unique_usernames(
+        self, donor_case_service
+    ):
+        # Arrange
+        donor_cases = ["rich", "rich", "sarah", "james", "sarah"]
+
+        # Act
+        result = donor_case_service.filter_duplicate_donor_cases(donor_cases)
+
+        # Assert
+        assert result == ["rich", "sarah", "james"]
+
 
 class TestReissueNewDonorCaseForUser:
     @mock.patch(

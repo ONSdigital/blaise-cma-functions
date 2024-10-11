@@ -25,6 +25,15 @@ class DonorCaseService:
                 f"Expected to create {expected_number_of_cases_to_create} donor cases. Successfully Created {total_donor_cases_created} donor cases"
             )
 
+    @staticmethod
+    def filter_duplicate_donor_cases(donor_cases: list) -> list:
+        donor_cases_excluding_duplicates = []
+        for case_id in donor_cases:
+            username = extract_username_from_case_id(case_id)
+            if username not in donor_cases_excluding_duplicates:
+                donor_cases_excluding_duplicates.append(username)
+        return donor_cases_excluding_duplicates
+
     def check_and_create_donor_case_for_users(
         self, questionnaire_name: str, guid: str, users_with_role: list
     ) -> None:
@@ -52,11 +61,9 @@ class DonorCaseService:
             logging.error(error_message)
             raise DonorCaseError(error_message)
 
-        users_with_existing_donor_cases_excluding_duplicates = []
-        for caseID in users_with_existing_donor_cases:
-            username = extract_username_from_case_id(caseID)
-            if username not in users_with_existing_donor_cases_excluding_duplicates:
-                users_with_existing_donor_cases_excluding_duplicates.append(username)
+        users_with_existing_donor_cases_excluding_duplicates = (
+            self.filter_duplicate_donor_cases(users_with_existing_donor_cases)
+        )
 
         self.assert_expected_number_of_donor_cases_created(
             expected_number_of_cases_to_create=len(users_with_role)
