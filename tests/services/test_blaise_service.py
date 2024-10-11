@@ -221,13 +221,14 @@ class TestGetExistingDonorCases:
         questionnaire_name = "CMA_Launcher"
         field_data = ["MainSurveyID", "id", "CMA_IsDonorCase"]
         guid = "7bded891-3aa6-41b2-824b-0be514018806"
+        filter = f"MainSurveyID={guid}"
 
         # Act
         blaise_service.get_existing_donor_cases(guid)
 
         # Assert
         _mock_rest_api_client.assert_called_with(
-            server_park, questionnaire_name, field_data
+            server_park, questionnaire_name, field_data, filter
         )
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")

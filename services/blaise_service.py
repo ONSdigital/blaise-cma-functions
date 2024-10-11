@@ -54,6 +54,7 @@ class BlaiseService:
                 self.cma_serverpark_name,
                 self.cma_questionnaire,
                 ["MainSurveyID", "id", "CMA_IsDonorCase"],
+                f"MainSurveyID={guid}",
             )
             return sorted(
                 [
