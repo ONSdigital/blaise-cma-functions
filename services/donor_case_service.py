@@ -28,7 +28,7 @@ class DonorCaseService:
         total_donor_cases_created = 0
         try:
             users_with_existing_donor_cases = (
-                self._blaise_service.get_existing_donor_cases(guid)
+                self._blaise_service.get_all_existing_donor_cases(guid)
             )
             for user in users_with_role:
                 if self.donor_case_does_not_exist(
@@ -59,7 +59,9 @@ class DonorCaseService:
         self, questionnaire_name: str, guid: str, user: str
     ) -> None:
         try:
-            donor_cases = self._blaise_service.get_donor_cases_for_user(guid, user)
+            donor_cases = self._blaise_service.get_existing_donor_cases_for_user(
+                guid, user
+            )
             if len(donor_cases) == 0:
                 error_message = (
                     f"Exception caught in {function_name()}. "
