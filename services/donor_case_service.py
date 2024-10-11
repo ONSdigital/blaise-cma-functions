@@ -5,6 +5,7 @@ from models.donor_case_model import DonorCaseModel
 from services.blaise_service import BlaiseService
 from utilities.custom_exceptions import BlaiseError, DonorCaseError
 from utilities.logging import function_name
+from utilities.regex import extract_username_from_case_id
 
 
 class DonorCaseService:
@@ -20,6 +21,9 @@ class DonorCaseService:
                 f"Expected to create {expected_number_of_cases_to_create} donor cases.  Only created {total_donor_cases_created}"
             )
         else:
+            logging.info(
+                f"Expected to create {expected_number_of_cases_to_create} donor cases."
+            )
             logging.info(f"Created {total_donor_cases_created} donor cases")
 
     def check_and_create_donor_case_for_users(
@@ -49,9 +53,17 @@ class DonorCaseService:
             logging.error(error_message)
             raise DonorCaseError(error_message)
 
+        # TODO: To be tested in a sandbox with IPS users and IPS users with multiple donor cases for the same questionnaire
+        # TODO: Update tests or create new tests to cover this
+        users_with_existing_donor_cases_excluding_duplicates = []
+        for caseID in users_with_existing_donor_cases:
+            username = extract_username_from_case_id(caseID)
+            if username not in users_with_existing_donor_cases_excluding_duplicates:
+                users_with_existing_donor_cases_excluding_duplicates.append(username)
+
         self.assert_expected_number_of_donor_cases_created(
             expected_number_of_cases_to_create=len(users_with_role)
-            - len(users_with_existing_donor_cases),
+            - len(users_with_existing_donor_cases_excluding_duplicates),
             total_donor_cases_created=total_donor_cases_created,
         )
 
