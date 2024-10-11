@@ -18,13 +18,12 @@ class DonorCaseService:
     ):
         if expected_number_of_cases_to_create != total_donor_cases_created:
             logging.error(
-                f"Expected to create {expected_number_of_cases_to_create} donor cases.  Only created {total_donor_cases_created}"
+                f"Expected to create {expected_number_of_cases_to_create} donor cases. Only created {total_donor_cases_created}"
             )
         else:
             logging.info(
-                f"Expected to create {expected_number_of_cases_to_create} donor cases."
+                f"Expected to create {expected_number_of_cases_to_create} donor cases. Successfully Created {total_donor_cases_created} donor cases"
             )
-            logging.info(f"Created {total_donor_cases_created} donor cases")
 
     def check_and_create_donor_case_for_users(
         self, questionnaire_name: str, guid: str, users_with_role: list
