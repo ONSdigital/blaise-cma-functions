@@ -213,7 +213,7 @@ class TestGetUsers:
 
 class TestGetExistingDonorCases:
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-    def test_get_existing_donor_cases_calls_the_rest_api_endpoint_with_the_correct_parameters(
+    def test_get_all_existing_donor_cases_calls_the_rest_api_endpoint_with_the_correct_parameters(
         self, _mock_rest_api_client, blaise_service
     ):
         # Arrange
@@ -224,7 +224,7 @@ class TestGetExistingDonorCases:
         filter = f"MainSurveyID='{guid}'"
 
         # Act
-        blaise_service.get_existing_donor_cases(guid)
+        blaise_service.get_all_existing_donor_cases(guid)
 
         # Assert
         _mock_rest_api_client.assert_called_with(
@@ -232,7 +232,7 @@ class TestGetExistingDonorCases:
         )
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-    def test_get_existing_donor_cases_returns_a_list_of_unique_ids_(
+    def test_get_all_existing_donor_cases_returns_a_list_of_unique_ids_(
         self, _mock_rest_api_client_get_questionnaire_data, blaise_service
     ):
         # Arrange
@@ -265,14 +265,14 @@ class TestGetExistingDonorCases:
         guid = "7bded891-3aa6-41b2-824b-0be514018806"
 
         # Act
-        result = blaise_service.get_existing_donor_cases(guid)
+        result = blaise_service.get_all_existing_donor_cases(guid)
 
         # Assert
         assert len(result) == 2
         assert result == ["james", "rich"]
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-    def test_get_existing_donor_cases_returns_a_list_of_existing_donor_cases_for_the_correct_questionnaire_when_multiple_questionnaires_are_installed(
+    def test_get_all_existing_donor_cases_returns_a_list_of_existing_donor_cases_for_the_correct_questionnaire_when_multiple_questionnaires_are_installed(
         self, _mock_rest_api_client_get_questionnaire_data, blaise_service
     ):
         # Arrange
@@ -305,14 +305,14 @@ class TestGetExistingDonorCases:
         guid = "861ecb9b-4154-4f50-9b47-7fd52c098313"
 
         # Act
-        result = blaise_service.get_existing_donor_cases(guid)
+        result = blaise_service.get_all_existing_donor_cases(guid)
 
         # Assert
         assert len(result) == 1
         assert result == ["cal"]
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-    def test_get_existing_donor_cases_logs_error_and_raises_exception(
+    def test_get_all_existing_donor_cases_logs_error_and_raises_exception(
         self, mock_rest_api_client_get_users, blaise_service, caplog
     ):
         # Arrange
@@ -323,12 +323,13 @@ class TestGetExistingDonorCases:
 
         # Act
         with pytest.raises(BlaiseError) as err:
-            blaise_service.get_existing_donor_cases(guid)
+            blaise_service.get_all_existing_donor_cases(guid)
 
         # Assert
         error_message = (
-            "Exception caught in get_existing_donor_cases(). "
-            "Error getting existing donor cases: Daryl Dixon did not claim this"
+            "Exception caught in get_all_existing_donor_cases(). "
+            "Error getting existing donor cases: Exception caught in get_questionnaire_cases(). "
+            "Error getting questionnaire cases from server park cma: Daryl Dixon did not claim this"
         )
         assert err.value.args[0] == error_message
         assert (
@@ -390,7 +391,7 @@ class TestCreateDonorCaseForUser:
 
 class TestGetDonorCasesForUser:
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-    def test_get_donor_cases_for_user_calls_rest_api_and_returns_correct_cases(
+    def test_get_existing_donor_cases_for_user_calls_rest_api_and_returns_correct_cases(
         self, mock_rest_api_client_get_questionnaire_data, blaise_service
     ):
         # Arrange
@@ -426,7 +427,7 @@ class TestGetDonorCasesForUser:
         user = "jonsnow"
 
         # Act
-        result = blaise_service.get_donor_cases_for_user(guid, user)
+        result = blaise_service.get_existing_donor_cases_for_user(guid, user)
 
         # Assert
         assert len(result) == 1
@@ -434,7 +435,7 @@ class TestGetDonorCasesForUser:
         assert result[0]["cmA_IsDonorCase"] == "1"
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-    def test_get_donor_cases_for_user_returns_donor_cases_for_specified_user_when_the_user_has_a_similar_username_to_other_users(
+    def test_get_existing_donor_cases_for_user_returns_donor_cases_for_specified_user_when_the_user_has_a_similar_username_to_other_users(
         self, mock_rest_api_client_get_questionnaire_data, blaise_service
     ):
         # Arrange
@@ -484,7 +485,7 @@ class TestGetDonorCasesForUser:
         user = "jonsnow32"
 
         # Act
-        result = blaise_service.get_donor_cases_for_user(guid, user)
+        result = blaise_service.get_existing_donor_cases_for_user(guid, user)
 
         # Assert
         assert len(result) == 2
@@ -494,7 +495,7 @@ class TestGetDonorCasesForUser:
         assert result[1]["cmA_IsDonorCase"] == "1"
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-    def test_get_donor_cases_for_user_returns_donor_cases_for_specified_user_when_the_id_begins_with_number(
+    def test_get_existing_donor_cases_for_user_returns_donor_cases_for_specified_user_when_the_id_begins_with_number(
         self, mock_rest_api_client_get_questionnaire_data, blaise_service
     ):
         # Arrange
@@ -544,7 +545,7 @@ class TestGetDonorCasesForUser:
         user = "1jonsnow32"
 
         # Act
-        result = blaise_service.get_donor_cases_for_user(guid, user)
+        result = blaise_service.get_existing_donor_cases_for_user(guid, user)
 
         # Assert
         assert len(result) == 2
@@ -554,7 +555,7 @@ class TestGetDonorCasesForUser:
         assert result[1]["cmA_IsDonorCase"] == "1"
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-    def test_get_donor_cases_for_user_returns_empty_list_when_a_specified_user_has_no_donor_case_and_has_a_similar_username_to_other_users(
+    def test_get_existing_donor_cases_for_user_returns_empty_list_when_a_specified_user_has_no_donor_case_and_has_a_similar_username_to_other_users(
         self, mock_rest_api_client_get_questionnaire_data, blaise_service
     ):
         # Arrange
@@ -596,14 +597,14 @@ class TestGetDonorCasesForUser:
         user = "jonsnow"
 
         # Act
-        result = blaise_service.get_donor_cases_for_user(guid, user)
+        result = blaise_service.get_existing_donor_cases_for_user(guid, user)
 
         # Assert
         assert len(result) == 0
         assert result == []
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-    def test_get_donor_cases_for_user_returns_empty_list_when_no_cases_found_for_a_specific_questionnaire(
+    def test_get_existing_donor_cases_for_user_returns_empty_list_when_no_cases_found_for_a_specific_questionnaire(
         self, mock_rest_api_client_get_questionnaire_data, blaise_service
     ):
         # Arrange
@@ -627,30 +628,32 @@ class TestGetDonorCasesForUser:
         user = "jonsnow"
 
         # Act
-        result = blaise_service.get_donor_cases_for_user(guid, user)
+        result = blaise_service.get_existing_donor_cases_for_user(guid, user)
 
         # Assert
         assert result == []
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
-    def test_get_donor_cases_for_user_logs_error_and_raises_exception(
+    def test_get_existing_donor_cases_for_user_logs_error_and_raises_exception(
         self, mock_rest_api_client_get_questionnaire_data, blaise_service, caplog
     ):
         # Arrange
         mock_rest_api_client_get_questionnaire_data.side_effect = Exception(
             "The Wall has fallen"
         )
+
         guid = "7h15-i5-a-gu!d"
         user = "Jon Snow"
 
         # Act
         with pytest.raises(BlaiseError) as err:
-            blaise_service.get_donor_cases_for_user(guid, user)
+            blaise_service.get_existing_donor_cases_for_user(guid, user)
 
         # Assert
         error_message = (
-            "Exception caught in get_donor_cases_for_user(). "
-            "Error getting existing cases: The Wall has fallen"
+            "Exception caught in get_existing_donor_cases_for_user(). "
+            "Error getting existing cases for user, Jon Snow: Exception caught in get_questionnaire_cases(). "
+            "Error getting questionnaire cases from server park cma: The Wall has fallen"
         )
         assert err.value.args[0] == error_message
         assert (
