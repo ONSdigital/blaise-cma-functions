@@ -84,26 +84,6 @@ class BlaiseService:
             logging.error(error_message)
             raise BlaiseError(error_message)
 
-    def create_donor_case_for_user(self, donor_case_model: DonorCaseModel) -> None:
-        try:
-            self.restapi_client.create_multikey_case(
-                self.cma_serverpark_name,
-                self.cma_questionnaire,
-                donor_case_model.key_names,
-                donor_case_model.key_values,
-                donor_case_model.data_fields,
-            )
-            logging.info(
-                f"Created donor case for user '{donor_case_model.user}' for questionnaire {donor_case_model.questionnaire_name}"
-            )
-        except Exception as e:
-            error_message = (
-                f"Exception caught in {function_name()}. "
-                f"Error creating donor case for user '{donor_case_model.user}': {e}"
-            )
-            logging.error(error_message)
-            raise BlaiseError(error_message)
-
     def get_existing_donor_cases_for_user(
         self, guid: str, user: str
     ) -> list[dict[str, Any]]:
@@ -124,6 +104,26 @@ class BlaiseService:
             error_message = (
                 f"Exception caught in {function_name()}. "
                 f"Error getting existing cases for user, {user}: {e}"
+            )
+            logging.error(error_message)
+            raise BlaiseError(error_message)
+
+    def create_donor_case_for_user(self, donor_case_model: DonorCaseModel) -> None:
+        try:
+            self.restapi_client.create_multikey_case(
+                self.cma_serverpark_name,
+                self.cma_questionnaire,
+                donor_case_model.key_names,
+                donor_case_model.key_values,
+                donor_case_model.data_fields,
+            )
+            logging.info(
+                f"Created donor case for user '{donor_case_model.user}' for questionnaire {donor_case_model.questionnaire_name}"
+            )
+        except Exception as e:
+            error_message = (
+                f"Exception caught in {function_name()}. "
+                f"Error creating donor case for user '{donor_case_model.user}': {e}"
             )
             logging.error(error_message)
             raise BlaiseError(error_message)
