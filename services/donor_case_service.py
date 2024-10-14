@@ -5,6 +5,7 @@ from models.donor_case_model import DonorCaseModel
 from services.blaise_service import BlaiseService
 from utilities.custom_exceptions import BlaiseError, DonorCaseError
 from utilities.logging import function_name
+from utilities.regex import extract_username_from_case_id
 
 
 class DonorCaseService:
@@ -17,10 +18,21 @@ class DonorCaseService:
     ):
         if expected_number_of_cases_to_create != total_donor_cases_created:
             logging.error(
-                f"Expected to create {expected_number_of_cases_to_create} donor cases.  Only created {total_donor_cases_created}"
+                f"Expected to create {expected_number_of_cases_to_create} donor cases. Only created {total_donor_cases_created}"
             )
         else:
-            logging.info(f"Created {total_donor_cases_created} donor cases")
+            logging.info(
+                f"Expected to create {expected_number_of_cases_to_create} donor cases. Successfully Created {total_donor_cases_created} donor cases"
+            )
+
+    @staticmethod
+    def filter_duplicate_donor_cases(donor_cases: list) -> list:
+        donor_cases_excluding_duplicates = []
+        for case_id in donor_cases:
+            username = extract_username_from_case_id(case_id)
+            if username not in donor_cases_excluding_duplicates:
+                donor_cases_excluding_duplicates.append(username)
+        return donor_cases_excluding_duplicates
 
     def check_and_create_donor_case_for_users(
         self, questionnaire_name: str, guid: str, users_with_role: list
@@ -28,7 +40,7 @@ class DonorCaseService:
         total_donor_cases_created = 0
         try:
             users_with_existing_donor_cases = (
-                self._blaise_service.get_existing_donor_cases(guid)
+                self._blaise_service.get_all_existing_donor_cases(guid)
             )
             for user in users_with_role:
                 if self.donor_case_does_not_exist(
@@ -49,9 +61,13 @@ class DonorCaseService:
             logging.error(error_message)
             raise DonorCaseError(error_message)
 
+        users_with_existing_donor_cases_excluding_duplicates = (
+            self.filter_duplicate_donor_cases(users_with_existing_donor_cases)
+        )
+
         self.assert_expected_number_of_donor_cases_created(
             expected_number_of_cases_to_create=len(users_with_role)
-            - len(users_with_existing_donor_cases),
+            - len(users_with_existing_donor_cases_excluding_duplicates),
             total_donor_cases_created=total_donor_cases_created,
         )
 
@@ -59,7 +75,9 @@ class DonorCaseService:
         self, questionnaire_name: str, guid: str, user: str
     ) -> None:
         try:
-            donor_cases = self._blaise_service.get_donor_cases_for_user(guid, user)
+            donor_cases = self._blaise_service.get_existing_donor_cases_for_user(
+                guid, user
+            )
             if len(donor_cases) == 0:
                 error_message = (
                     f"Exception caught in {function_name()}. "
