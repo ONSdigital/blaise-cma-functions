@@ -138,12 +138,12 @@ class TestDonorCaseDoesNotExist:
 
 
 class TestCheckAndCreateDonorCaseForUsers:
-    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
-    def test_check_and_create_donor_case_for_users_raises_blaise_error_exception_when_get_existing_donor_cases_fails_with_blaise_error(
-        self, mock_get_existing_donor_cases, donor_case_service
+    @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
+    def test_check_and_create_donor_case_for_users_raises_blaise_error_exception_when_get_all_existing_donor_cases_fails_with_blaise_error(
+        self, mock_get_all_existing_donor_cases, donor_case_service
     ):
         # arrange
-        mock_get_existing_donor_cases.side_effect = BlaiseError(
+        mock_get_all_existing_donor_cases.side_effect = BlaiseError(
             "I'm running out of error messages"
         )
 
@@ -160,19 +160,19 @@ class TestCheckAndCreateDonorCaseForUsers:
         # assert
         assert err.value.args[0] == "I'm running out of error messages"
 
-    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
+    @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
     @mock.patch(
         "services.donor_case_service.DonorCaseService.donor_case_does_not_exist"
     )
     def test_check_and_create_donor_case_for_users_raises_donor_case_error_exception_when_donor_case_does_not_exist_fails_with_donor_case_exception(
         self,
         mock_donor_case_does_not_exist,
-        mock_get_existing_donor_cases,
+        mock_get_all_existing_donor_cases,
         donor_case_service,
         caplog,
     ):
         # arrange
-        mock_get_existing_donor_cases.return_value = ["james", "rich"]
+        mock_get_all_existing_donor_cases.return_value = ["james", "rich"]
         mock_donor_case_does_not_exist.side_effect = DonorCaseError(
             "You sat in Sheldon's spot"
         )
@@ -190,7 +190,7 @@ class TestCheckAndCreateDonorCaseForUsers:
         # assert
         assert err.value.args[0] == "You sat in Sheldon's spot"
 
-    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
+    @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
     @mock.patch(
         "services.donor_case_service.DonorCaseService.donor_case_does_not_exist"
     )
@@ -199,12 +199,12 @@ class TestCheckAndCreateDonorCaseForUsers:
         self,
         mock_create_donor_case_for_user,
         mock_donor_case_does_not_exist,
-        mock_get_existing_donor_cases,
+        mock_get_all_existing_donor_cases,
         donor_case_service,
         caplog,
     ):
         # arrange
-        mock_get_existing_donor_cases.return_value = ["james", "rich"]
+        mock_get_all_existing_donor_cases.return_value = ["james", "rich"]
         mock_donor_case_does_not_exist.return_value = True
         mock_create_donor_case_for_user.side_effect = BlaiseError(
             "Rich has been renaming variables"
@@ -224,7 +224,7 @@ class TestCheckAndCreateDonorCaseForUsers:
         assert err.value.args[0] == "Rich has been renaming variables"
 
     @mock.patch("services.donor_case_service.DonorCaseModel")
-    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
+    @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
     @mock.patch(
         "services.donor_case_service.DonorCaseService.donor_case_does_not_exist"
     )
@@ -233,13 +233,13 @@ class TestCheckAndCreateDonorCaseForUsers:
         self,
         mock_create_donor_case_for_user,
         mock_donor_case_does_not_exist,
-        mock_get_existing_donor_cases,
+        mock_get_all_existing_donor_cases,
         mock_donor_case_model,
         donor_case_service,
         caplog,
     ):
         # arrange
-        mock_get_existing_donor_cases.return_value = ["james", "rich"]
+        mock_get_all_existing_donor_cases.return_value = ["james", "rich"]
         mock_donor_case_does_not_exist.return_value = True
 
         questionnaire_name = "IPS2406a"
@@ -257,7 +257,7 @@ class TestCheckAndCreateDonorCaseForUsers:
         )
 
     @mock.patch("services.donor_case_service.DonorCaseModel")
-    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
+    @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
     @mock.patch(
         "services.donor_case_service.DonorCaseService.donor_case_does_not_exist"
     )
@@ -270,13 +270,13 @@ class TestCheckAndCreateDonorCaseForUsers:
         mock_assert_expected_number_of_donor_cases_created,
         _mock_create_donor_case_for_user,
         mock_donor_case_does_not_exist,
-        mock_get_existing_donor_cases,
+        mock_get_all_existing_donor_cases,
         _mock_donor_case_model,
         donor_case_service,
         caplog,
     ):
         # arrange
-        mock_get_existing_donor_cases.return_value = ["sarah"]
+        mock_get_all_existing_donor_cases.return_value = ["sarah"]
         mock_donor_case_does_not_exist.side_effect = [True, True, False, True]
         users_with_role = [
             "james",  # needs a donor case
@@ -310,17 +310,45 @@ class TestCheckAndCreateDonorCaseForUsers:
         assert (
             "root",
             logging.ERROR,
-            "Expected to create 100 donor cases.  Only created 1",
+            "Expected to create 100 donor cases. Only created 1",
         ) in caplog.record_tuples
+
+    def test_filter_duplicate_donor_cases_on_unique_list(self, donor_case_service):
+        # Arrange
+        donor_cases = [
+            "rich",
+            "james",
+            "sarah",
+        ]
+
+        # Act
+        result = donor_case_service.filter_duplicate_donor_cases(donor_cases)
+
+        # Assert
+        assert result == ["rich", "james", "sarah"]
+
+    def test_filter_duplicate_donor_cases_returns_list_of_unique_usernames(
+        self, donor_case_service
+    ):
+        # Arrange
+        donor_cases = ["rich", "rich", "sarah", "james", "sarah"]
+
+        # Act
+        result = donor_case_service.filter_duplicate_donor_cases(donor_cases)
+
+        # Assert
+        assert result == ["rich", "sarah", "james"]
 
 
 class TestReissueNewDonorCaseForUser:
-    @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
+    @mock.patch(
+        "services.blaise_service.BlaiseService.get_existing_donor_cases_for_user"
+    )
     @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
     def test_reissue_new_donor_case_for_user_creates_new_case_with_incremented_id(
         self,
         mock_create_donor_case_for_user,
-        mock_get_donor_cases_for_user,
+        mock_get_existing_donor_cases_for_user,
         donor_case_service,
         caplog,
     ):
@@ -328,7 +356,7 @@ class TestReissueNewDonorCaseForUser:
         questionnaire_name = "IPS2406a"
         guid = "7bded891-3aa6-41b2-824b-0be514018806"
         user = "test-user"
-        mock_get_donor_cases_for_user.return_value = [
+        mock_get_existing_donor_cases_for_user.return_value = [
             {"id": "test-user"},
             {"id": "1-test-user"},
         ]
@@ -351,17 +379,19 @@ class TestReissueNewDonorCaseForUser:
             f"New Donor case created for user {user} with ID of 2-test-user",
         ) in caplog.record_tuples
 
-    @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
+    @mock.patch(
+        "services.blaise_service.BlaiseService.get_existing_donor_cases_for_user"
+    )
     def test_reissue_new_donor_case_for_user_raises_exception_when_no_existing_case(
         self,
-        mock_get_donor_cases_for_user,
+        mock_get_existing_donor_cases_for_user,
         donor_case_service,
     ):
         # Arrange
         questionnaire_name = "IPS2406a"
         guid = "7bded891-3aa6-41b2-824b-0be514018806"
         user = "test-user"
-        mock_get_donor_cases_for_user.return_value = []
+        mock_get_existing_donor_cases_for_user.return_value = []
 
         # Act & Assert
         with pytest.raises(DonorCaseError) as err:
@@ -374,14 +404,16 @@ class TestReissueNewDonorCaseForUser:
             == "Exception caught in reissue_new_donor_case_for_user(). Cannot reissue a new donor case. User has no existing donor cases."
         )
 
-    @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
+    @mock.patch(
+        "services.blaise_service.BlaiseService.get_existing_donor_cases_for_user"
+    )
     def test_reissue_new_donor_case_for_user_raises_blaise_error_when_get_donor_cases_fails(
         self,
-        mock_get_donor_cases_for_user,
+        mock_get_existing_donor_cases_for_user,
         donor_case_service,
     ):
         # Arrange
-        mock_get_donor_cases_for_user.side_effect = BlaiseError(
+        mock_get_existing_donor_cases_for_user.side_effect = BlaiseError(
             "Failed to fetch donor cases"
         )
         questionnaire_name = "IPS2406a"
@@ -396,16 +428,18 @@ class TestReissueNewDonorCaseForUser:
 
         assert err.value.args[0] == "Failed to fetch donor cases"
 
-    @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
+    @mock.patch(
+        "services.blaise_service.BlaiseService.get_existing_donor_cases_for_user"
+    )
     @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
     def test_reissue_new_donor_case_for_user_raises_donor_case_error_when_create_donor_case_fails(
         self,
         mock_create_donor_case_for_user,
-        mock_get_donor_cases_for_user,
+        mock_get_existing_donor_cases_for_user,
         donor_case_service,
     ):
         # Arrange
-        mock_get_donor_cases_for_user.return_value = [{"id": "donor_case_1"}]
+        mock_get_existing_donor_cases_for_user.return_value = [{"id": "donor_case_1"}]
         mock_create_donor_case_for_user.side_effect = DonorCaseError(
             "Failed to create donor case"
         )
@@ -421,16 +455,18 @@ class TestReissueNewDonorCaseForUser:
 
         assert err.value.args[0] == "Failed to create donor case"
 
-    @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
+    @mock.patch(
+        "services.blaise_service.BlaiseService.get_existing_donor_cases_for_user"
+    )
     @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
     def test_reissue_new_donor_case_for_user_raises_generic_exception_when_an_unexpected_error_occurs(
         self,
         mock_create_donor_case_for_user,
-        mock_get_donor_cases_for_user,
+        mock_get_existing_donor_cases_for_user,
         donor_case_service,
     ):
         # Arrange
-        mock_get_donor_cases_for_user.return_value = [{"id": "donor_case_1"}]
+        mock_get_existing_donor_cases_for_user.return_value = [{"id": "donor_case_1"}]
         mock_create_donor_case_for_user.side_effect = Exception(
             "Unexpected error occurred"
         )

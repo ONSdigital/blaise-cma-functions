@@ -36,14 +36,14 @@ class TestMainCreateDonorCaseFunction:
     )
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
-    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
+    @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch("blaise_restapi.Client")
     def test_create_donor_case_returns_done_and_200_status_code_for_valid_request(
         self,
         mock_client,
         mock_config,
-        mock_get_existing_donor_cases,
+        mock_get_all_existing_donor_cases,
         mock_get_users,
         mock_get_questionnaire,
         role,
@@ -95,7 +95,7 @@ class TestMainCreateDonorCaseFunction:
                 "defaultServerPark": "gusty",
             },
         ]
-        mock_get_existing_donor_cases.return_value = ["rich"]
+        mock_get_all_existing_donor_cases.return_value = ["rich"]
 
         # Act
         response, status_code = create_donor_cases(mock_request)
@@ -109,12 +109,12 @@ class TestMainCreateDonorCasesHandleRequestStep:
 
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
-    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
+    @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
     @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
     def test_create_donor_case_is_called_the_correct_number_of_times_with_the_correct_information(
         self,
         mock_create_donor_case_for_user,
-        mock_get_existing_donor_cases,
+        mock_get_all_existing_donor_cases,
         mock_get_users,
         mock_get_questionnaire,
     ):
@@ -151,7 +151,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
                 "defaultServerPark": "gusty",
             },
         ]
-        mock_get_existing_donor_cases.return_value = ["rich"]
+        mock_get_all_existing_donor_cases.return_value = ["rich"]
         mock_donor_case_model = DonorCaseModel(
             "rich", "LMS2309_GO1", "25615bf2-f331-47ba-9d05-6659a513a1f2"
         )
@@ -694,14 +694,16 @@ class TestMainCreateDonorCasesHandleDonorCasesStep:
 class TestMainReissueNewDonorCaseFunction:
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
-    @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
+    @mock.patch(
+        "services.blaise_service.BlaiseService.get_existing_donor_cases_for_user"
+    )
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch("blaise_restapi.Client")
     def test_reissue_new_donor_case_returns_done_and_200_status_code_for_valid_request(
         self,
         mock_client,
         mock_config,
-        mock_get_donor_cases_for_user,
+        mock_get_existing_donor_cases_for_user,
         mock_get_users,
         mock_get_questionnaire,
     ):
@@ -752,7 +754,7 @@ class TestMainReissueNewDonorCaseFunction:
                 "defaultServerPark": "gusty",
             },
         ]
-        mock_get_donor_cases_for_user.return_value = [
+        mock_get_existing_donor_cases_for_user.return_value = [
             {"id": "rich", "cmA_ForWhom": "rich"}
         ]
 
@@ -768,12 +770,12 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
 
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
-    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases")
+    @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
     @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
     def test_reissue_new_donor_case_is_called_the_correct_number_of_times_with_the_correct_information(
         self,
         mock_create_donor_case_for_user,
-        mock_get_existing_donor_cases,
+        mock_get_all_existing_donor_cases,
         mock_get_users,
         mock_get_questionnaire,
     ):
@@ -810,7 +812,7 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
                 "defaultServerPark": "gusty",
             },
         ]
-        mock_get_existing_donor_cases.return_value = ["rich"]
+        mock_get_all_existing_donor_cases.return_value = ["rich"]
         mock_donor_case_model = DonorCaseModel(
             "rich", "LMS2309_GO1", "25615bf2-f331-47ba-9d05-6659a513a1f2"
         )
@@ -1267,7 +1269,9 @@ class TestMainReissueNewDonorCasesHandleUsersStep:
 class TestMainReissueNewDonorCasesHandleDonorCasesStep:
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
-    @mock.patch("services.blaise_service.BlaiseService.get_donor_cases_for_user")
+    @mock.patch(
+        "services.blaise_service.BlaiseService.get_existing_donor_cases_for_user"
+    )
     @mock.patch("services.guid_service.GUIDService.get_guid")
     @mock.patch("services.user_service.UserService.get_user_by_name")
     @mock.patch(
@@ -1276,7 +1280,7 @@ class TestMainReissueNewDonorCasesHandleDonorCasesStep:
     def test_reissue_new_donor_case_returns_message_and_500_status_code_when_the_reissue_new_donor_case_for_user_raises_an_exception(
         self,
         mock_reissue_new_donor_case_for_user,
-        mock_get_donor_cases_for_user,
+        mock_get_existing_donor_cases_for_user,
         mock_get_users,
         mock_get_guid,
         mock_questionnaire_exists_on_server_park,
@@ -1312,7 +1316,7 @@ class TestMainReissueNewDonorCasesHandleDonorCasesStep:
                 "defaultServerPark": "gusty",
             },
         ]
-        mock_get_donor_cases_for_user.return_value = ["test-user"]
+        mock_get_existing_donor_cases_for_user.return_value = ["test-user"]
         mock_reissue_new_donor_case_for_user.side_effect = DonorCaseError(
             "This thing unexpectedly successfully failed"
         )
