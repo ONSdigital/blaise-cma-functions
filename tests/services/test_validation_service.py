@@ -52,7 +52,7 @@ class TestGetValidRequestValues:
         "role, expected_role",
         [
             ("IPS Manager", "IPS Manager"),
-            ("IPS Pilot", "IPS Pilot"),
+            ("IPS Pilot Interviewer", "IPS Pilot Interviewer"),
         ],
     )
     def test_get_valid_request_values_returns_questionnaire_name_and_role_when_given_a_valid_request(
@@ -272,7 +272,7 @@ class TestGetValidRequestValues:
         # assert
         error_message = (
             f"{role} is not a valid role. "
-            f"Please choose one of the following roles: ['IPS Manager', 'IPS Field Interviewer', 'IPS Pilot']"
+            f"Please choose one of the following roles: ['IPS Manager', 'IPS Field Interviewer', 'IPS Pilot Interviewer']"
         )
         assert err.value.args[0] == error_message
         assert (

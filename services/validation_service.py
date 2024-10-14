@@ -93,7 +93,7 @@ class ValidationService:
             raise RequestError(error_message)
 
     def validate_role(self):
-        valid_roles = ["IPS Manager", "IPS Field Interviewer", "IPS Pilot"]
+        valid_roles = ["IPS Manager", "IPS Field Interviewer", "IPS Pilot Interviewer"]
         if self.request_json["role"] not in valid_roles:
             error_message = (
                 f"{self.request_json['role']} is not a valid role. "
