@@ -48,13 +48,20 @@ class MockRequest:
 
 
 class TestGetValidRequestValues:
+    @pytest.mark.parametrize(
+        "role",
+        [
+            "IPS Manager",
+            "IPS Pilot",
+        ],
+    )
     def test_get_valid_request_values_returns_questionnaire_name_and_role_when_given_a_valid_request(
-        self,
+        self, role
     ):
         # arrange
         validation_service = ValidationService()
         mock_request = flask.Request.from_values(
-            json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+            json={"questionnaire_name": "IPS2402a", "role": role}
         )
 
         # act
