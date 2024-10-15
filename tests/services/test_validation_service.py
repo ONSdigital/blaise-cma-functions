@@ -286,6 +286,7 @@ class TestGetValidRequestValues:
         [
             "IPS Manager",
             "IPS Field Interviewer",
+            "IPS Pilot Interviewer",
         ],
     )
     def test_get_valid_request_values_does_not_log_and_raise_validation_error_exception_when_role_is_valid(
