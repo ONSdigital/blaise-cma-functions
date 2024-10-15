@@ -22,7 +22,7 @@ class DonorCaseService:
             )
         else:
             logging.info(
-                f"Expected to create {expected_number_of_cases_to_create} donor cases. Successfully Created {total_donor_cases_created} donor cases"
+                f"Expected to create {expected_number_of_cases_to_create} donor cases. Successfully created {total_donor_cases_created} donor cases"
             )
 
     @staticmethod
