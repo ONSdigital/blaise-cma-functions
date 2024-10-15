@@ -17,7 +17,7 @@ class DonorCaseService:
         expected_number_of_cases_to_create: int, total_donor_cases_created: int
     ):
         if expected_number_of_cases_to_create != total_donor_cases_created:
-            logging.error(
+            logging.info(
                 f"Expected to create {expected_number_of_cases_to_create} donor cases. Only created {total_donor_cases_created}"
             )
         else:

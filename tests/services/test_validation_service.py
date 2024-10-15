@@ -48,13 +48,20 @@ class MockRequest:
 
 
 class TestGetValidRequestValues:
+    @pytest.mark.parametrize(
+        "role, expected_role",
+        [
+            ("IPS Manager", "IPS Manager"),
+            ("IPS Pilot Interviewer", "IPS Pilot Interviewer"),
+        ],
+    )
     def test_get_valid_request_values_returns_questionnaire_name_and_role_when_given_a_valid_request(
-        self,
+        self, role, expected_role
     ):
         # arrange
         validation_service = ValidationService()
         mock_request = flask.Request.from_values(
-            json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+            json={"questionnaire_name": "IPS2402a", "role": role}
         )
 
         # act
@@ -64,7 +71,7 @@ class TestGetValidRequestValues:
 
         # assert
         assert result[0] == "IPS2402a"
-        assert result[1] == "IPS Manager"
+        assert result[1] == expected_role
 
     def test_get_valid_request_values_does_not_raise_an_exception_when_given_a_valid_request(
         self,
@@ -265,7 +272,7 @@ class TestGetValidRequestValues:
         # assert
         error_message = (
             f"{role} is not a valid role. "
-            f"Please choose one of the following roles: ['IPS Manager', 'IPS Field Interviewer']"
+            f"Please choose one of the following roles: ['IPS Manager', 'IPS Field Interviewer', 'IPS Pilot Interviewer']"
         )
         assert err.value.args[0] == error_message
         assert (
@@ -279,6 +286,7 @@ class TestGetValidRequestValues:
         [
             "IPS Manager",
             "IPS Field Interviewer",
+            "IPS Pilot Interviewer",
         ],
     )
     def test_get_valid_request_values_does_not_log_and_raise_validation_error_exception_when_role_is_valid(

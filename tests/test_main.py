@@ -32,6 +32,7 @@ class TestMainCreateDonorCaseFunction:
         [
             ("IPS Field Interviewer"),
             ("IPS Manager"),
+            ("IPS Pilot Interviewer"),
         ],
     )
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
@@ -91,6 +92,12 @@ class TestMainCreateDonorCaseFunction:
             {
                 "name": "salleh",
                 "role": "IPS Manager",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "michaelscarn",
+                "role": "IPS Pilot Interviewer",
                 "serverParks": ["gusty"],
                 "defaultServerPark": "gusty",
             },
