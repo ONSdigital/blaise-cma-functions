@@ -17,12 +17,12 @@ class DonorCaseService:
         expected_number_of_cases_to_create: int, total_donor_cases_created: int
     ):
         if expected_number_of_cases_to_create != total_donor_cases_created:
-            logging.error(
+            logging.info(
                 f"Expected to create {expected_number_of_cases_to_create} donor cases. Only created {total_donor_cases_created}"
             )
         else:
             logging.info(
-                f"Expected to create {expected_number_of_cases_to_create} donor cases. Successfully created {total_donor_cases_created} donor cases"
+                f"Expected to create {expected_number_of_cases_to_create} donor cases. Successfully Created {total_donor_cases_created} donor cases"
             )
 
     @staticmethod
@@ -61,15 +61,15 @@ class DonorCaseService:
             logging.error(error_message)
             raise DonorCaseError(error_message)
 
-        # users_with_existing_donor_cases_excluding_duplicates = (
-        #     self.filter_duplicate_donor_cases(users_with_existing_donor_cases)
-        # )
+        users_with_existing_donor_cases_excluding_duplicates = (
+            self.filter_duplicate_donor_cases(users_with_existing_donor_cases)
+        )
 
-        # self.assert_expected_number_of_donor_cases_created(
-        #     expected_number_of_cases_to_create=len(users_with_role)
-        #     - len(users_with_existing_donor_cases_excluding_duplicates),
-        #     total_donor_cases_created=total_donor_cases_created,
-        # )
+        self.assert_expected_number_of_donor_cases_created(
+            expected_number_of_cases_to_create=len(users_with_role)
+            - len(users_with_existing_donor_cases_excluding_duplicates),
+            total_donor_cases_created=total_donor_cases_created,
+        )
 
     def reissue_new_donor_case_for_user(
         self, questionnaire_name: str, guid: str, user: str
