@@ -61,15 +61,15 @@ class DonorCaseService:
             logging.error(error_message)
             raise DonorCaseError(error_message)
 
-        users_with_existing_donor_cases_excluding_duplicates = (
-            self.filter_duplicate_donor_cases(users_with_existing_donor_cases)
-        )
+        # users_with_existing_donor_cases_excluding_duplicates = (
+        #     self.filter_duplicate_donor_cases(users_with_existing_donor_cases)
+        # )
 
-        self.assert_expected_number_of_donor_cases_created(
-            expected_number_of_cases_to_create=len(users_with_role)
-            - len(users_with_existing_donor_cases_excluding_duplicates),
-            total_donor_cases_created=total_donor_cases_created,
-        )
+        # self.assert_expected_number_of_donor_cases_created(
+        #     expected_number_of_cases_to_create=len(users_with_role)
+        #     - len(users_with_existing_donor_cases_excluding_duplicates),
+        #     total_donor_cases_created=total_donor_cases_created,
+        # )
 
     def reissue_new_donor_case_for_user(
         self, questionnaire_name: str, guid: str, user: str

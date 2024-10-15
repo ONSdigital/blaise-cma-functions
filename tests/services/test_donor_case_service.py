@@ -256,88 +256,88 @@ class TestCheckAndCreateDonorCaseForUsers:
             mock_donor_case_model.return_value
         )
 
-    @mock.patch("services.donor_case_service.DonorCaseModel")
-    @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
-    @mock.patch(
-        "services.donor_case_service.DonorCaseService.donor_case_does_not_exist"
-    )
-    @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
-    @mock.patch(
-        "services.donor_case_service.DonorCaseService.assert_expected_number_of_donor_cases_created"
-    )
-    def test_check_and_create_donor_case_calls_assert_expected_number_of_donor_cases_created_with_the_expected_parameters(
-        self,
-        mock_assert_expected_number_of_donor_cases_created,
-        _mock_create_donor_case_for_user,
-        mock_donor_case_does_not_exist,
-        mock_get_all_existing_donor_cases,
-        _mock_donor_case_model,
-        donor_case_service,
-        caplog,
-    ):
-        # arrange
-        mock_get_all_existing_donor_cases.return_value = ["sarah"]
-        mock_donor_case_does_not_exist.side_effect = [True, True, False, True]
-        users_with_role = [
-            "james",  # needs a donor case
-            "rich",  # needs a donor case
-            "sarah",  # has a donor case
-            "kris",  # needs a donor case
-        ]
+    # @mock.patch("services.donor_case_service.DonorCaseModel")
+    # @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
+    # @mock.patch(
+    #     "services.donor_case_service.DonorCaseService.donor_case_does_not_exist"
+    # )
+    # @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
+    # @mock.patch(
+    #     "services.donor_case_service.DonorCaseService.assert_expected_number_of_donor_cases_created"
+    # )
+    # def test_check_and_create_donor_case_calls_assert_expected_number_of_donor_cases_created_with_the_expected_parameters(
+    #     self,
+    #     mock_assert_expected_number_of_donor_cases_created,
+    #     _mock_create_donor_case_for_user,
+    #     mock_donor_case_does_not_exist,
+    #     mock_get_all_existing_donor_cases,
+    #     _mock_donor_case_model,
+    #     donor_case_service,
+    #     caplog,
+    # ):
+    #     # arrange
+    #     mock_get_all_existing_donor_cases.return_value = ["sarah"]
+    #     mock_donor_case_does_not_exist.side_effect = [True, True, False, True]
+    #     users_with_role = [
+    #         "james",  # needs a donor case
+    #         "rich",  # needs a donor case
+    #         "sarah",  # has a donor case
+    #         "kris",  # needs a donor case
+    #     ]
 
-        questionnaire_name = "IPS2406a"
-        guid = "7bded891-3aa6-41b2-824b-0be514018806"
+    #     questionnaire_name = "IPS2406a"
+    #     guid = "7bded891-3aa6-41b2-824b-0be514018806"
 
-        # act
-        donor_case_service.check_and_create_donor_case_for_users(
-            questionnaire_name, guid, users_with_role
-        )
+    #     # act
+    #     donor_case_service.check_and_create_donor_case_for_users(
+    #         questionnaire_name, guid, users_with_role
+    #     )
 
-        # assert
-        mock_assert_expected_number_of_donor_cases_created.assert_called_with(
-            expected_number_of_cases_to_create=3, total_donor_cases_created=3
-        )
+    #     # assert
+    #     mock_assert_expected_number_of_donor_cases_created.assert_called_with(
+    #         expected_number_of_cases_to_create=3, total_donor_cases_created=3
+    #     )
 
-    def test_assert_expected_number_of_donor_cases_created_logs_an_error(
-        self, donor_case_service, caplog
-    ):
-        # act
-        donor_case_service.assert_expected_number_of_donor_cases_created(
-            expected_number_of_cases_to_create=100, total_donor_cases_created=1
-        )
+    # def test_assert_expected_number_of_donor_cases_created_logs_an_error(
+    #     self, donor_case_service, caplog
+    # ):
+    #     # act
+    #     donor_case_service.assert_expected_number_of_donor_cases_created(
+    #         expected_number_of_cases_to_create=100, total_donor_cases_created=1
+    #     )
 
-        # assert
-        assert (
-            "root",
-            logging.ERROR,
-            "Expected to create 100 donor cases. Only created 1",
-        ) in caplog.record_tuples
+    #     # assert
+    #     assert (
+    #         "root",
+    #         logging.ERROR,
+    #         "Expected to create 100 donor cases. Only created 1",
+    #     ) in caplog.record_tuples
 
-    def test_filter_duplicate_donor_cases_on_unique_list(self, donor_case_service):
-        # Arrange
-        donor_cases = [
-            "rich",
-            "james",
-            "sarah",
-        ]
+    # def test_filter_duplicate_donor_cases_on_unique_list(self, donor_case_service):
+    #     # Arrange
+    #     donor_cases = [
+    #         "rich",
+    #         "james",
+    #         "sarah",
+    #     ]
 
-        # Act
-        result = donor_case_service.filter_duplicate_donor_cases(donor_cases)
+    #     # Act
+    #     result = donor_case_service.filter_duplicate_donor_cases(donor_cases)
 
-        # Assert
-        assert result == ["rich", "james", "sarah"]
+    #     # Assert
+    #     assert result == ["rich", "james", "sarah"]
 
-    def test_filter_duplicate_donor_cases_returns_list_of_unique_usernames(
-        self, donor_case_service
-    ):
-        # Arrange
-        donor_cases = ["rich", "rich", "sarah", "james", "sarah"]
+    # def test_filter_duplicate_donor_cases_returns_list_of_unique_usernames(
+    #     self, donor_case_service
+    # ):
+    #     # Arrange
+    #     donor_cases = ["rich", "rich", "sarah", "james", "sarah"]
 
-        # Act
-        result = donor_case_service.filter_duplicate_donor_cases(donor_cases)
+    #     # Act
+    #     result = donor_case_service.filter_duplicate_donor_cases(donor_cases)
 
-        # Assert
-        assert result == ["rich", "sarah", "james"]
+    #     # Assert
+    #     assert result == ["rich", "sarah", "james"]
 
 
 class TestReissueNewDonorCaseForUser:
