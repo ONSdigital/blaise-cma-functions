@@ -331,7 +331,7 @@ class TestCheckAndCreateDonorCaseForUsers:
         self, donor_case_service
     ):
         # Arrange
-        donor_cases = ["rich", "rich", "sarah", "james", "sarah"]
+        donor_cases = ["rich", "1-rich", "sarah", "james", "sarah"]
 
         # Act
         result = donor_case_service.filter_duplicate_donor_cases(donor_cases)
