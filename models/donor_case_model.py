@@ -56,7 +56,10 @@ class DonorCaseModel:
         pattern = r"([A-Za-z]+)(\d{2})(\d{2})"
         match = re.match(pattern, self.questionnaire_name)
         if match:
-            return datetime.strptime(match.group(3), "%m").strftime("%B")
+            month_str = match.group(3)
+            if month_str == "00":
+                return "Pilot Month"
+            return datetime.strptime(month_str, "%m").strftime("%B")
 
     def get_tla(self):
         pattern = r"^[a-zA-Z]{3}"
