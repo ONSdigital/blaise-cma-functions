@@ -16,6 +16,21 @@ def test_get_questionnaire_period_info(donor_case_model_inputs):
     assert donor_case_model.tla == "IPS"
     assert donor_case_model.last_day_of_month == "30-06-2023"
 
+def test_get_questionnaire_period_info_on_ips_pilot_questionnaire(donor_case_model_inputs):
+    # Act
+    donor_case_model = DonorCaseModel(
+        donor_case_model_inputs.user,
+        "IPS2500A",
+        donor_case_model_inputs.guid,
+    )
+
+    # Assert
+    assert donor_case_model.full_date == "2500"
+    assert donor_case_model.year == "2025"
+    assert donor_case_model.month == "January"
+    assert donor_case_model.tla == "IPS"
+    assert donor_case_model.last_day_of_month == "30-06-2023"
+
 
 def test_format_key_values(donor_case_model_inputs):
     # Act

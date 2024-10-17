@@ -58,7 +58,7 @@ class DonorCaseModel:
         if match:
             month_str = match.group(3)
             if month_str == "00":
-                return datetime.now().strftime("%B")
+                return "January"
             return datetime.strptime(month_str, "%m").strftime("%B")
 
     def get_tla(self):
