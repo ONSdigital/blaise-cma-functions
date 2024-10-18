@@ -30,9 +30,9 @@ def test_get_questionnaire_period_info_on_ips_pilot_questionnaire(
     # Assert
     assert donor_case_model.full_date == "2500"
     assert donor_case_model.year == "2025"
-    assert donor_case_model.month == "January"
+    assert donor_case_model.month == "October"
     assert donor_case_model.tla == "IPS"
-    assert donor_case_model.last_day_of_month == "31-01-2025"
+    assert donor_case_model.last_day_of_month == "31-10-2025"
 
 
 def test_format_key_values(donor_case_model_inputs):
