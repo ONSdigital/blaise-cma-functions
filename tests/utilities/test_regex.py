@@ -9,6 +9,10 @@ def test_with_multiple_digits_and_hyphen():
     assert extract_username_from_case_id("45678-johndoe") == "johndoe"
 
 
+def test_with_digit_in_username():
+    assert extract_username_from_case_id("8-johndoe2") == "johndoe2"
+
+
 def test_with_no_digits_or_hyphen():
     assert extract_username_from_case_id("username") == "username"
 
