@@ -111,7 +111,7 @@ def create_donor_cases(request: flask.request) -> tuple[str, int]:
         donor_case_service.check_and_create_donor_case_for_users(
             questionnaire_name, guid, users_with_role
         )
-
+        logging.info("Whale Done!")
         logging.info("Finished Running Cloud Function - 'create_donor_cases'")
         return f"Successfully created donor cases for user role: {role}", 200
     except (RequestError, AttributeError, ValueError, ConfigError) as e:
