@@ -1,10 +1,6 @@
 import calendar
-import logging
 import re
 from datetime import datetime
-
-from utilities.custom_exceptions import InvalidQuestionnaireMonth
-from utilities.logging import function_name
 
 
 class DonorCaseModel:
@@ -61,15 +57,9 @@ class DonorCaseModel:
         match = re.match(pattern, self.questionnaire_name)
         if match:
             month_str = match.group(3)
-            try:
-                return datetime.strptime(month_str, "%m").strftime("%B")
-            except ValueError as e:
-                error_message = (
-                    f"Exception caught in {function_name()}. "
-                    f"Error getting month from questionnaire name: {self.questionnaire_name}: {e}"
-                )
-                logging.error(error_message)
-                raise InvalidQuestionnaireMonth(error_message)
+            if month_str == "00":
+                return "October"
+            return datetime.strptime(month_str, "%m").strftime("%B")
 
     def get_tla(self):
         pattern = r"^[a-zA-Z]{3}"
@@ -80,6 +70,3 @@ class DonorCaseModel:
         month_number = list(calendar.month_name).index(self.month)
         num_days = calendar.monthrange(int(self.year), month_number)[1]
         return datetime(int(self.year), month_number, num_days).strftime("%d-%m-%Y")
-
-    def is_pilot(self):
-        return self.questionnaire_name.lower().endswith('_pilot')

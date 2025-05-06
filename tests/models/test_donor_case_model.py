@@ -1,9 +1,4 @@
-import logging
-
-import pytest
-
 from models.donor_case_model import DonorCaseModel
-from utilities.custom_exceptions import InvalidQuestionnaireMonth
 
 
 def test_get_questionnaire_period_info(donor_case_model_inputs):
@@ -28,57 +23,16 @@ def test_get_questionnaire_period_info_on_ips_pilot_questionnaire(
     # Act
     donor_case_model = DonorCaseModel(
         donor_case_model_inputs.user,
-        "IPS2509_PILOT",
+        "IPS2500A",
         donor_case_model_inputs.guid,
     )
 
     # Assert
-    assert donor_case_model.full_date == "2509"
+    assert donor_case_model.full_date == "2500"
     assert donor_case_model.year == "2025"
-    assert donor_case_model.is_pilot()
+    assert donor_case_model.month == "October"
     assert donor_case_model.tla == "IPS"
-    assert donor_case_model.last_day_of_month == "30-09-2025"
-
-
-def test_get_questionnaire_period_info_on_ips_pilot_questionnaire_invalid_month(
-    donor_case_model_inputs, caplog
-):
-    # Act
-    with pytest.raises(InvalidQuestionnaireMonth) as err:
-        donor_case_model = DonorCaseModel(
-            donor_case_model_inputs.user,
-            "IPS2500_PILOT",
-            donor_case_model_inputs.guid,
-        )
-
-    # Assert
-    error_message = (
-        "Exception caught in get_month(). Error getting month from questionnaire "
-        "name: IPS2500_PILOT: time data '00' does not match format '%m'"
-    )
-    assert err.value.args[0] == error_message
-    assert (
-        "root",
-        logging.ERROR,
-        error_message,
-    ) in caplog.record_tuples
-
-def test_get_questionnaire_period_info_on_non_ips_pilot_questionnaire(
-    donor_case_model_inputs,
-):
-    # Act
-    donor_case_model = DonorCaseModel(
-        donor_case_model_inputs.user,
-        "IPS2509A",
-        donor_case_model_inputs.guid,
-    )
-
-    # Assert
-    assert donor_case_model.full_date == "2509"
-    assert donor_case_model.year == "2025"
-    assert not donor_case_model.is_pilot()
-    assert donor_case_model.tla == "IPS"
-    assert donor_case_model.last_day_of_month == "30-09-2025"
+    assert donor_case_model.last_day_of_month == "31-10-2025"
 
 
 def test_format_key_values(donor_case_model_inputs):
