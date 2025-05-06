@@ -14,7 +14,7 @@ pytest-cov = "^5.0.0"
 mypy = "^1.10.0"
 isort = "^5.13.2"
 codecov = "^2.1.13"
-blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client", branch = "main"}
+blaise-restapi = {git = "https://github.com/ONSdigital/blaise-api-python-client", branch = "BLAIS5-4743"}
 google-cloud-logging = "^3.10.0"
 flake8 = "^7.0.0"
 

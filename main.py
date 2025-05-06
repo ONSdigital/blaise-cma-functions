@@ -1,6 +1,6 @@
 import logging
 
-import flask
+from flask import Request
 
 from appconfig.config import Config
 from services.blaise_service import BlaiseService
@@ -23,7 +23,7 @@ from utilities.logging import setup_logger
 setup_logger()
 
 
-def reissue_new_donor_case(request: flask.request) -> tuple[str, int]:
+def reissue_new_donor_case(request: Request) -> tuple[str, int]:
     try:
         logging.info("Running Cloud Function - 'reissue_new_donor_case'")
         validation_service = ValidationService()
@@ -76,7 +76,7 @@ def reissue_new_donor_case(request: flask.request) -> tuple[str, int]:
         return error_message, 500
 
 
-def create_donor_cases(request: flask.request) -> tuple[str, int]:
+def create_donor_cases(request: Request) -> tuple[str, int]:
     try:
         logging.info("Running Cloud Function - 'create_donor_cases'")
         validation_service = ValidationService()

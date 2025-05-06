@@ -16,7 +16,7 @@ format:
 lint:
 	@poetry run black --check .
 	@poetry run isort --check .
-	@poetry run flake8 --ignore=E501 .
+	@poetry run flake8 --ignore=E501,W503 .
 	@poetry run mypy --config-file ${mkfile_dir}mypy.ini .
 
 .PHONY: test

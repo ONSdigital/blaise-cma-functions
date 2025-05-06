@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 from unittest import mock
 
 import blaise_restapi
@@ -21,7 +22,7 @@ class MockRequest:
     def __init__(self, json_data) -> None:
         self.json_data = json_data
 
-    def get_json(self) -> dict[str, any]:
+    def get_json(self) -> dict[str, Any]:
         return self.json_data
 
 
@@ -769,7 +770,7 @@ class TestMainReissueNewDonorCaseFunction:
         response, status = reissue_new_donor_case(mock_request)
 
         # Assert
-        assert response == f"Successfully reissued new donor case for user: test-user"
+        assert response == "Successfully reissued new donor case for user: test-user"
         assert status == 200
 
 
