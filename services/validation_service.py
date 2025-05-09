@@ -1,8 +1,9 @@
 import logging
 import re
+from typing import Any
 
 import blaise_restapi
-import flask
+from flask import Request
 
 from appconfig.config import Config
 from utilities.custom_exceptions import (
@@ -16,10 +17,10 @@ from utilities.logging import function_name
 
 class ValidationService:
     def __init__(self) -> None:
-        self.request_json = None
+        self.request_json: dict[str, Any] = {}
 
     def get_valid_request_values_for_create_donor_cases(
-        self, request: flask.request
+        self, request: Request
     ) -> tuple[str, str]:
         self.validate_request_is_json(request)
         self.validate_request_values_are_not_empty()
@@ -29,7 +30,7 @@ class ValidationService:
         return self.request_json["questionnaire_name"], self.request_json["role"]
 
     def get_valid_request_values_for_reissue_new_donor_case(
-        self, request: flask.request
+        self, request: Request
     ) -> tuple[str, str]:
         self.validate_request_is_json(request)
         self.validate_request_values_are_not_empty_for_reissue_new_donor_case()

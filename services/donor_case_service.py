@@ -141,3 +141,6 @@ class DonorCaseService:
             )
             logging.error(error_message)
             raise DonorCaseError(error_message)
+
+        # Safeguard fallback
+        return False

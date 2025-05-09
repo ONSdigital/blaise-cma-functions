@@ -37,7 +37,7 @@ class BlaiseService:
             logging.error(error_message)
             raise BlaiseError(error_message)
 
-    def get_users(self, server_park: str) -> dict[str, Any]:
+    def get_users(self, server_park: str) -> list[dict[str, Any]]:
         try:
             return self.restapi_client.get_users()
         except Exception as e:
