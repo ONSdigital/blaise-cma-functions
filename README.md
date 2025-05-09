@@ -44,20 +44,30 @@ example HTTP request
 
 Clone the project locally:
 ```shell
-git clone https://github.com/ONSdigital/blaise-cma-functions.git
+  git clone https://github.com/ONSdigital/blaise-cma-functions.git
 ```
 
 Install poetry:
 ```shell
-pip install poetry
+  pip install poetry
 ```
 
 Install dependencies:
 ```shell
-poetry install
+  poetry install
 ```
 
-Run unit tests:
+Run make format:
 ```shell
-poetry run python -m pytest
+  make format
+```
+
+Run make lint:
+```shell
+  make lint
+```
+
+Run make test:
+```shell
+  make test
 ```

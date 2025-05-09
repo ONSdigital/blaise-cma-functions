@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 from services.blaise_service import BlaiseService
 from utilities.custom_exceptions import BlaiseError, UsersError, UsersWithRoleNotFound
@@ -11,7 +12,9 @@ class UserService:
 
     def get_users_by_role(self, blaise_server_park: str, role: str) -> list[str]:
         try:
-            blaise_users = self._blaise_service.get_users(blaise_server_park)
+            blaise_users: list[dict[str, Any]] = self._blaise_service.get_users(
+                blaise_server_park
+            )
             ips_users = [user["name"] for user in blaise_users if user["role"] == role]
             logging.info(
                 f"Got {len(ips_users)} users from server park {blaise_server_park} for role {role}"
@@ -29,9 +32,14 @@ class UserService:
             logging.error(error_message)
             raise UsersError(error_message)
 
-    def get_user_by_name(self, blaise_server_park: str, username: str) -> dict:
+    def get_user_by_name(
+        self, blaise_server_park: str, username: str
+    ) -> dict[str, Any]:
         try:
-            blaise_users = self._blaise_service.get_users(blaise_server_park)
+            blaise_users: list[dict[str, Any]] = self._blaise_service.get_users(
+                blaise_server_park
+            )
+
             user = next(
                 (user for user in blaise_users if user["name"] == username), None
             )

@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 
 
@@ -32,7 +34,7 @@ def mock_get_users():
 
 
 @pytest.fixture
-def mock_get_questionnaire() -> dict[str, any]:
+def mock_get_questionnaire() -> dict[str, Any]:
     return {
         "name": "LMS2309_GO1",
         "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",
