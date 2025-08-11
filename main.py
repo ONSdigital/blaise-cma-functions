@@ -132,7 +132,7 @@ def create_donor_cases(request: Request) -> tuple[str, int]:
         return error_message, 500
 
 
-def get_users(request: Request) -> tuple[list[str], int]:
+def get_users_by_role(request: Request) -> tuple[list[str], int]:
     try:
         logging.info("Running Cloud Function - 'get_users'")
         validation_service = ValidationService()
