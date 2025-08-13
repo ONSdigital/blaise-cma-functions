@@ -166,7 +166,7 @@ def get_users_by_role(request: Request) -> tuple[list[str], int]:
     except UsersWithRoleNotFound as e:
         error_message = f"Error retrieving users: {e}"
         logging.error(error_message)
-        return [error_message], 422
+        return [error_message], 204
     except (UsersError, Exception) as e:
         error_message = f"Error retrieving users: {e}"
         logging.error(error_message)
