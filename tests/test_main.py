@@ -7,7 +7,7 @@ import flask
 import pytest
 
 from appconfig.config import Config
-from main import create_donor_cases, reissue_new_donor_case, get_users_by_role
+from main import create_donor_cases, get_users_by_role, reissue_new_donor_case
 from models.donor_case_model import DonorCaseModel
 from utilities.custom_exceptions import (
     BlaiseError,
@@ -1343,6 +1343,7 @@ class TestMainReissueNewDonorCasesHandleDonorCasesStep:
             error_message,
         ) in caplog.record_tuples
 
+
 class TestMainGetUsersByRoleHandleRequestStep:
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
@@ -1352,9 +1353,7 @@ class TestMainGetUsersByRoleHandleRequestStep:
         mock_config,
     ):
         # Arrange
-        mock_request = flask.Request.from_values(
-            json={"role": "IPS Field Interviewer"}
-        )
+        mock_request = flask.Request.from_values(json={"role": "IPS Field Interviewer"})
 
         mock_config.return_value = Config(
             blaise_api_url="foo", blaise_server_park="bar"
@@ -1399,9 +1398,7 @@ class TestMainGetUsersByRoleHandleRequestStep:
         mock_config,
     ):
         # Arrange
-        mock_request = flask.Request.from_values(
-            json={"role": "IPS Manager"}
-        )
+        mock_request = flask.Request.from_values(json={"role": "IPS Manager"})
 
         mock_config.return_value = Config(
             blaise_api_url="foo", blaise_server_park="bar"
@@ -1452,9 +1449,7 @@ class TestMainGetUsersByRoleHandleRequestStep:
         mock_config,
     ):
         # Arrange
-        mock_request = flask.Request.from_values(
-            json={"role": "IPS Pilot Interviewer"}
-        )
+        mock_request = flask.Request.from_values(json={"role": "IPS Pilot Interviewer"})
 
         mock_config.return_value = Config(
             blaise_api_url="foo", blaise_server_park="bar"
@@ -1511,9 +1506,7 @@ class TestMainGetUsersByRoleHandleRequestStep:
         mock_config,
     ):
         # Arrange
-        mock_request = flask.Request.from_values(
-            json={"role": "Made Up Role"}
-        )
+        mock_request = flask.Request.from_values(json={"role": "Made Up Role"})
 
         mock_config.return_value = Config(
             blaise_api_url="foo", blaise_server_park="bar"
@@ -1559,7 +1552,10 @@ class TestMainGetUsersByRoleHandleRequestStep:
         assert mock_get_users.called_with(mock_request)
         assert len(result) == 2
         assert len(result[0]) == 1
-        assert result[0][0] == "Error retrieving users: Made Up Role is not a valid role. Please choose one of the following roles: ['IPS Manager', 'IPS Field Interviewer', 'IPS Pilot Interviewer']"
+        assert (
+            result[0][0]
+            == "Error retrieving users: Made Up Role is not a valid role. Please choose one of the following roles: ['IPS Manager', 'IPS Field Interviewer', 'IPS Pilot Interviewer']"
+        )
         assert result[1] == 400
 
     @mock.patch("appconfig.config.Config.from_env")
@@ -1570,9 +1566,7 @@ class TestMainGetUsersByRoleHandleRequestStep:
         mock_config,
     ):
         # Arrange
-        mock_request = flask.Request.from_values(
-            json={"role": "IPS Pilot Interviewer"}
-        )
+        mock_request = flask.Request.from_values(json={"role": "IPS Pilot Interviewer"})
 
         mock_config.return_value = Config(
             blaise_api_url="foo", blaise_server_park="bar"
@@ -1612,5 +1606,8 @@ class TestMainGetUsersByRoleHandleRequestStep:
         assert mock_get_users.called_with(mock_request)
         assert len(result) == 2
         assert len(result[0]) == 1
-        assert result[0][0] == "Error retrieving users: No users found with role 'IPS Pilot Interviewer'"
+        assert (
+            result[0][0]
+            == "Error retrieving users: No users found with role 'IPS Pilot Interviewer'"
+        )
         assert result[1] == 204
