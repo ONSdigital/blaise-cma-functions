@@ -151,7 +151,6 @@ def get_users_by_role(request: Request) -> tuple[list[str], int]:
         # User Handler
         user_service = UserService(blaise_service)
         users_with_role = user_service.get_users_by_role(blaise_server_park, role)
-        validation_service.validate_users_with_role_exist(users_with_role, role)
 
         logging.info("Finished Running Cloud Function - 'get_users'")
         return users_with_role, 200
@@ -163,10 +162,6 @@ def get_users_by_role(request: Request) -> tuple[list[str], int]:
         error_message = f"Error retrieving users: {e}"
         logging.error(error_message)
         return [error_message], 404
-    except UsersWithRoleNotFound as e:
-        error_message = f"Error retrieving users: {e}"
-        logging.error(error_message)
-        return [error_message], 204
     except (UsersError, Exception) as e:
         error_message = f"Error retrieving users: {e}"
         logging.error(error_message)

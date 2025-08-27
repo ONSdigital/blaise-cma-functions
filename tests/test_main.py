@@ -1605,9 +1605,5 @@ class TestMainGetUsersByRoleHandleRequestStep:
         # Assert
         assert mock_get_users.called_with(mock_request)
         assert len(result) == 2
-        assert len(result[0]) == 1
-        assert (
-            result[0][0]
-            == "Error retrieving users: No users found with role 'IPS Pilot Interviewer'"
-        )
-        assert result[1] == 204
+        assert len(result[0]) == 0
+        assert result[1] == 200
