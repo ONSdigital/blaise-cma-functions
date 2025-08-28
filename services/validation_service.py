@@ -38,6 +38,13 @@ class ValidationService:
 
         return self.request_json["questionnaire_name"], self.request_json["user"]
 
+    def get_valid_request_value_for_get_users(self, request: Request) -> str:
+        self.validate_request_is_json(request)
+        self.validate_request_value_is_not_empty_for_get_users()
+        self.validate_role()
+
+        return self.request_json["role"]
+
     def validate_request_is_json(self, request):
         try:
             self.request_json = request.get_json()
@@ -78,6 +85,18 @@ class ValidationService:
 
         if missing_values:
             error_message = f"Missing required values from request: {missing_values}"
+            logging.error(error_message)
+            raise RequestError(error_message)
+
+    def validate_request_value_is_not_empty_for_get_users(self):
+        missing_values = []
+        role = self.request_json["role"]
+
+        if role is None or role.strip() == "":
+            missing_values.append("role")
+
+        if missing_values:
+            error_message = f"Missing required value from request: {missing_values}"
             logging.error(error_message)
             raise RequestError(error_message)
 
