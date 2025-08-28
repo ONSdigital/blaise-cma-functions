@@ -130,3 +130,39 @@ def create_donor_cases(request: Request) -> tuple[str, int]:
         error_message = f"Error creating IPS donor cases: {e}"
         logging.error(error_message)
         return error_message, 500
+
+
+def get_users_by_role(request: Request) -> tuple[list[str], int]:
+    try:
+        logging.info("Running Cloud Function - 'get_users'")
+        validation_service = ValidationService()
+
+        # Request Handler
+        role = validation_service.get_valid_request_value_for_get_users(request)
+
+        # Config Handler
+        blaise_config = Config.from_env()
+        validation_service.validate_config(blaise_config)
+        blaise_server_park = blaise_config.blaise_server_park
+
+        # Blaise Handler
+        blaise_service = BlaiseService(blaise_config)
+
+        # User Handler
+        user_service = UserService(blaise_service)
+        users_with_role = user_service.get_users_by_role(blaise_server_park, role)
+
+        logging.info("Finished Running Cloud Function - 'get_users'")
+        return users_with_role, 200
+    except (RequestError, AttributeError, ValueError, ConfigError) as e:
+        error_message = f"Error retrieving users: {e}"
+        logging.error(error_message)
+        return [error_message], 400
+    except BlaiseError as e:
+        error_message = f"Error retrieving users: {e}"
+        logging.error(error_message)
+        return [error_message], 404
+    except (UsersError, Exception) as e:
+        error_message = f"Error retrieving users: {e}"
+        logging.error(error_message)
+        return [error_message], 500

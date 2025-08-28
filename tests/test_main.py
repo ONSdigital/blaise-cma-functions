@@ -7,7 +7,7 @@ import flask
 import pytest
 
 from appconfig.config import Config
-from main import create_donor_cases, reissue_new_donor_case
+from main import create_donor_cases, get_users_by_role, reissue_new_donor_case
 from models.donor_case_model import DonorCaseModel
 from utilities.custom_exceptions import (
     BlaiseError,
@@ -1342,3 +1342,268 @@ class TestMainReissueNewDonorCasesHandleDonorCasesStep:
             logging.ERROR,
             error_message,
         ) in caplog.record_tuples
+
+
+class TestMainGetUsersByRoleHandleRequestStep:
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch("services.blaise_service.BlaiseService.get_users")
+    def test_get_users_by_role_is_called_the_correct_number_of_times_with_the_correct_information_ips_field_interviewers(
+        self,
+        mock_get_users,
+        mock_config,
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(json={"role": "IPS Field Interviewer"})
+
+        mock_config.return_value = Config(
+            blaise_api_url="foo", blaise_server_park="bar"
+        )
+
+        mock_get_users.return_value = [
+            {
+                "name": "rich",
+                "role": "DST",
+                "serverParks": ["gusty", "cma"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "sarah",
+                "role": "DST",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "billy",
+                "role": "IPS Field Interviewer",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+        ]
+
+        # Act
+        result = get_users_by_role(mock_request)
+
+        # Assert
+        assert mock_get_users.called_with(mock_request)
+        assert len(result) == 2
+        assert len(result[0]) == 1
+        assert result[0][0] == "billy"
+        assert result[1] == 200
+
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch("services.blaise_service.BlaiseService.get_users")
+    def test_get_users_by_role_is_called_the_correct_number_of_times_with_the_correct_information_ips_managers(
+        self,
+        mock_get_users,
+        mock_config,
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(json={"role": "IPS Manager"})
+
+        mock_config.return_value = Config(
+            blaise_api_url="foo", blaise_server_park="bar"
+        )
+
+        mock_get_users.return_value = [
+            {
+                "name": "rich",
+                "role": "IPS Manager",
+                "serverParks": ["gusty", "cma"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "timmy",
+                "role": "IPS Field Interviewer",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "sarah",
+                "role": "DST",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "billy",
+                "role": "IPS Field Interviewer",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+        ]
+
+        # Act
+        result = get_users_by_role(mock_request)
+
+        # Assert
+        assert mock_get_users.called_with(mock_request)
+        assert len(result) == 2
+        assert len(result[0]) == 1
+        assert result[0][0] == "rich"
+        assert result[1] == 200
+
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch("services.blaise_service.BlaiseService.get_users")
+    def test_get_users_by_role_is_called_the_correct_number_of_times_with_the_correct_information_ips_pilot_interviewers(
+        self,
+        mock_get_users,
+        mock_config,
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(json={"role": "IPS Pilot Interviewer"})
+
+        mock_config.return_value = Config(
+            blaise_api_url="foo", blaise_server_park="bar"
+        )
+
+        mock_get_users.return_value = [
+            {
+                "name": "rich",
+                "role": "IPS Manager",
+                "serverParks": ["gusty", "cma"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "timmy",
+                "role": "IPS Field Interviewer",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "jean",
+                "role": "IPS Pilot Interviewer",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "sarah",
+                "role": "DST",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "billy",
+                "role": "IPS Field Interviewer",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+        ]
+
+        # Act
+        result = get_users_by_role(mock_request)
+
+        # Assert
+        assert mock_get_users.called_with(mock_request)
+        assert len(result) == 2
+        assert len(result[0]) == 1
+        assert result[0][0] == "jean"
+        assert result[1] == 200
+
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch("services.blaise_service.BlaiseService.get_users")
+    def test_get_users_by_role_is_called_the_correct_number_of_times_with_the_incorrect_information(
+        self,
+        mock_get_users,
+        mock_config,
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(json={"role": "Made Up Role"})
+
+        mock_config.return_value = Config(
+            blaise_api_url="foo", blaise_server_park="bar"
+        )
+
+        mock_get_users.return_value = [
+            {
+                "name": "rich",
+                "role": "IPS Manager",
+                "serverParks": ["gusty", "cma"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "timmy",
+                "role": "IPS Field Interviewer",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "jean",
+                "role": "IPS Pilot Interviewer",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "sarah",
+                "role": "DST",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "billy",
+                "role": "IPS Field Interviewer",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+        ]
+
+        # Act
+        result = get_users_by_role(mock_request)
+
+        # Assert
+        assert mock_get_users.called_with(mock_request)
+        assert len(result) == 2
+        assert len(result[0]) == 1
+        assert (
+            result[0][0]
+            == "Error retrieving users: Made Up Role is not a valid role. Please choose one of the following roles: ['IPS Manager', 'IPS Field Interviewer', 'IPS Pilot Interviewer']"
+        )
+        assert result[1] == 400
+
+    @mock.patch("appconfig.config.Config.from_env")
+    @mock.patch("services.blaise_service.BlaiseService.get_users")
+    def test_get_users_by_role_is_called_the_correct_number_of_times_with_the_correct_information_ips_pilot_interviewers_no_users(
+        self,
+        mock_get_users,
+        mock_config,
+    ):
+        # Arrange
+        mock_request = flask.Request.from_values(json={"role": "IPS Pilot Interviewer"})
+
+        mock_config.return_value = Config(
+            blaise_api_url="foo", blaise_server_park="bar"
+        )
+
+        mock_get_users.return_value = [
+            {
+                "name": "timmy",
+                "role": "DST",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "jean",
+                "role": "BDSS",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "sarah",
+                "role": "DST",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+            {
+                "name": "billy",
+                "role": "DST",
+                "serverParks": ["gusty"],
+                "defaultServerPark": "gusty",
+            },
+        ]
+
+        # Act
+        result = get_users_by_role(mock_request)
+
+        # Assert
+        assert mock_get_users.called_with(mock_request)
+        assert len(result) == 2
+        assert len(result[0]) == 0
+        assert result[1] == 200
