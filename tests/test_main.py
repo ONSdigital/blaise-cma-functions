@@ -141,7 +141,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
         )
 
         mock_request = flask.Request.from_values(
-            json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+            json={"questionnaire_name": "LMS2309_GO1", "role": "IPS Manager"}
         )
         mock_get_questionnaire.return_value = {
             "name": "LMS2309_GO1",
