@@ -36,6 +36,7 @@ class TestMainCreateDonorCaseFunction:
             ("IPS Pilot Interviewer"),
         ],
     )
+    @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
     @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
@@ -48,6 +49,7 @@ class TestMainCreateDonorCaseFunction:
         mock_get_all_existing_donor_cases,
         mock_get_users,
         mock_get_questionnaire,
+        mock_create_donor_case_for_user,
         role,
     ):
         # Arrange
@@ -171,6 +173,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
         # Assert
         mock_create_donor_case_for_user.assert_called_with(mock_donor_case_model)
 
+    @mock.patch("appconfig.config.Config.from_env") 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     @mock.patch.object(blaise_restapi.Client, "get_users")
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
@@ -181,8 +184,14 @@ class TestMainCreateDonorCasesHandleRequestStep:
         mock_get_questionnaire_data,
         mock_get_users,
         mock_get_questionnaire_for_server_park,
+        mock_config_from_env,
     ):
         # Arrange
+        mock_config_from_env.return_value = Config(
+        blaise_api_url="http://mock-url",
+        blaise_server_park="gusty",
+)
+
         mock_request = flask.Request.from_values(
             json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
         )
