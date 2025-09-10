@@ -166,6 +166,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
 
         # Act
         create_donor_cases(mock_request)
+        print(mock_create_donor_case_for_user.call_args_list)
 
         # Assert
         mock_create_donor_case_for_user.assert_called_with(mock_donor_case_model)
