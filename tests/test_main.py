@@ -117,6 +117,7 @@ class TestMainCreateDonorCaseFunction:
 
 class TestMainCreateDonorCasesHandleRequestStep:
 
+    @mock.patch("appconfig.config.Config.from_env")
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
     @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
@@ -127,8 +128,14 @@ class TestMainCreateDonorCasesHandleRequestStep:
         mock_get_all_existing_donor_cases,
         mock_get_users,
         mock_get_questionnaire,
+        mock_config_from_env,
     ):
         # Arrange
+        mock_config_from_env.return_value = Config(
+            blaise_api_url="http://mock-url",
+            blaise_server_park="gusty",
+        )
+
         mock_request = flask.Request.from_values(
             json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
         )
