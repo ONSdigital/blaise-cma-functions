@@ -123,7 +123,6 @@ class TestMainCreateDonorCasesHandleRequestStep:
     @mock.patch("services.blaise_service.BlaiseService.get_users")
     @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
     @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
-    @mock.patch("services.blaise_service.BlaiseService.questionnaire_exists") 
     def test_create_donor_case_is_called_the_correct_number_of_times_with_the_correct_information(
         self,
         mock_create_donor_case_for_user,
