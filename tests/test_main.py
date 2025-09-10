@@ -277,6 +277,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
                 "cmA_ForWhom": "rich",
                 "cmA_AllowSpawning": "1",
                 "cmA_IsDonorCase": "1",
+                "cmA_EndDate": "29-02-2024",
                 "cmA_ContactData": "MainSurveyID    25615bf2-f331-47ba-9d05-6659a513a1f2    ID    rich    ContactInfoShort    IPS,April    CaseNote    This is the Donor Case. Select add case to spawn a new case with an empty shift.    Year    2023    Month    April    Stage    2303    ShiftNo    '",
             },
         )
