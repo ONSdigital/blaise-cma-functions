@@ -168,7 +168,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
         create_donor_cases(mock_request)
 
         # Assert
-        assert mock_create_donor_case_for_user.called_with(mock_donor_case_model)
+        assert mock_create_donor_case_for_user.assert_called_with(mock_donor_case_model)
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     @mock.patch.object(blaise_restapi.Client, "get_users")
@@ -228,7 +228,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
         create_donor_cases(mock_request)
 
         # Assert
-        assert mock_create_multikey_case.called_with(
+        assert mock_create_multikey_case.assert_called_with(
             "cma",
             "CMA_Launcher",
             ["MainSurveyID", "ID"],
@@ -829,7 +829,7 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         reissue_new_donor_case(mock_request)
 
         # Assert
-        assert mock_create_donor_case_for_user.called_with(mock_donor_case_model)
+        assert mock_create_donor_case_for_user.assert_called_with(mock_donor_case_model)
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     @mock.patch.object(blaise_restapi.Client, "get_users")
@@ -889,7 +889,7 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         reissue_new_donor_case(mock_request)
 
         # Assert
-        assert mock_create_multikey_case.called_with(
+        assert mock_create_multikey_case.assert_called_with(
             "cma",
             "CMA_Launcher",
             ["MainSurveyID", "ID"],
@@ -1384,7 +1384,7 @@ class TestMainGetUsersByRoleHandleRequestStep:
         result = get_users_by_role(mock_request)
 
         # Assert
-        assert mock_get_users.called_with(mock_request)
+        assert mock_get_users.assert_called_with(mock_request)
         assert len(result) == 2
         assert len(result[0]) == 1
         assert result[0][0] == "billy"
@@ -1435,7 +1435,7 @@ class TestMainGetUsersByRoleHandleRequestStep:
         result = get_users_by_role(mock_request)
 
         # Assert
-        assert mock_get_users.called_with(mock_request)
+        assert mock_get_users.assert_called_with(mock_request)
         assert len(result) == 2
         assert len(result[0]) == 1
         assert result[0][0] == "rich"
@@ -1492,7 +1492,7 @@ class TestMainGetUsersByRoleHandleRequestStep:
         result = get_users_by_role(mock_request)
 
         # Assert
-        assert mock_get_users.called_with(mock_request)
+        assert mock_get_users.assert_called_with(mock_request)
         assert len(result) == 2
         assert len(result[0]) == 1
         assert result[0][0] == "jean"
@@ -1549,7 +1549,7 @@ class TestMainGetUsersByRoleHandleRequestStep:
         result = get_users_by_role(mock_request)
 
         # Assert
-        assert mock_get_users.called_with(mock_request)
+        assert mock_get_users.assert_called_with(mock_request)
         assert len(result) == 2
         assert len(result[0]) == 1
         assert (
@@ -1603,7 +1603,7 @@ class TestMainGetUsersByRoleHandleRequestStep:
         result = get_users_by_role(mock_request)
 
         # Assert
-        assert mock_get_users.called_with(mock_request)
+        assert mock_get_users.assert_called_with(mock_request)
         assert len(result) == 2
         assert len(result[0]) == 0
         assert result[1] == 200
