@@ -190,7 +190,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
         assert called_arg.questionnaire_name == "LMS2309_GO1"
         assert called_arg.data_fields["cmA_ForWhom"] == "sarah"
 
-
+    @mock.patch("services.blaise_service.get_all_existing_donor_cases")
     @mock.patch("appconfig.config.Config.from_env") 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
@@ -205,6 +205,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
         mock_questionnaire_exists_on_server_park,
         mock_get_questionnaire_for_server_park,
         mock_config_from_env,
+        mock_get_all_existing_donor_cases,
     ):
         # Arrange
         mock_questionnaire_exists_on_server_park.return_value = True
@@ -212,7 +213,14 @@ class TestMainCreateDonorCasesHandleRequestStep:
         mock_config_from_env.return_value = Config(
         blaise_api_url="http://mock-url",
         blaise_server_park="gusty",
-)
+        )
+
+        mock_get_all_existing_donor_cases.return_value = [
+            {
+                "mainSurveyID": "IPS2402a",
+                "id": "rich"
+            }
+        ]
 
         mock_request = flask.Request.from_values(
             json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
