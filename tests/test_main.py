@@ -184,9 +184,12 @@ class TestMainCreateDonorCasesHandleRequestStep:
         # Assert
         mock_create_donor_case_for_user.assert_called_once()
         called_arg = mock_create_donor_case_for_user.call_args[0][0]
-        assert called_arg.username == "sarah"
+        print(vars(called_arg))
+        assert called_arg.user == "sarah"
+        assert called_arg.guid == "25615bf2-f331-47ba-9d05-6659a513a1f2"
         assert called_arg.questionnaire_name == "LMS2309_GO1"
-        assert called_arg.questionnaire_id == "25615bf2-f331-47ba-9d05-6659a513a1f2"
+        assert called_arg.data_fields["cmA_ForWhom"] == "sarah"
+
 
     @mock.patch("appconfig.config.Config.from_env") 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
