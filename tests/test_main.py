@@ -193,6 +193,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
 
     @mock.patch("appconfig.config.Config.from_env") 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
     @mock.patch.object(blaise_restapi.Client, "get_users")
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
     @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
@@ -203,8 +204,11 @@ class TestMainCreateDonorCasesHandleRequestStep:
         mock_get_users,
         mock_get_questionnaire_for_server_park,
         mock_config_from_env,
+        mock_questionnaire_exists_on_server_park
     ):
         # Arrange
+        mock_questionnaire_exists_on_server_park.return_value = True
+
         mock_config_from_env.return_value = Config(
         blaise_api_url="http://mock-url",
         blaise_server_park="gusty",
