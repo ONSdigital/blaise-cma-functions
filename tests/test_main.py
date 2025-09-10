@@ -161,13 +161,13 @@ class TestMainCreateDonorCasesHandleRequestStep:
         mock_get_users.return_value = [
             {
                 "name": "rich",
-                "role": "DST",
+                "role": "IPS Manager",
                 "serverParks": ["gusty", "cma"],
                 "defaultServerPark": "gusty",
             },
             {
                 "name": "sarah",
-                "role": "DST",
+                "role": "IPS Manager",
                 "serverParks": ["gusty"],
                 "defaultServerPark": "gusty",
             },
