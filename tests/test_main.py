@@ -815,7 +815,7 @@ class TestMainReissueNewDonorCaseFunction:
 
 class TestMainReissueNewDonorCasesHandleRequestStep:
 
-    @mock.patch("services.validation_service.validate_config", return_value=None)
+    @mock.patch("services.validation_service.ValidationService.validate_config", return_value=None)
     @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases_for_user")
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
