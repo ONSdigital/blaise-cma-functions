@@ -874,7 +874,11 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         reissue_new_donor_case(mock_request)
 
         # Assert
-        mock_check_and_create_donor_case_for_users.assert_called_with(mock_donor_case_model)
+        mock_check_and_create_donor_case_for_users.assert_called_with(
+        mock_donor_case_model.questionnaire_name,
+        mock_donor_case_model.guid,
+        [mock_donor_case_model.user]
+        )
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     @mock.patch.object(blaise_restapi.Client, "get_users")
