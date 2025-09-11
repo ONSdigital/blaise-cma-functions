@@ -818,10 +818,10 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
     @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
-    @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
+    @mock.patch("services.blaise_service.BlaiseService.check_and_create_donor_case_for_users")
     def test_reissue_new_donor_case_is_called_the_correct_number_of_times_with_the_correct_information(
         self,
-        mock_create_donor_case_for_user,
+        mock_check_and_create_donor_case_for_users,
         mock_get_all_existing_donor_cases,
         mock_get_users,
         mock_get_questionnaire,
@@ -868,7 +868,7 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         reissue_new_donor_case(mock_request)
 
         # Assert
-        mock_create_donor_case_for_user.assert_called_with(mock_donor_case_model)
+        mock_check_and_create_donor_case_for_users.assert_called_with(mock_donor_case_model)
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     @mock.patch.object(blaise_restapi.Client, "get_users")
