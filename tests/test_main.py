@@ -836,8 +836,9 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         )
 
         mock_request = flask.Request.from_values(
-            json={"questionnaire_name": "IPS2402a", "user": "test-user"}
+        json={"questionnaire_name": "IPS2402a", "user": "rich"}
         )
+
         mock_get_questionnaire.return_value = {
             "name": "LMS2309_GO1",
             "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",
