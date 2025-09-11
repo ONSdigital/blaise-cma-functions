@@ -815,6 +815,7 @@ class TestMainReissueNewDonorCaseFunction:
 
 class TestMainReissueNewDonorCasesHandleRequestStep:
 
+    @mock.patch("services.validation_service.validate_config", return_value=None)
     @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases_for_user")
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
@@ -831,6 +832,7 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         mock_get_questionnaire,
         mock_config,
         mock_get_existing_donor_cases_for_user,
+        mock_validate_config,
     ):
         # Arrange
         mock_config.return_value = Config(
