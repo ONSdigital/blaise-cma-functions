@@ -278,7 +278,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
                 "cmA_AllowSpawning": "1",
                 "cmA_IsDonorCase": "1",
                 "cmA_EndDate": "29-02-2024",
-                "cmA_ContactData": "MainSurveyID\t25615bf2-f331-47ba-9d05-6659a513a1f2\tID\trich\tCaseNote\tThis is the Donor Case. Select the add case button to spawn a new case with an empty shift. \tcaseinfo.Year\t2024\tcaseinfo.Survey\tIPS\tcaseinfo.Month\tFebruary\tcaseinfo.ShiftNo\t\tcaseinfo.IOut\t'",
+                "cmA_ContactData": "MainSurveyID\t25615bf2-f331-47ba-9d05-6659a513a1f2\tID\trich\tCaseNote\tThis is the Donor Case. Select the add case button to spawn a new case with an empty shift. \tcaseinfo.Year\t2024\tcaseinfo.Survey\tIPS\tcaseinfo.Month\tFebruary\tcaseinfo.ShiftNo\t\tcaseinfo.IOut\t",
             },
         )
 
