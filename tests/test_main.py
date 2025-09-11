@@ -820,12 +820,12 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
     @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
-    @mock.patch('services.donor_case_service.DonorCaseService.check_and_create_donor_case_for_users')
+    @mock.patch('services.donor_case_service.create_donor_case_for_user')
     @mock.patch("services.validation_service.ValidationService.validate_questionnaire_exists")
     def test_reissue_new_donor_case_is_called_the_correct_number_of_times_with_the_correct_information(
         self,
         mock_validate_questionnaire_exists, 
-        mock_check_and_create_donor_case_for_users,
+        mock_create_donor_case_for_user,
         mock_get_all_existing_donor_cases,
         mock_get_users,
         mock_get_questionnaire,
@@ -887,11 +887,12 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         reissue_new_donor_case(mock_request)
 
         # Assert
-        mock_check_and_create_donor_case_for_users.assert_called_once_with(
-        "LMS2309_GO1", 
-        "25615bf2-f331-47ba-9d05-6659a513a1f2",
-        ["sarah"]
-        )
+        mock_create_donor_case_for_user.assert_called_once()
+        called_model = mock_create_donor_case_for_user.call_args[0][0]
+        
+        assert called_model.user == "rich"
+        assert called_model.questionnaire_name == "LMS2309_GO1"
+        assert called_model.guid == "25615bf2-f331-47ba-9d05-6659a513a1f2"
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     @mock.patch.object(blaise_restapi.Client, "get_users")
