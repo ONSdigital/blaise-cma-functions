@@ -832,7 +832,7 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
     ):
         # Arrange
         mock_config.return_value = Config(
-            blaise_api_url="mock-blaise-api-url", blaise_server_park="gusty"
+            blaise_api_url="http://mock-blaise-api-url", blaise_server_park="gusty"
         )
 
         mock_request = flask.Request.from_values(
