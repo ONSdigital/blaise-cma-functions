@@ -869,15 +869,15 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         mock_donor_case_model = DonorCaseModel(
             "rich", "LMS2309_GO1", "25615bf2-f331-47ba-9d05-6659a513a1f2"
         )
-
+         
         # Act
         reissue_new_donor_case(mock_request)
 
         # Assert
-        mock_check_and_create_donor_case_for_users.assert_called_with(
-        mock_donor_case_model.questionnaire_name,
-        mock_donor_case_model.guid,
-        [mock_donor_case_model.user]
+        mock_check_and_create_donor_case_for_users.assert_called_once_with(
+        "LMS2309_GO1", 
+        "25615bf2-f331-47ba-9d05-6659a513a1f2",
+        ["sarah"]
         )
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
