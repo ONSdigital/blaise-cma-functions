@@ -815,6 +815,7 @@ class TestMainReissueNewDonorCaseFunction:
 
 class TestMainReissueNewDonorCasesHandleRequestStep:
 
+    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases_for_user")
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
@@ -829,6 +830,7 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         mock_get_users,
         mock_get_questionnaire,
         mock_config,
+        mock_get_existing_donor_cases_for_user,
     ):
         # Arrange
         mock_config.return_value = Config(
@@ -868,11 +870,19 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
                 "defaultServerPark": "gusty",
             },
         ]
-        mock_get_all_existing_donor_cases.return_value = ["rich"]
+
+        # mock_get_all_existing_donor_cases.return_value = ["rich"]
         mock_donor_case_model = DonorCaseModel(
             "rich", "LMS2309_GO1", "25615bf2-f331-47ba-9d05-6659a513a1f2"
         )
-         
+        
+        mock_get_existing_donor_cases_for_user.return_value = [
+        {
+            "mainSurveyID": "25615bf2-f331-47ba-9d05-6659a513a1f2",
+            "cmA_IsDonorCase": "1",
+            "id": "rich_CASE001",
+        }]
+
         # Act
         reissue_new_donor_case(mock_request)
 
