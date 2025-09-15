@@ -872,11 +872,6 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
                 "defaultServerPark": "gusty",
             },
         ]
-
-        # mock_get_all_existing_donor_cases.return_value = ["rich"]
-        mock_donor_case_model = DonorCaseModel(
-            "rich", "LMS2309_GO1", "25615bf2-f331-47ba-9d05-6659a513a1f2"
-        )
         
         mock_get_existing_donor_cases_for_user.return_value = [
         {
