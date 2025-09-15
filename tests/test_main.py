@@ -843,21 +843,21 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         json={"questionnaire_name": "IPS2402a", "user": "rich"}
         )
 
-        # mock_get_questionnaire.return_value = {
-        #     "name": "LMS2309_GO1",
-        #     "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",
-        #     "serverParkName": "gusty",
-        #     "installDate": "2024-04-24T09:49:34.2685322+01:00",
-        #     "status": "Active",
-        #     "dataRecordCount": 0,
-        #     "hasData": False,
-        #     "blaiseVersion": "5.9.9.2735",
-        #     "nodes": [
-        #         {"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Active"},
-        #         {"nodeName": "blaise-gusty-data-entry-1", "nodeStatus": "Active"},
-        #         {"nodeName": "blaise-gusty-data-entry-2", "nodeStatus": "Active"},
-        #     ],
-        # }
+        mock_get_questionnaire.return_value = {
+            "name": "IPS2402a",
+            "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",
+            "serverParkName": "gusty",
+            "installDate": "2024-04-24T09:49:34.2685322+01:00",
+            "status": "Active",
+            "dataRecordCount": 0,
+            "hasData": False,
+            "blaiseVersion": "5.9.9.2735",
+            "nodes": [
+                {"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Active"},
+                {"nodeName": "blaise-gusty-data-entry-1", "nodeStatus": "Active"},
+                {"nodeName": "blaise-gusty-data-entry-2", "nodeStatus": "Active"},
+            ],
+        }
         mock_get_users.return_value = [
             {
                 "name": "rich",
@@ -888,7 +888,7 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         called_model = mock_create_donor_case_for_user.call_args[0][0]
         
         assert called_model.user == "rich"
-        assert called_model.questionnaire_name == "IPS2402a"
+        assert called_model.questionnaire_name == "LMS2309_GO1"
         assert called_model.guid == "25615bf2-f331-47ba-9d05-6659a513a1f2"
 
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
