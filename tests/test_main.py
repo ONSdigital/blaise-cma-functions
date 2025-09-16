@@ -1577,7 +1577,7 @@ class TestMainGetUsersByRoleHandleRequestStep:
         result = get_users_by_role(mock_request)
 
         # Assert
-        assert mock_get_users.assert_called_with(mock_request)
+        mock_get_users.assert_called_with(mock_config.return_value.blaise_server_park)
         assert len(result) == 2
         assert len(result[0]) == 1
         assert result[0][0] == "jean"
