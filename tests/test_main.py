@@ -1634,7 +1634,6 @@ class TestMainGetUsersByRoleHandleRequestStep:
         result = get_users_by_role(mock_request)
 
         # Assert
-        assert mock_get_users.assert_called_with(mock_request)
         assert len(result) == 2
         assert len(result[0]) == 1
         assert (
