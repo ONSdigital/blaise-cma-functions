@@ -891,6 +891,7 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         assert called_model.questionnaire_name == "IPS2402a"
         assert called_model.guid == "25615bf2-f331-47ba-9d05-6659a513a1f2"
     
+    @mock.patch("services.validation_service.ValidationService.validate_config", return_value=None)
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     @mock.patch.object(blaise_restapi.Client, "get_users")
@@ -902,7 +903,8 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         mock_get_questionnaire_data,
         mock_get_users,
         mock_get_questionnaire_for_server_park,
-        mock_config
+        mock_config,
+        mock_validate_config
     ):
         # Arrange
         mock_config.return_value = Config(
