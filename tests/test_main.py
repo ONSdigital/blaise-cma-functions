@@ -964,19 +964,30 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
 
         # Assert
         mock_create_multikey_case.assert_called_with(
-            "cma",
-            "CMA_Launcher",
-            ["MainSurveyID", "ID"],
-            ["25615bf2-f331-47ba-9d05-6659a513a1f2", "rich"],
+            'cma',
+            'CMA_Launcher',
+            ['MainSurveyID', 'ID'],
+            ['25615bf2-f331-47ba-9d05-6659a513a1f2', 'rich'],
             {
-                "mainSurveyID": "25615bf2-f331-47ba-9d05-6659a513a1f2",
-                "id": "rich",
-                "cmA_ForWhom": "rich",
-                "cmA_AllowSpawning": "1",
-                "cmA_IsDonorCase": "1",
-                "cmA_ContactData": "MainSurveyID    25615bf2-f331-47ba-9d05-6659a513a1f2    ID    rich    ContactInfoShort    IPS,April    CaseNote    This is the Donor Case. Select add case to spawn a new case with an empty shift.    Year    2023    Month    April    Stage    2303    ShiftNo    '",
-            },
+                'mainSurveyID': '25615bf2-f331-47ba-9d05-6659a513a1f2',
+                'id': '1-rich',
+                'cmA_ForWhom': 'rich',
+                'cmA_AllowSpawning': '1',
+                'cmA_IsDonorCase': '1',
+                'cmA_EndDate': '29-02-2024',
+                'cmA_ContactData': (
+                    'MainSurveyID\t25615bf2-f331-47ba-9d05-6659a513a1f2\t'
+                    'ID\t1-rich\t'
+                    'CaseNote\tThis is the Donor Case. Select the add case button to spawn a new case with an empty shift. \t'
+                    'caseinfo.Year\t2024\t'
+                    'caseinfo.Survey\tIPS\t'
+                    'caseinfo.Month\tFebruary\t'
+                    'caseinfo.ShiftNo\t\t'
+                    'caseinfo.IOut\t'
+                )
+            }
         )
+
 
     @pytest.mark.parametrize(
         "questionnaire_name, user",
