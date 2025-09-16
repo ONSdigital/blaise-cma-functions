@@ -912,7 +912,7 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         )
 
         mock_request = flask.Request.from_values(
-            json={"questionnaire_name": "IPS2402a", "user": "rich"}
+            json={"questionnaire_name": "IPS2402a", "user": "IP"}
         )
         mock_get_questionnaire_for_server_park.return_value = {
             "name": "IPS2302a",
@@ -952,6 +952,10 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
                 {"cmA_ForWhom": "rich"},
             ],
         }
+
+        mock_donor_case_model = DonorCaseModel(
+            "rich", "IPS2302a", "25615bf2-f331-47ba-9d05-6659a513a1f2"
+        )
 
         # Act
         reissue_new_donor_case(mock_request)
