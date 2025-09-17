@@ -130,7 +130,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
         mock_get_users,
         mock_get_questionnaire,
         mock_config_from_env,
-        mock_questionnaire_exists_on_server_park
+        mock_questionnaire_exists_on_server_park,
     ):
         # Arrange
         mock_questionnaire_exists_on_server_park.return_value = True
@@ -191,7 +191,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
         assert called_arg.data_fields["cmA_ForWhom"] == "sarah"
 
     @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
-    @mock.patch("appconfig.config.Config.from_env") 
+    @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
     @mock.patch.object(blaise_restapi.Client, "get_users")
@@ -211,10 +211,10 @@ class TestMainCreateDonorCasesHandleRequestStep:
         mock_questionnaire_exists_on_server_park.return_value = True
 
         mock_config_from_env.return_value = Config(
-        blaise_api_url="http://mock-url",
-        blaise_server_park="gusty",
+            blaise_api_url="http://mock-url",
+            blaise_server_park="gusty",
         )
-        
+
         mock_get_all_existing_donor_cases.return_value = ["sarah"]
         mock_donor_case_model = DonorCaseModel(
             "sarah", "LMS2309_GO1", "25615bf2-f331-47ba-9d05-6659a513a1f2"
@@ -815,17 +815,24 @@ class TestMainReissueNewDonorCaseFunction:
 
 class TestMainReissueNewDonorCasesHandleRequestStep:
 
-    @mock.patch("services.validation_service.ValidationService.validate_config", return_value=None)
-    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases_for_user")
+    @mock.patch(
+        "services.validation_service.ValidationService.validate_config",
+        return_value=None,
+    )
+    @mock.patch(
+        "services.blaise_service.BlaiseService.get_existing_donor_cases_for_user"
+    )
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
     @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
     @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
-    @mock.patch("services.validation_service.ValidationService.validate_questionnaire_exists")
+    @mock.patch(
+        "services.validation_service.ValidationService.validate_questionnaire_exists"
+    )
     def test_reissue_new_donor_case_is_called_the_correct_number_of_times_with_the_correct_information(
         self,
-        mock_validate_questionnaire_exists, 
+        mock_validate_questionnaire_exists,
         mock_create_donor_case_for_user,
         mock_get_all_existing_donor_cases,
         mock_get_users,
@@ -840,7 +847,7 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         )
 
         mock_request = flask.Request.from_values(
-        json={"questionnaire_name": "IPS2402a", "user": "rich"}
+            json={"questionnaire_name": "IPS2402a", "user": "rich"}
         )
 
         mock_get_questionnaire.return_value = {
@@ -872,13 +879,14 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
                 "defaultServerPark": "gusty",
             },
         ]
-        
+
         mock_get_existing_donor_cases_for_user.return_value = [
-        {
-            "mainSurveyID": "25615bf2-f331-47ba-9d05-6659a513a1f2",
-            "cmA_IsDonorCase": "1",
-            "id": "rich_CASE001",
-        }]
+            {
+                "mainSurveyID": "25615bf2-f331-47ba-9d05-6659a513a1f2",
+                "cmA_IsDonorCase": "1",
+                "id": "rich_CASE001",
+            }
+        ]
 
         # Act
         reissue_new_donor_case(mock_request)
@@ -886,14 +894,18 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         # Assert
         mock_create_donor_case_for_user.assert_called_once()
         called_model = mock_create_donor_case_for_user.call_args[0][0]
-        
+
         assert called_model.user == "rich"
         assert called_model.questionnaire_name == "IPS2402a"
         assert called_model.guid == "25615bf2-f331-47ba-9d05-6659a513a1f2"
-    
+
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
-    @mock.patch("services.blaise_service.BlaiseService.get_existing_donor_cases_for_user")
-    @mock.patch("services.validation_service.ValidationService.validate_questionnaire_exists")
+    @mock.patch(
+        "services.blaise_service.BlaiseService.get_existing_donor_cases_for_user"
+    )
+    @mock.patch(
+        "services.validation_service.ValidationService.validate_questionnaire_exists"
+    )
     @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     @mock.patch.object(blaise_restapi.Client, "get_users")
@@ -908,7 +920,7 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         mock_config,
         mock_validate_questionnaire_exists,
         mock_get_existing_donor_cases_for_user,
-        mock_get_questionnaire
+        mock_get_questionnaire,
     ):
         # Arrange
         mock_config.return_value = Config(
@@ -949,11 +961,12 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         }
 
         mock_get_existing_donor_cases_for_user.return_value = [
-        {
-            "mainSurveyID": "25615bf2-f331-47ba-9d05-6659a513a1f2",
-            "cmA_IsDonorCase": "1",
-            "id": "rich_CASE001",
-        }]
+            {
+                "mainSurveyID": "25615bf2-f331-47ba-9d05-6659a513a1f2",
+                "cmA_IsDonorCase": "1",
+                "id": "rich_CASE001",
+            }
+        ]
 
         mock_donor_case_model = DonorCaseModel(
             "rich", "IPS2302a", "25615bf2-f331-47ba-9d05-6659a513a1f2"
@@ -964,30 +977,29 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
 
         # Assert
         mock_create_multikey_case.assert_called_with(
-            'cma',
-            'CMA_Launcher',
-            ['MainSurveyID', 'ID'],
-            ['25615bf2-f331-47ba-9d05-6659a513a1f2', 'rich'],
+            "cma",
+            "CMA_Launcher",
+            ["MainSurveyID", "ID"],
+            ["25615bf2-f331-47ba-9d05-6659a513a1f2", "rich"],
             {
-                'mainSurveyID': '25615bf2-f331-47ba-9d05-6659a513a1f2',
-                'id': '1-rich',
-                'cmA_ForWhom': 'rich',
-                'cmA_AllowSpawning': '1',
-                'cmA_IsDonorCase': '1',
-                'cmA_EndDate': '29-02-2024',
-                'cmA_ContactData': (
-                    'MainSurveyID\t25615bf2-f331-47ba-9d05-6659a513a1f2\t'
-                    'ID\t1-rich\t'
-                    'CaseNote\tThis is the Donor Case. Select the add case button to spawn a new case with an empty shift. \t'
-                    'caseinfo.Year\t2024\t'
-                    'caseinfo.Survey\tIPS\t'
-                    'caseinfo.Month\tFebruary\t'
-                    'caseinfo.ShiftNo\t\t'
-                    'caseinfo.IOut\t'
-                )
-            }
+                "mainSurveyID": "25615bf2-f331-47ba-9d05-6659a513a1f2",
+                "id": "1-rich",
+                "cmA_ForWhom": "rich",
+                "cmA_AllowSpawning": "1",
+                "cmA_IsDonorCase": "1",
+                "cmA_EndDate": "29-02-2024",
+                "cmA_ContactData": (
+                    "MainSurveyID\t25615bf2-f331-47ba-9d05-6659a513a1f2\t"
+                    "ID\t1-rich\t"
+                    "CaseNote\tThis is the Donor Case. Select the add case button to spawn a new case with an empty shift. \t"
+                    "caseinfo.Year\t2024\t"
+                    "caseinfo.Survey\tIPS\t"
+                    "caseinfo.Month\tFebruary\t"
+                    "caseinfo.ShiftNo\t\t"
+                    "caseinfo.IOut\t"
+                ),
+            },
         )
-
 
     @pytest.mark.parametrize(
         "questionnaire_name, user",
