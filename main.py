@@ -153,7 +153,7 @@ def get_users_by_role(request: Request) -> tuple[list[str], int]:
         users_with_role = user_service.get_users_by_role(blaise_server_park, role)
 
         logging.info(
-            f"Finished Running Cloud Function - 'get_users' Returned {users_with_role}"
+            f"Finished Running Cloud Function - 'get-users-by-role"
         )
         return users_with_role, 200
     except (RequestError, AttributeError, ValueError, ConfigError) as e:
