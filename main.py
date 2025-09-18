@@ -134,7 +134,7 @@ def create_donor_cases(request: Request) -> tuple[str, int]:
 
 def get_users_by_role(request: Request) -> tuple[list[str], int]:
     try:
-        logging.info("Running Cloud Function - 'get_users'")
+        logging.info("Running Cloud Function - 'get-users-by-role'")
         validation_service = ValidationService()
 
         # Request Handler
