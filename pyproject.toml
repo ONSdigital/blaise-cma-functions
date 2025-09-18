@@ -2,7 +2,7 @@
 name = "blaise_cma_functions"
 version = "0.1.0"
 description = "A collection of cloud function related to Blaise Case Management Application (CMA)"
-authors = ["James Anthony Williams <81305008+JAWilliamsONS@users.noreply.github.com>"]
+authors = ["Blaise Team"]
 readme = "README.md"
 package-mode = false
 
