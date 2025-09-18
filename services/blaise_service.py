@@ -1,4 +1,3 @@
-import json
 import logging
 from typing import Any, Dict
 
@@ -111,13 +110,6 @@ class BlaiseService:
 
     def create_donor_case_for_user(self, donor_case_model: DonorCaseModel) -> None:
         try:
-            logging.info(
-                f"Creating donor case for user '{donor_case_model.user}' with data:\n"
-                f"  Questionnaire Name: {donor_case_model.questionnaire_name}\n"
-                f"  Key Names: {donor_case_model.key_names}\n"
-                f"  Key Values: {donor_case_model.key_values}\n"
-                f"  Data Fields: {json.dumps(donor_case_model.data_fields, indent=2)}"
-            )
             self.restapi_client.create_multikey_case(
                 self.cma_serverpark_name,
                 self.cma_questionnaire,
