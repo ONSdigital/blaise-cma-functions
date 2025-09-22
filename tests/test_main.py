@@ -36,6 +36,7 @@ class TestMainCreateDonorCaseFunction:
             ("IPS Pilot Interviewer"),
         ],
     )
+    @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
     @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
@@ -48,6 +49,7 @@ class TestMainCreateDonorCaseFunction:
         mock_get_all_existing_donor_cases,
         mock_get_users,
         mock_get_questionnaire,
+        mock_create_donor_case_for_user,
         role,
     ):
         # Arrange
@@ -115,6 +117,8 @@ class TestMainCreateDonorCaseFunction:
 
 class TestMainCreateDonorCasesHandleRequestStep:
 
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
+    @mock.patch("appconfig.config.Config.from_env")
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
     @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
@@ -125,10 +129,19 @@ class TestMainCreateDonorCasesHandleRequestStep:
         mock_get_all_existing_donor_cases,
         mock_get_users,
         mock_get_questionnaire,
+        mock_config_from_env,
+        mock_questionnaire_exists_on_server_park,
     ):
         # Arrange
+        mock_questionnaire_exists_on_server_park.return_value = True
+
+        mock_config_from_env.return_value = Config(
+            blaise_api_url="http://mock-url",
+            blaise_server_park="gusty",
+        )
+
         mock_request = flask.Request.from_values(
-            json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
+            json={"questionnaire_name": "LMS2309_GO1", "role": "IPS Manager"}
         )
         mock_get_questionnaire.return_value = {
             "name": "LMS2309_GO1",
@@ -148,13 +161,13 @@ class TestMainCreateDonorCasesHandleRequestStep:
         mock_get_users.return_value = [
             {
                 "name": "rich",
-                "role": "DST",
+                "role": "IPS Manager",
                 "serverParks": ["gusty", "cma"],
                 "defaultServerPark": "gusty",
             },
             {
                 "name": "sarah",
-                "role": "DST",
+                "role": "IPS Manager",
                 "serverParks": ["gusty"],
                 "defaultServerPark": "gusty",
             },
@@ -166,11 +179,21 @@ class TestMainCreateDonorCasesHandleRequestStep:
 
         # Act
         create_donor_cases(mock_request)
+        print(mock_create_donor_case_for_user.call_args_list)
 
         # Assert
-        assert mock_create_donor_case_for_user.called_with(mock_donor_case_model)
+        mock_create_donor_case_for_user.assert_called_once()
+        called_arg = mock_create_donor_case_for_user.call_args[0][0]
+        print(vars(called_arg))
+        assert called_arg.user == "sarah"
+        assert called_arg.guid == "25615bf2-f331-47ba-9d05-6659a513a1f2"
+        assert called_arg.questionnaire_name == "LMS2309_GO1"
+        assert called_arg.data_fields["cmA_ForWhom"] == "sarah"
 
+    @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
+    @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
+    @mock.patch.object(blaise_restapi.Client, "questionnaire_exists_on_server_park")
     @mock.patch.object(blaise_restapi.Client, "get_users")
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
     @mock.patch.object(blaise_restapi.Client, "create_multikey_case")
@@ -179,9 +202,24 @@ class TestMainCreateDonorCasesHandleRequestStep:
         mock_create_multikey_case,
         mock_get_questionnaire_data,
         mock_get_users,
+        mock_questionnaire_exists_on_server_park,
         mock_get_questionnaire_for_server_park,
+        mock_config_from_env,
+        mock_get_all_existing_donor_cases,
     ):
         # Arrange
+        mock_questionnaire_exists_on_server_park.return_value = True
+
+        mock_config_from_env.return_value = Config(
+            blaise_api_url="http://mock-url",
+            blaise_server_park="gusty",
+        )
+
+        mock_get_all_existing_donor_cases.return_value = ["sarah"]
+        mock_donor_case_model = DonorCaseModel(
+            "sarah", "LMS2309_GO1", "25615bf2-f331-47ba-9d05-6659a513a1f2"
+        )
+
         mock_request = flask.Request.from_values(
             json={"questionnaire_name": "IPS2402a", "role": "IPS Manager"}
         )
@@ -203,13 +241,13 @@ class TestMainCreateDonorCasesHandleRequestStep:
         mock_get_users.return_value = [
             {
                 "name": "rich",
-                "role": "DST",
+                "role": "IPS Manager",
                 "serverParks": ["gusty", "cma"],
                 "defaultServerPark": "gusty",
             },
             {
                 "name": "sarah",
-                "role": "DST",
+                "role": "IPS Manager",
                 "serverParks": ["gusty"],
                 "defaultServerPark": "gusty",
             },
@@ -228,7 +266,7 @@ class TestMainCreateDonorCasesHandleRequestStep:
         create_donor_cases(mock_request)
 
         # Assert
-        assert mock_create_multikey_case.called_with(
+        mock_create_multikey_case.assert_called_with(
             "cma",
             "CMA_Launcher",
             ["MainSurveyID", "ID"],
@@ -239,7 +277,8 @@ class TestMainCreateDonorCasesHandleRequestStep:
                 "cmA_ForWhom": "rich",
                 "cmA_AllowSpawning": "1",
                 "cmA_IsDonorCase": "1",
-                "cmA_ContactData": "MainSurveyID    25615bf2-f331-47ba-9d05-6659a513a1f2    ID    rich    ContactInfoShort    IPS,April    CaseNote    This is the Donor Case. Select add case to spawn a new case with an empty shift.    Year    2023    Month    April    Stage    2303    ShiftNo    '",
+                "cmA_EndDate": "29-02-2024",
+                "cmA_ContactData": "MainSurveyID\t25615bf2-f331-47ba-9d05-6659a513a1f2\tID\trich\tCaseNote\tThis is the Donor Case. Select the add case button to spawn a new case with an empty shift. \tcaseinfo.Year\t2024\tcaseinfo.Survey\tIPS\tcaseinfo.Month\tFebruary\tcaseinfo.ShiftNo\t\tcaseinfo.IOut\t",
             },
         )
 
@@ -776,23 +815,43 @@ class TestMainReissueNewDonorCaseFunction:
 
 class TestMainReissueNewDonorCasesHandleRequestStep:
 
+    @mock.patch(
+        "services.validation_service.ValidationService.validate_config",
+        return_value=None,
+    )
+    @mock.patch(
+        "services.blaise_service.BlaiseService.get_existing_donor_cases_for_user"
+    )
+    @mock.patch("appconfig.config.Config.from_env")
     @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
     @mock.patch("services.blaise_service.BlaiseService.get_users")
     @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
     @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
+    @mock.patch(
+        "services.validation_service.ValidationService.validate_questionnaire_exists"
+    )
     def test_reissue_new_donor_case_is_called_the_correct_number_of_times_with_the_correct_information(
         self,
+        mock_validate_questionnaire_exists,
         mock_create_donor_case_for_user,
         mock_get_all_existing_donor_cases,
         mock_get_users,
         mock_get_questionnaire,
+        mock_config,
+        mock_get_existing_donor_cases_for_user,
+        mock_validate_config,
     ):
         # Arrange
-        mock_request = flask.Request.from_values(
-            json={"questionnaire_name": "IPS2402a", "user": "test-user"}
+        mock_config.return_value = Config(
+            blaise_api_url="http://mock-blaise-api-url", blaise_server_park="gusty"
         )
+
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "user": "rich"}
+        )
+
         mock_get_questionnaire.return_value = {
-            "name": "LMS2309_GO1",
+            "name": "IPS2402a",
             "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",
             "serverParkName": "gusty",
             "installDate": "2024-04-24T09:49:34.2685322+01:00",
@@ -820,17 +879,34 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
                 "defaultServerPark": "gusty",
             },
         ]
-        mock_get_all_existing_donor_cases.return_value = ["rich"]
-        mock_donor_case_model = DonorCaseModel(
-            "rich", "LMS2309_GO1", "25615bf2-f331-47ba-9d05-6659a513a1f2"
-        )
+
+        mock_get_existing_donor_cases_for_user.return_value = [
+            {
+                "mainSurveyID": "25615bf2-f331-47ba-9d05-6659a513a1f2",
+                "cmA_IsDonorCase": "1",
+                "id": "rich_CASE001",
+            }
+        ]
 
         # Act
         reissue_new_donor_case(mock_request)
 
         # Assert
-        assert mock_create_donor_case_for_user.called_with(mock_donor_case_model)
+        mock_create_donor_case_for_user.assert_called_once()
+        called_model = mock_create_donor_case_for_user.call_args[0][0]
 
+        assert called_model.user == "rich"
+        assert called_model.questionnaire_name == "IPS2402a"
+        assert called_model.guid == "25615bf2-f331-47ba-9d05-6659a513a1f2"
+
+    @mock.patch("services.blaise_service.BlaiseService.get_questionnaire")
+    @mock.patch(
+        "services.blaise_service.BlaiseService.get_existing_donor_cases_for_user"
+    )
+    @mock.patch(
+        "services.validation_service.ValidationService.validate_questionnaire_exists"
+    )
+    @mock.patch("appconfig.config.Config.from_env")
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_for_server_park")
     @mock.patch.object(blaise_restapi.Client, "get_users")
     @mock.patch.object(blaise_restapi.Client, "get_questionnaire_data")
@@ -841,26 +917,19 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
         mock_get_questionnaire_data,
         mock_get_users,
         mock_get_questionnaire_for_server_park,
+        mock_config,
+        mock_validate_questionnaire_exists,
+        mock_get_existing_donor_cases_for_user,
+        mock_get_questionnaire,
     ):
         # Arrange
-        mock_request = flask.Request.from_values(
-            json={"questionnaire_name": "IPS2402a", "user": "IPS Manager"}
+        mock_config.return_value = Config(
+            blaise_api_url="http://mock-blaise-api-url", blaise_server_park="gusty"
         )
-        mock_get_questionnaire_for_server_park.return_value = {
-            "name": "IPS2302a",
-            "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",
-            "serverParkName": "gusty",
-            "installDate": "2024-04-24T09:49:34.2685322+01:00",
-            "status": "Active",
-            "dataRecordCount": 0,
-            "hasData": False,
-            "blaiseVersion": "5.9.9.2735",
-            "nodes": [
-                {"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Active"},
-                {"nodeName": "blaise-gusty-data-entry-1", "nodeStatus": "Active"},
-                {"nodeName": "blaise-gusty-data-entry-2", "nodeStatus": "Active"},
-            ],
-        }
+
+        mock_request = flask.Request.from_values(
+            json={"questionnaire_name": "IPS2402a", "user": "rich"}
+        )
         mock_get_users.return_value = [
             {
                 "name": "rich",
@@ -875,32 +944,60 @@ class TestMainReissueNewDonorCasesHandleRequestStep:
                 "defaultServerPark": "gusty",
             },
         ]
-        mock_get_questionnaire_data.return_value = {
-            "questionnaireName": "CMA_Launcher",
-            "questionnaireId": "25615bf2-f331-47ba-9d05-6659a513a1f2",
-            "reportingData": [
-                {"cmA_ForWhom": "999"},
-                {"cmA_ForWhom": "james"},
-                {"cmA_ForWhom": "rich"},
+        mock_get_questionnaire.return_value = {
+            "name": "IPS2402a",
+            "id": "25615bf2-f331-47ba-9d05-6659a513a1f2",
+            "serverParkName": "gusty",
+            "installDate": "2024-04-24T09:49:34.2685322+01:00",
+            "status": "Active",
+            "dataRecordCount": 0,
+            "hasData": False,
+            "blaiseVersion": "5.9.9.2735",
+            "nodes": [
+                {"nodeName": "blaise-gusty-mgmt", "nodeStatus": "Active"},
+                {"nodeName": "blaise-gusty-data-entry-1", "nodeStatus": "Active"},
+                {"nodeName": "blaise-gusty-data-entry-2", "nodeStatus": "Active"},
             ],
         }
+
+        mock_get_existing_donor_cases_for_user.return_value = [
+            {
+                "mainSurveyID": "25615bf2-f331-47ba-9d05-6659a513a1f2",
+                "cmA_IsDonorCase": "1",
+                "id": "rich_CASE001",
+            }
+        ]
+
+        mock_donor_case_model = DonorCaseModel(
+            "rich", "IPS2302a", "25615bf2-f331-47ba-9d05-6659a513a1f2"
+        )
 
         # Act
         reissue_new_donor_case(mock_request)
 
         # Assert
-        assert mock_create_multikey_case.called_with(
+        mock_create_multikey_case.assert_called_with(
             "cma",
             "CMA_Launcher",
             ["MainSurveyID", "ID"],
             ["25615bf2-f331-47ba-9d05-6659a513a1f2", "rich"],
             {
                 "mainSurveyID": "25615bf2-f331-47ba-9d05-6659a513a1f2",
-                "id": "rich",
+                "id": "1-rich",
                 "cmA_ForWhom": "rich",
                 "cmA_AllowSpawning": "1",
                 "cmA_IsDonorCase": "1",
-                "cmA_ContactData": "MainSurveyID    25615bf2-f331-47ba-9d05-6659a513a1f2    ID    rich    ContactInfoShort    IPS,April    CaseNote    This is the Donor Case. Select add case to spawn a new case with an empty shift.    Year    2023    Month    April    Stage    2303    ShiftNo    '",
+                "cmA_EndDate": "29-02-2024",
+                "cmA_ContactData": (
+                    "MainSurveyID\t25615bf2-f331-47ba-9d05-6659a513a1f2\t"
+                    "ID\t1-rich\t"
+                    "CaseNote\tThis is the Donor Case. Select the add case button to spawn a new case with an empty shift. \t"
+                    "caseinfo.Year\t2024\t"
+                    "caseinfo.Survey\tIPS\t"
+                    "caseinfo.Month\tFebruary\t"
+                    "caseinfo.ShiftNo\t\t"
+                    "caseinfo.IOut\t"
+                ),
             },
         )
 
@@ -1384,7 +1481,7 @@ class TestMainGetUsersByRoleHandleRequestStep:
         result = get_users_by_role(mock_request)
 
         # Assert
-        assert mock_get_users.called_with(mock_request)
+        mock_get_users.assert_called_with(mock_config.return_value.blaise_server_park)
         assert len(result) == 2
         assert len(result[0]) == 1
         assert result[0][0] == "billy"
@@ -1435,7 +1532,7 @@ class TestMainGetUsersByRoleHandleRequestStep:
         result = get_users_by_role(mock_request)
 
         # Assert
-        assert mock_get_users.called_with(mock_request)
+        mock_get_users.assert_called_with(mock_config.return_value.blaise_server_park)
         assert len(result) == 2
         assert len(result[0]) == 1
         assert result[0][0] == "rich"
@@ -1492,7 +1589,7 @@ class TestMainGetUsersByRoleHandleRequestStep:
         result = get_users_by_role(mock_request)
 
         # Assert
-        assert mock_get_users.called_with(mock_request)
+        mock_get_users.assert_called_with(mock_config.return_value.blaise_server_park)
         assert len(result) == 2
         assert len(result[0]) == 1
         assert result[0][0] == "jean"
@@ -1549,7 +1646,6 @@ class TestMainGetUsersByRoleHandleRequestStep:
         result = get_users_by_role(mock_request)
 
         # Assert
-        assert mock_get_users.called_with(mock_request)
         assert len(result) == 2
         assert len(result[0]) == 1
         assert (
@@ -1603,7 +1699,7 @@ class TestMainGetUsersByRoleHandleRequestStep:
         result = get_users_by_role(mock_request)
 
         # Assert
-        assert mock_get_users.called_with(mock_request)
+        mock_get_users.assert_called_with(mock_config.return_value.blaise_server_park)
         assert len(result) == 2
         assert len(result[0]) == 0
         assert result[1] == 200

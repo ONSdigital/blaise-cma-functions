@@ -134,7 +134,7 @@ def create_donor_cases(request: Request) -> tuple[str, int]:
 
 def get_users_by_role(request: Request) -> tuple[list[str], int]:
     try:
-        logging.info("Running Cloud Function - 'get_users'")
+        logging.info("Running Cloud Function - 'get-users-by-role'")
         validation_service = ValidationService()
 
         # Request Handler
@@ -152,7 +152,7 @@ def get_users_by_role(request: Request) -> tuple[list[str], int]:
         user_service = UserService(blaise_service)
         users_with_role = user_service.get_users_by_role(blaise_server_park, role)
 
-        logging.info("Finished Running Cloud Function - 'get_users'")
+        logging.info(f"Finished Running Cloud Function - 'get-users-by-role")
         return users_with_role, 200
     except (RequestError, AttributeError, ValueError, ConfigError) as e:
         error_message = f"Error retrieving users: {e}"
