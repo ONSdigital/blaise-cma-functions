@@ -1,73 +1,106 @@
-# blaise-cma-functions
+# Blaise CMA Functions
 
-This repo will host cloud functions used for Case Management Application (CMA).
+This repository contains Google Cloud Functions used for the Blaise Case Management Application (CMA). CMA is a specialised application deployed to Blaise for managing CAPI mode data collection.
 
+## Cloud Functions
 
-## Create Donor Cases
-This is a HTTP triggered cloud function that uses the blaise-api-python-client to connect to the multikey endpoints of the Blaise Rest API. 
-It will create a new donor case for each user with a given role (i.e. IPS Field Interviewer) in a given questionnaire (i.e. IPS2405a) if they do not already have a donor case.
+### Create Donor Cases
 
-example HTTP request
-```python
+An HTTP-triggered Cloud Function that creates donor cases for users with specific roles in a given questionnaire. This function uses the `blaise-api-python-client` to interact with Blaise via our REST API wrapper.
+
+Request Format:
+
+```json
 {
     "questionnaire_name": "IPS2405a",
     "role": "IPS Field Interviewer"
 }
 ```
-example request to the `create_multikey_case` within the 'blaise_api_python_client'
-```python
-"cma",
-        "CMA_Launcher",
-        ["MainSurveyID", "ID"],
-        ["25615bf2-f331-47ba-9d05-6659a513a1f2", "rich"],
-        {
-            "mainSurveyID": "25615bf2-f331-47ba-9d05-6659a513a1f2",
-            "id": "rich",
-            "cmA_ForWhom": "rich",
-            "cmA_AllowSpawning": "1",
-            "cmA_IsDonorCase": "1",
-            "cmA_ContactData": "MainSurveyID    25615bf2-f331-47ba-9d05-6659a513a1f2    ID    rich    ContactInfoShort    IPS,May    CaseNote    This is the Donor Case. Select add case to spawn a new case with an empty shift.    Year    2024    Month    April    Stage    2303    ShiftNo    ",
-        },
 
-```
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| questionnaire_name | string | The name of the questionnaire (e.g., "IPS2405a") |
+| role | string | The role to create donor cases for (e.g., "IPS Field Interviewer") |
 
-## Reissue New Donor Case
+### Reissue Donor Case
 
-example HTTP request
-```python
+An HTTP-triggered Cloud Function that reissues a donor case for a specific user in a given questionnaire. This function uses the `blaise-api-python-client` to interact with Blaise via our REST API wrapper.
+
+Request Format:
+
+```json
 {
     "questionnaire_name": "IPS2405a",
     "user": "test-user"
 }
 ```
-### Local Setup
 
-Clone the project locally:
-```shell
-  git clone https://github.com/ONSdigital/blaise-cma-functions.git
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| questionnaire_name | string | The name of the questionnaire |
+| user | string | The username to reissue the donor case for |
+
+## Implementation Details
+
+The functions use the `blaise-api-python-client` to create entries in the `CMA_Launcher` database with the following structure:
+
+```python
+{
+    "mainSurveyID": "<uuid>",
+    "id": "<username>",
+    "cmA_ForWhom": "<username>",
+    "cmA_AllowSpawning": "1",
+    "cmA_IsDonorCase": "1",
+    "cmA_ContactData": "MainSurveyID    <uuid>    ID    <username>    ContactInfoShort    <survey_info>    CaseNote    This is the Donor Case. Select add case to spawn a new case with an empty shift.    Year    <year>    Month    <month>    Stage    <stage>    ShiftNo    "
+}
 ```
 
-Install poetry:
+## Local Development Setup
+
+1. Clone the project locally:
+
+   ```shell
+   git clone https://github.com/ONSdigital/blaise-cma-functions.git
+   cd blaise-cma-functions
+   ```
+
+2. Install Poetry if you haven't already:
+
+   ```shell
+   pip install poetry
+   ```
+
+3. Install project dependencies:
+
+   ```shell
+   poetry install
+   ```
+
+The following environment variables are required:
+
+| Variable | Description |
+|----------|-------------|
+| BLAISE_API_URL | The URL of the Blaise REST API |
+| BLAISE_SERVER_PARK | The Blaise server park name |
+
+## Development Commands
+
+This project uses `make` commands to streamline development tasks. The following commands are available:
+
+Format code using black and isort:
+
 ```shell
-  pip install poetry
+make format
 ```
 
-Install dependencies:
+Lint code using flake8 and mypy:
+
 ```shell
-  poetry install
+make lint
 ```
 
-Run make format:
-```shell
-  make format
-```
+Run the test suite using pytest:
 
-Run make lint:
 ```shell
-  make lint
-```
-
-Run make test:
-```shell
-  make test
+make test
 ```
