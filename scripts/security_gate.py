@@ -134,15 +134,19 @@ def main(file):
     # SUMMARY
     # =========================
 
-    print("\n================ SUMMARY ================\n")
+    # =========================
+# SUMMARY
+# =========================
 
-    print(f"🔴 FIXABLE: {len(fixable)}")
-    print(f"🟠 NO FIX AVAILABLE: {len(no_fix)}")
+    print("\n================ SUMMARY ================\n", flush=True)
 
-    print("\n📊 Breakdown by layer:")
-    print(f"   OS           : {os_count}")
-    print(f"   LANG_RUNTIME : {lang_count}")
-    print(f"   UNKNOWN      : {unknown_count}")
+    print(f"🔴 FIXABLE: {len(fixable)}", flush=True)
+    print(f"🟠 NO FIX / OS: {len(no_fix)}", flush=True)
+
+    print("\n📊 Breakdown by layer:", flush=True)
+    print(f"   OS           : {os_count}", flush=True)
+    print(f"   LANG_RUNTIME : {lang_count}", flush=True)
+    print(f"   UNKNOWN      : {unknown_count}", flush=True)
 
     # =========================
     # CI DECISION
