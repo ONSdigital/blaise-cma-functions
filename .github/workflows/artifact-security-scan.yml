@@ -1,0 +1,36 @@
+name: Container Security Scan (Advanced)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_NAME: my-app:latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t $IMAGE_NAME .
+
+      - name: Run Trivy scan (full output)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}
+          format: json
+          output: trivy.json
+          severity: CRITICAL,HIGH,MEDIUM,LOW
+
+      - name: Security classification gate
+        run: python scripts/security_gate.py trivy.json
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report
+          path: trivy.json
