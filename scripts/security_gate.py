@@ -120,10 +120,15 @@ def main(file):
                 unknown_count += 1
 
             # classification for CI decision
-            if fixed:
-                fixable.append(vuln)
+            # =========================
+            # CI DECISION RULES
+            # =========================
+
+            if fixed and category != "OS":
+                fixable.append((vuln, category))
+
             else:
-                no_fix.append(vuln)
+                no_fix.append((vuln, category))
 
     # =========================
     # SUMMARY
