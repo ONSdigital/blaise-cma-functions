@@ -10,12 +10,13 @@ VENDOR_PREFIXES = [
     "us-docker.pkg.dev",
     "google",
     "cloudfunctions",
-    "cloud-run"
+    "cloud-run",
 ]
 
 # =========================
 # CLASSIFICATION
 # =========================
+
 
 def classify(vuln, result):
     pkg = (vuln.get("PkgName") or "").lower()
@@ -25,10 +26,21 @@ def classify(vuln, result):
     # 1. OS LAYER
     # -------------------------
     os_keywords = [
-        "lib", "curl", "git", "openssl",
-        "imagemagick", "krb5", "ffmpeg",
-        "openjpeg", "intel", "perl", "bash",
-        "zlib", "glib", "gcc", "gdkpixbuf"
+        "lib",
+        "curl",
+        "git",
+        "openssl",
+        "imagemagick",
+        "krb5",
+        "ffmpeg",
+        "openjpeg",
+        "intel",
+        "perl",
+        "bash",
+        "zlib",
+        "glib",
+        "gcc",
+        "gdkpixbuf",
     ]
 
     if pkg_type in ["os", "debian", "ubuntu", "alpine"]:
@@ -50,7 +62,7 @@ def classify(vuln, result):
         "pypi",
         "poetry",
         "virtualenv",
-        "stdlib"
+        "stdlib",
     ]
 
     if any(k in pkg for k in lang_ecosystems):
@@ -65,6 +77,7 @@ def classify(vuln, result):
 # =========================
 # MAIN
 # =========================
+
 
 def main(file):
     with open(file) as f:
