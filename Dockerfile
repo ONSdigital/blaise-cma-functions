@@ -3,6 +3,14 @@ FROM python:3.13-bullseye
 
 WORKDIR /app
 
+# copy dependency files FIRST (important for caching correctness)
+COPY pyproject.toml poetry.lock ./
+
+# install python dependencies into image
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-interaction --no-ansi
+
+# now copy actual app
 COPY . .
 
 RUN pip install --upgrade pip

@@ -9,16 +9,16 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE_NAME: my-app:latest
+      IMAGE_NAME: my-app:${{ github.sha }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
       - name: Build image
-        run: docker build -t $IMAGE_NAME .
+        run: docker build --no-cache --pull -t $IMAGE_NAME .
 
-      - name: Run Trivy scan (full output)
+      - name: Run Trivy scan
         uses: aquasecurity/trivy-action@0.35.0
         with:
           image-ref: ${{ env.IMAGE_NAME }}
