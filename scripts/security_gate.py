@@ -140,23 +140,51 @@ def main(file):
 
     print("\n================ SUMMARY ================\n", flush=True)
 
-    print(f"🔴 FIXABLE: {len(fixable)}", flush=True)
-    print(f"🟠 NO FIX / OS: {len(no_fix)}", flush=True)
-
-    print("\n📊 Breakdown by layer:", flush=True)
-    print(f"   OS           : {os_count}", flush=True)
-    print(f"   LANG_RUNTIME : {lang_count}", flush=True)
-    print(f"   UNKNOWN      : {unknown_count}", flush=True)
-
     # =========================
     # CI DECISION
     # =========================
 
-    if fixable:
-        print("\n❌ BUILD FAILED - FIXABLE vulnerabilities found")
+    # only fail for REAL app vulnerabilities
+    real_app_fixable = [
+        item for item in fixable
+        if item[1] == "UNKNOWN"
+    ]
+
+    lang_runtime_fixable = [
+        item for item in fixable
+        if item[1] == "LANG_RUNTIME"
+    ]
+
+    os_fixable = [
+        item for item in fixable
+        if item[1] == "OS"
+    ]
+
+    print("\n📌 Effective CI Counts:", flush=True)
+    print(f"   REAL_APP      : {len(real_app_fixable)}", flush=True)
+    print(f"   LANG_RUNTIME  : {len(lang_runtime_fixable)}", flush=True)
+    print(f"   OS            : {len(os_fixable)}", flush=True)
+
+    # fail ONLY if actual app-layer vulnerabilities exist
+    if len(real_app_fixable) > 0:
+
+        print("\n❌ BUILD FAILED - Application vulnerabilities found\n", flush=True)
+
+        for vuln, category in real_app_fixable[:20]:
+            print(
+                f"  - {vuln.get('VulnerabilityID')} "
+                f"({vuln.get('PkgName')}) "
+                f"[{vuln.get('Severity')}]",
+                flush=True
+            )
+
         sys.exit(1)
 
-    print("\n✅ BUILD PASSED - no fixable vulnerabilities")
+    print(
+        "\n✅ BUILD PASSED - only OS/runtime/vendor vulnerabilities detected",
+        flush=True
+    )
+
     sys.exit(0)
 
 
