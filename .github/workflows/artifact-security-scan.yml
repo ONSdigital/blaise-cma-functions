@@ -4,8 +4,6 @@ on:
   push:
   pull_request:
   
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 jobs:
   scan:
     runs-on: ubuntu-latest
@@ -15,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Build image
         run: docker build -t $IMAGE_NAME .
