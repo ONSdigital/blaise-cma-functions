@@ -82,6 +82,7 @@ all_os = []
 all_lang = []
 all_unknown = []
 
+
 def main(file):
     with open(file) as f:
         data = json.load(f)
@@ -145,7 +146,9 @@ def main(file):
 
     print("\n================ SUMMARY ================\n", flush=True)
 
-    print(f"📦 TOTAL CVEs: {len(all_os) + len(all_lang) + len(all_unknown)}", flush=True)
+    print(
+        f"📦 TOTAL CVEs: {len(all_os) + len(all_lang) + len(all_unknown)}", flush=True
+    )
 
     print("\n📊 Breakdown by layer:", flush=True)
     print(f"   OS            : {len(all_os)}", flush=True)
@@ -175,14 +178,14 @@ def main(file):
                 f"  - {vuln.get('VulnerabilityID')} "
                 f"({vuln.get('PkgName')}) "
                 f"[{vuln.get('Severity')}]",
-                flush=True
+                flush=True,
             )
 
         sys.exit(1)
 
     print(
         "\n✅ BUILD PASSED - only OS/runtime/vendor vulnerabilities detected",
-        flush=True
+        flush=True,
     )
 
     sys.exit(0)
