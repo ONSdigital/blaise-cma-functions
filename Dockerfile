@@ -3,6 +3,11 @@ FROM python:3.13-bullseye
 
 WORKDIR /app
 
+
+RUN pip install --upgrade pip
+RUN pip install "poetry==2.1.4" requests pytz
+RUN poetry self add poetry-plugin-export
+
 # copy dependency files FIRST (important for caching correctness)
 COPY pyproject.toml poetry.lock ./
 
@@ -12,10 +17,6 @@ RUN poetry config virtualenvs.create false \
 
 # now copy actual app
 COPY . .
-
-RUN pip install --upgrade pip
-RUN pip install "poetry==2.1.4" requests pytz
-RUN poetry self add poetry-plugin-export
 
 RUN apt update \
     && apt install -y wget gnupg2 \
