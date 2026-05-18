@@ -135,8 +135,8 @@ def main(file):
     # =========================
 
     # =========================
-# SUMMARY
-# =========================
+    # SUMMARY
+    # =========================
 
     print("\n================ SUMMARY ================\n", flush=True)
 
@@ -145,20 +145,11 @@ def main(file):
     # =========================
 
     # only fail for REAL app vulnerabilities
-    real_app_fixable = [
-        item for item in fixable
-        if item[1] == "UNKNOWN"
-    ]
+    real_app_fixable = [item for item in fixable if item[1] == "UNKNOWN"]
 
-    lang_runtime_fixable = [
-        item for item in fixable
-        if item[1] == "LANG_RUNTIME"
-    ]
+    lang_runtime_fixable = [item for item in fixable if item[1] == "LANG_RUNTIME"]
 
-    os_fixable = [
-        item for item in fixable
-        if item[1] == "OS"
-    ]
+    os_fixable = [item for item in fixable if item[1] == "OS"]
 
     print("\n📌 Effective CI Counts:", flush=True)
     print(f"   REAL_APP      : {len(real_app_fixable)}", flush=True)
@@ -175,14 +166,14 @@ def main(file):
                 f"  - {vuln.get('VulnerabilityID')} "
                 f"({vuln.get('PkgName')}) "
                 f"[{vuln.get('Severity')}]",
-                flush=True
+                flush=True,
             )
 
         sys.exit(1)
 
     print(
         "\n✅ BUILD PASSED - only OS/runtime/vendor vulnerabilities detected",
-        flush=True
+        flush=True,
     )
 
     sys.exit(0)
