@@ -37,18 +37,26 @@ class DonorCaseService:
     def check_and_create_donor_case_for_users(
         self, questionnaire_name: str, guid: str, users_with_role: list
     ) -> None:
+        expected_number_of_cases_to_create = 0
         total_donor_cases_created = 0
         try:
             users_with_existing_donor_cases = (
                 self._blaise_service.get_all_existing_donor_cases(guid)
             )
-            for user in users_with_role:
+            users_with_existing_donor_cases_excluding_duplicates = (
+                self.filter_duplicate_donor_cases(users_with_existing_donor_cases)
+            )
+            users_with_role_excluding_duplicates = list(dict.fromkeys(users_with_role))
+
+            for user in users_with_role_excluding_duplicates:
                 if self.donor_case_does_not_exist(
-                    user, users_with_existing_donor_cases
+                    user, users_with_existing_donor_cases_excluding_duplicates
                 ):
+                    expected_number_of_cases_to_create += 1
                     donor_case_model = DonorCaseModel(user, questionnaire_name, guid)
                     self._blaise_service.create_donor_case_for_user(donor_case_model)
                     total_donor_cases_created += 1
+                    users_with_existing_donor_cases_excluding_duplicates.append(user)
         except BlaiseError as e:
             raise BlaiseError(e.message)
         except DonorCaseError as e:
@@ -61,13 +69,8 @@ class DonorCaseService:
             logging.error(error_message)
             raise DonorCaseError(error_message)
 
-        users_with_existing_donor_cases_excluding_duplicates = (
-            self.filter_duplicate_donor_cases(users_with_existing_donor_cases)
-        )
-
         self.assert_expected_number_of_donor_cases_created(
-            expected_number_of_cases_to_create=len(users_with_role)
-            - len(users_with_existing_donor_cases_excluding_duplicates),
+            expected_number_of_cases_to_create=expected_number_of_cases_to_create,
             total_donor_cases_created=total_donor_cases_created,
         )
 

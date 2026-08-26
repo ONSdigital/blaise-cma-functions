@@ -298,6 +298,137 @@ class TestCheckAndCreateDonorCaseForUsers:
             expected_number_of_cases_to_create=3, total_donor_cases_created=3
         )
 
+    @mock.patch("services.donor_case_service.DonorCaseModel")
+    @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
+    @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
+    @mock.patch(
+        "services.donor_case_service.DonorCaseService.assert_expected_number_of_donor_cases_created"
+    )
+    def test_check_and_create_donor_case_expected_count_only_uses_users_with_role(
+        self,
+        mock_assert_expected_number_of_donor_cases_created,
+        _mock_create_donor_case_for_user,
+        mock_get_all_existing_donor_cases,
+        _mock_donor_case_model,
+        donor_case_service,
+    ):
+        # arrange
+        mock_get_all_existing_donor_cases.return_value = [
+            "alice",
+            "bob",
+            "carol",
+        ]
+
+        questionnaire_name = "IPS2406a"
+        guid = "7bded891-3aa6-41b2-824b-0be514018806"
+        users_with_role = ["james"]
+
+        # act
+        donor_case_service.check_and_create_donor_case_for_users(
+            questionnaire_name, guid, users_with_role
+        )
+
+        # assert
+        mock_assert_expected_number_of_donor_cases_created.assert_called_with(
+            expected_number_of_cases_to_create=1, total_donor_cases_created=1
+        )
+
+    @mock.patch("services.donor_case_service.DonorCaseModel")
+    @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
+    @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
+    @mock.patch(
+        "services.donor_case_service.DonorCaseService.assert_expected_number_of_donor_cases_created"
+    )
+    def test_check_and_create_donor_case_deduplicates_users_with_role(
+        self,
+        mock_assert_expected_number_of_donor_cases_created,
+        mock_create_donor_case_for_user,
+        mock_get_all_existing_donor_cases,
+        _mock_donor_case_model,
+        donor_case_service,
+    ):
+        # arrange
+        mock_get_all_existing_donor_cases.return_value = []
+
+        questionnaire_name = "IPS2406a"
+        guid = "7bded891-3aa6-41b2-824b-0be514018806"
+        users_with_role = ["james", "james"]
+
+        # act
+        donor_case_service.check_and_create_donor_case_for_users(
+            questionnaire_name, guid, users_with_role
+        )
+
+        # assert
+        assert mock_create_donor_case_for_user.call_count == 1
+        mock_assert_expected_number_of_donor_cases_created.assert_called_with(
+            expected_number_of_cases_to_create=1, total_donor_cases_created=1
+        )
+
+    @mock.patch("services.donor_case_service.DonorCaseModel")
+    @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
+    @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
+    @mock.patch(
+        "services.donor_case_service.DonorCaseService.assert_expected_number_of_donor_cases_created"
+    )
+    def test_check_and_create_donor_case_does_not_create_new_case_for_existing_user(
+        self,
+        mock_assert_expected_number_of_donor_cases_created,
+        mock_create_donor_case_for_user,
+        mock_get_all_existing_donor_cases,
+        _mock_donor_case_model,
+        donor_case_service,
+    ):
+        # arrange
+        mock_get_all_existing_donor_cases.return_value = ["ips3"]
+
+        questionnaire_name = "IPS2406a"
+        guid = "7bded891-3aa6-41b2-824b-0be514018806"
+        users_with_role = ["ips3"]
+
+        # act
+        donor_case_service.check_and_create_donor_case_for_users(
+            questionnaire_name, guid, users_with_role
+        )
+
+        # assert
+        mock_create_donor_case_for_user.assert_not_called()
+        mock_assert_expected_number_of_donor_cases_created.assert_called_with(
+            expected_number_of_cases_to_create=0, total_donor_cases_created=0
+        )
+
+    @mock.patch("services.donor_case_service.DonorCaseModel")
+    @mock.patch("services.blaise_service.BlaiseService.get_all_existing_donor_cases")
+    @mock.patch("services.blaise_service.BlaiseService.create_donor_case_for_user")
+    @mock.patch(
+        "services.donor_case_service.DonorCaseService.assert_expected_number_of_donor_cases_created"
+    )
+    def test_check_and_create_donor_case_does_not_create_new_cases_for_existing_users(
+        self,
+        mock_assert_expected_number_of_donor_cases_created,
+        mock_create_donor_case_for_user,
+        mock_get_all_existing_donor_cases,
+        _mock_donor_case_model,
+        donor_case_service,
+    ):
+        # arrange
+        mock_get_all_existing_donor_cases.return_value = ["ips1", "ips2"]
+
+        questionnaire_name = "IPS2406a"
+        guid = "7bded891-3aa6-41b2-824b-0be514018806"
+        users_with_role = ["ips1", "ips2"]
+
+        # act
+        donor_case_service.check_and_create_donor_case_for_users(
+            questionnaire_name, guid, users_with_role
+        )
+
+        # assert
+        mock_create_donor_case_for_user.assert_not_called()
+        mock_assert_expected_number_of_donor_cases_created.assert_called_with(
+            expected_number_of_cases_to_create=0, total_donor_cases_created=0
+        )
+
     def test_assert_expected_number_of_donor_cases_created_logs_an_error(
         self, donor_case_service, caplog
     ):
