@@ -48,7 +48,9 @@ class DonorCaseService:
             users_with_role_excluding_duplicates = list(dict.fromkeys(users_with_role))
 
             # Convert to set once for O(1) membership checks, keep list for logging
-            existing_users_set = set(users_with_existing_donor_cases_excluding_duplicates)
+            existing_users_set = set(
+                users_with_existing_donor_cases_excluding_duplicates
+            )
 
             # Compute expected count up front from deduplicated inputs using set
             # This remains independent of the loop to detect if create logic fails
