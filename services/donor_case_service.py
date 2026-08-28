@@ -47,12 +47,15 @@ class DonorCaseService:
             )
             users_with_role_excluding_duplicates = list(dict.fromkeys(users_with_role))
 
-            # Compute expected count up front from deduplicated inputs
+            # Convert to set once for O(1) membership checks, keep list for logging
+            existing_users_set = set(users_with_existing_donor_cases_excluding_duplicates)
+
+            # Compute expected count up front from deduplicated inputs using set
             # This remains independent of the loop to detect if create logic fails
             expected_number_of_cases_to_create = sum(
                 1
                 for user in users_with_role_excluding_duplicates
-                if user not in users_with_existing_donor_cases_excluding_duplicates
+                if user not in existing_users_set
             )
 
             for user in users_with_role_excluding_duplicates:
@@ -63,6 +66,7 @@ class DonorCaseService:
                     self._blaise_service.create_donor_case_for_user(donor_case_model)
                     total_donor_cases_created += 1
                     users_with_existing_donor_cases_excluding_duplicates.append(user)
+                    existing_users_set.add(user)
         except BlaiseError as e:
             raise BlaiseError(e.message)
         except DonorCaseError as e:
