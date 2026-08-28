@@ -37,7 +37,6 @@ class DonorCaseService:
     def check_and_create_donor_case_for_users(
         self, questionnaire_name: str, guid: str, users_with_role: list
     ) -> None:
-        expected_number_of_cases_to_create = 0
         total_donor_cases_created = 0
         try:
             users_with_existing_donor_cases = (
@@ -48,11 +47,18 @@ class DonorCaseService:
             )
             users_with_role_excluding_duplicates = list(dict.fromkeys(users_with_role))
 
+            # Compute expected count up front from deduplicated inputs
+            # This remains independent of the loop to detect if create logic fails
+            expected_number_of_cases_to_create = sum(
+                1
+                for user in users_with_role_excluding_duplicates
+                if user not in users_with_existing_donor_cases_excluding_duplicates
+            )
+
             for user in users_with_role_excluding_duplicates:
                 if self.donor_case_does_not_exist(
                     user, users_with_existing_donor_cases_excluding_duplicates
                 ):
-                    expected_number_of_cases_to_create += 1
                     donor_case_model = DonorCaseModel(user, questionnaire_name, guid)
                     self._blaise_service.create_donor_case_for_user(donor_case_model)
                     total_donor_cases_created += 1
