@@ -42,13 +42,33 @@ class DonorCaseService:
             users_with_existing_donor_cases = (
                 self._blaise_service.get_all_existing_donor_cases(guid)
             )
-            for user in users_with_role:
+            users_with_existing_donor_cases_excluding_duplicates = (
+                self.filter_duplicate_donor_cases(users_with_existing_donor_cases)
+            )
+            users_with_role_excluding_duplicates = list(dict.fromkeys(users_with_role))
+
+            # Convert to set once for O(1) membership checks, keep list for logging
+            existing_users_set = set(
+                users_with_existing_donor_cases_excluding_duplicates
+            )
+
+            # Compute expected count up front from deduplicated inputs using set
+            # This remains independent of the loop to detect if create logic fails
+            expected_number_of_cases_to_create = sum(
+                1
+                for user in users_with_role_excluding_duplicates
+                if user not in existing_users_set
+            )
+
+            for user in users_with_role_excluding_duplicates:
                 if self.donor_case_does_not_exist(
-                    user, users_with_existing_donor_cases
+                    user, users_with_existing_donor_cases_excluding_duplicates
                 ):
                     donor_case_model = DonorCaseModel(user, questionnaire_name, guid)
                     self._blaise_service.create_donor_case_for_user(donor_case_model)
                     total_donor_cases_created += 1
+                    users_with_existing_donor_cases_excluding_duplicates.append(user)
+                    existing_users_set.add(user)
         except BlaiseError as e:
             raise BlaiseError(e.message)
         except DonorCaseError as e:
@@ -61,13 +81,8 @@ class DonorCaseService:
             logging.error(error_message)
             raise DonorCaseError(error_message)
 
-        users_with_existing_donor_cases_excluding_duplicates = (
-            self.filter_duplicate_donor_cases(users_with_existing_donor_cases)
-        )
-
         self.assert_expected_number_of_donor_cases_created(
-            expected_number_of_cases_to_create=len(users_with_role)
-            - len(users_with_existing_donor_cases_excluding_duplicates),
+            expected_number_of_cases_to_create=expected_number_of_cases_to_create,
             total_donor_cases_created=total_donor_cases_created,
         )
 
